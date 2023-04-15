@@ -148,10 +148,12 @@ class SparkOperations:
         self.sparkLoger.stop_timer("transformation")
 
         # Getting rid of duplicates
+        self.sparkLoger.start_timer("processing duplicates")
         initial_count = df.count()
         df_no_duplicates = df.dropDuplicates()
         final_count = df_no_duplicates.count()
         duplicates_count = initial_count - final_count
+        self.sparkLoger.stop_timer("processing duplicates")
 
         if exportConfig["exportSampleEnabled"]:
             timer = "Export ", exportConfig["domainToExport"], " samples"
@@ -179,15 +181,15 @@ class SparkOperations:
             logs["nbFiltered"] = 0
             logs["nbSampled"] = 0
 
-
-        # Transformed file wrote to the output
-        self.sparkLoger.start_timer("Writting transformed file")
-        df.write \
-            .option("delimiter", "|") \
-            .option("header", "false") \
-            .mode("overwrite") \
-            .csv(output_path)
-        self.sparkLoger.stop_timer("Writting transformed file")
+        if exportConfig["exportFullData"]:
+            # Transformed file wrote to the output
+            self.sparkLoger.start_timer("Writting transformed file")
+            df.write \
+                .option("delimiter", "|") \
+                .option("header", "false") \
+                .mode("overwrite") \
+                .csv(output_path)
+            self.sparkLoger.stop_timer("Writting transformed file")
 
         # Getting sorted unique predicates
         if exportConfig["exportUniquePredicates"]:

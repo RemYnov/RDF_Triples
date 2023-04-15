@@ -42,10 +42,11 @@ if __name__ == '__main__':
     output_path = RDF_DATA_PATH + RDF_EN_FR_TRANSFORMED_PATH
 
     exportConfig = {
-        "exportSampleEnabled":False,
+        "exportFullData":False,
+        "exportSampleEnabled":True,
         "exportUniquePredicates":False,
-        "domainToExport":"base",
-        "exportSize": 0.07,
+        "domainToExport":"finance",
+        "exportSize": 0.3,
         "sample_output_folderpath":EXPORTS_FOLDER_PATH
     }
 
