@@ -6,7 +6,8 @@ import time
 RDF_DATA_PATH = "D:/MEP/SANDBOX/data/"
 RDF_FILENAME = "freebase-rdf-latest.csv"
 RDF_EN_FR_FILENAME = "freebase-rdf-en-fr-latest.csv"
-RDF_EN_FR_TRANSFORMED_PATH = "sparkedData/rdf_transfo"
+RDF_EN_FR_SAMPLE = "rdf-en-fr_samples_3000000.csv"
+RDF_EN_FR_TRANSFORMED_PATH = "sparkedData/rdf_small_transfo"
 PREDICATES_TEMPLATE_PATH = RDF_DATA_PATH + "test/backup_predicates_template.json"
 EXPORTS_FOLDER_PATH = RDF_DATA_PATH + "sparkedData/exploResults/sample_"
 
@@ -35,10 +36,16 @@ if __name__ == '__main__':
 
     input_file = RDF_DATA_PATH + RDF_EN_FR_FILENAME
     output_path = RDF_DATA_PATH + RDF_EN_FR_TRANSFORMED_PATH
-    domainToExport = "aviation"
-    exportSize = 0.3
 
-    print("Running Spark transformation and sampling domain", domainToExport, "...")
+    exportConfig = {
+        "exportSampleEnabled":False,
+        "exportUniquePredicates":False,
+        "domainToExport":"base",
+        "exportSize": 0.07,
+        "sample_output_folderpath":EXPORTS_FOLDER_PATH
+    }
+
+    print("Running Spark transformation and sampling domain", exportConfig["domainToExport"], "...")
     print(f"Spark UI URL: {url}")
 
     start_time = time.time()
@@ -49,20 +56,17 @@ if __name__ == '__main__':
     operationsLogs = sparkOps.RDF_transform_and_sample_by_domain(
         input_file=input_file,
         output_path=output_path,
-        domain=domainToExport,
-        sample_size=exportSize,
-        sample_output_folderpath=EXPORTS_FOLDER_PATH,
-        exportUniquePredicates=False,
+        exportConfig=exportConfig,
         setLogToInfo=False,
         stopSession=False
     )
     end_time = time.time()
 
     elapsed_time = end_time - start_time
-    #t.join()
     print(f"===== Spark transformation done in {elapsed_time} sec =====\n")
     print("Number of rows : ", operationsLogs["nbRowsInit"])
     print("Number of duplicates : ", operationsLogs["nbDuplicates"])
     print("Number of rows after transformation : ", operationsLogs["nbRowsFinal"])
-    print("Sampling : \nNumber of rows for the domain ", domainToExport, " : ", operationsLogs["nbFiltered"])
+    print("Sampling : ")
+    print("Number of rows for the domain ", exportConfig["domainToExport"], " : ", operationsLogs["nbFiltered"])
     print("Number of rows after sampling : ", operationsLogs["nbSampled"])

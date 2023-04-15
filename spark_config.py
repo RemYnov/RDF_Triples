@@ -1,6 +1,5 @@
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
-import sys
 import time
 
 # Contexte Spark
@@ -20,7 +19,6 @@ def get_spark_context():
     sc.stop()
     spark.stop()
 
-
 def get_spark_ui_url(spark_session: SparkSession) -> str:
     # Récupération du nom d'hôte et du port du Spark UI
     ui_web_url = spark_session.sparkContext.uiWebUrl
@@ -31,7 +29,6 @@ def get_spark_ui_url(spark_session: SparkSession) -> str:
         ui_web_url = f"{ui_web_url.rstrip('/')}/{base_path.lstrip('/')}"
 
     return ui_web_url
-
 
 def print_progress(sc, timeout):
     timeout_seconds = timeout * 60 * 60

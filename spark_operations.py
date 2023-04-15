@@ -11,7 +11,6 @@ import os
 os.environ['PYSPARK_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
 os.environ['PYSPARK_DRIVER_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
 
-
 class SparkOperations:
     def __init__(self, app_name, RDF_DATA_PATH, PREDICATES_TEMPLATE_PATH):
         self.sparkSession = SparkSession.builder \
@@ -58,8 +57,6 @@ class SparkOperations:
         elif stripped_predicate == "rdf-syntax-ns#type":
             stripped_predicate = "type.object.type"
         return stripped_predicate
-
-    #@staticmethod
     def merge_sparked_data(self, folder, merged_filename, delim):
         # Récupérer la liste de tous les fichiers CSV dans le dossier
         files = glob.glob(folder + "/*.csv")
@@ -74,7 +71,6 @@ class SparkOperations:
         #sorted_df = merged_df.sort_values(by=merged_df.columns[0])
 
         merged_df.to_csv(folder + merged_filename, index=False, sep=delim)
-
     def get_predicates_by_domain(self, desired_domain):
         """
                 Return every unique predicates that match the given
@@ -103,7 +99,7 @@ class SparkOperations:
         desired_predicates = extract_recursive(predicates_json[desired_domain], prefix=desired_domain)
 
         return desired_predicates
-    def RDF_transform_and_sample_by_domain(self, input_file, output_path, domain, sample_size, sample_output_folderpath, exportUniquePredicates, setLogToInfo=False, stopSession=True):
+    def RDF_transform_and_sample_by_domain(self, input_file, output_path, exportConfig, setLogToInfo=False, stopSession=True):
         """
                 Perform the data transformation of the given rdf-triples.csv file.
                 This function only accept RDF formated data.
@@ -111,13 +107,22 @@ class SparkOperations:
                 be wrotte to a csv file.
                 :param input_file: RDF formated .csv file on which we want to perform the transformation.
                 :param output_path: Path where the sliced data from Spark transformations will be dumped.
-                :param domain: Domain of the predicates that we want to sample.
-                :param sample_size: Size of the sample, between 0 and 1.
-                :param sample_output_folderpath: Folder where the samples of tripples will be dumped
+                :param exportConfig: Dict that defines the sampling process (enable or not)
+                    :param domain: Domain of the predicates that we want to sample.
+                    :param sample_size: Size of the sample, between 0 and 1.
+                    :param sample_output_folderpath: Folder where the samples of tripples will be dumped
                 :param setLogToInfo: Set the Spark session's log level to "INFO". False by default.
                 :param stopSession: Automaticaly stoping the Spark session when the function is done.
         """
         if setLogToInfo: self.sparkSession.sparkContext.setLogLevel("INFO")
+
+        logs = {
+            "nbRowsInit",
+            "nbRowsFinal",
+            "nbDuplicates",
+            "nbFiltered",
+            "nbSampled"
+        }
 
         # Reading RDF-en-fr (230M)
         df = self.sparkSession.read \
@@ -138,21 +143,28 @@ class SparkOperations:
         final_count = df_no_duplicates.count()
         duplicates_count = initial_count - final_count
 
-        # Searching for samples based on the desired domain :
-        desired_predicates = self.get_predicates_by_domain(desired_domain=domain)
+        if exportConfig["exportSampleEnabled"]:
+            # Searching for samples based on the desired domain :
+            desired_predicates = self.get_predicates_by_domain(desired_domain=exportConfig["domainToExport"])
 
-        filtered_df = df.filter(df["_c1"].isin(desired_predicates))
-        sample_df = filtered_df.sample(withReplacement=False, fraction=sample_size)
+            filtered_df = df.filter(df["_c1"].isin(desired_predicates))
+            sample_df = filtered_df.sample(withReplacement=False, fraction=exportConfig["exportSize"])
 
-        filtered_count = filtered_df.count()
-        sampled_count = sample_df.count()
+            filtered_count = filtered_df.count()
+            sampled_count = sample_df.count()
 
-        # Filtered and sampled file by predicates wrote to the output
-        sample_df.write \
-            .option("delimiter", "|") \
-            .option("header", "false") \
-            .mode("overwrite") \
-            .csv(sample_output_folderpath + domain + "_triples")
+            # Filtered and sampled file by predicates wrote to the output
+            sample_df.write \
+                .option("delimiter", "|") \
+                .option("header", "false") \
+                .mode("overwrite") \
+                .csv(exportConfig["sample_output_folderpath"] + exportConfig["domainToExport"] + "_triples")
+
+            logs["nbFiltered"] = filtered_count
+            logs["nbSampled"] = sampled_count
+        else:
+            logs["nbFiltered"] = 0
+            logs["nbSampled"] = 0
 
         # Transformed file wrote to the output
         df.write \
@@ -162,7 +174,7 @@ class SparkOperations:
             .csv(output_path)
 
         # Getting sorted unique predicates
-        if exportUniquePredicates :
+        if exportConfig["exportUniquePredicates"]:
             unique_predicates_file = self.UNIQUE_PREDICATES_FILEPATH
             unique_predicates = df.select("_c1").distinct()
 
@@ -175,12 +187,8 @@ class SparkOperations:
         # Arrêtez la session Spark
         if stopSession: self.sparkSession.stop()
 
-        logs = {
-            "nbRowsInit": initial_count,
-            "nbRowsFinal": final_count,
-            "nbDuplicates": duplicates_count,
-            "nbFiltered": filtered_count,
-            "nbSampled": sampled_count
-        }
+        logs["nbRowsInit"]= initial_count
+        logs["nbRowsFinal"]= final_count
+        logs["nbDuplicates"]= duplicates_count
 
         return logs
