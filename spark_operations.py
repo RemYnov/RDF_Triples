@@ -28,6 +28,7 @@ class SparkOperations:
         # Needed when specifc calculations (without native pySpark function) need to be applyied to the data
         self.transform_subject_udf = udf(self.transform_subject, StringType())
         self.transform_predicate_udf = udf(self.transform_predicate, StringType())
+
     @staticmethod
     def transform_subject(s):
         """
@@ -117,11 +118,11 @@ class SparkOperations:
         if setLogToInfo: self.sparkSession.sparkContext.setLogLevel("INFO")
 
         logs = {
-            "nbRowsInit",
-            "nbRowsFinal",
-            "nbDuplicates",
-            "nbFiltered",
-            "nbSampled"
+            "nbRowsInit": 0,
+            "nbRowsFinal": 0,
+            "nbDuplicates": 0,
+            "nbFiltered": 0,
+            "nbSampled": 0
         }
 
         # Reading RDF-en-fr (230M)
