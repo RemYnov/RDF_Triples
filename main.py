@@ -1,4 +1,5 @@
 from spark_operations import SparkOperations
+from logs_management import Logger
 from spark_config import print_progress, get_spark_ui_url
 import threading
 import time
@@ -22,6 +23,7 @@ def extract_en_fr(input_file, output_file):
 
 
 if __name__ == '__main__':
+    #Old en-fr extraction
     #df = pd.read_csv(RDF_DATA_PATH + RDF_FILENAME)
     #extract_en_fr(input_file, output_file)
 
@@ -31,6 +33,9 @@ if __name__ == '__main__':
         RDF_DATA_PATH=RDF_DATA_PATH,
         PREDICATES_TEMPLATE_PATH=PREDICATES_TEMPLATE_PATH
     )
+
+    #Initialisation of the logger object
+    logger = Logger()
 
     url = get_spark_ui_url(sparkOps.sparkSession)
 
@@ -45,13 +50,13 @@ if __name__ == '__main__':
         "sample_output_folderpath":EXPORTS_FOLDER_PATH
     }
 
-    print("Running Spark transformation and sampling domain", exportConfig["domainToExport"], "...")
-    print(f"Spark UI URL: {url}")
+    logger.start_timer("processing")
+    logger.log("Running Spark transformation and sampling domain", exportConfig["domainToExport"], "...")
+    logger.log(f"Spark UI URL: {url}")
 
-    start_time = time.time()
-    # Créer et démarrer un thread pour afficher la barre de progression
-    #t = threading.Thread(target=print_progress(sparkOps.context, 150), args=(sparkOps.context,))
-    #t.start()
+    #print("Running Spark transformation and sampling domain", exportConfig["domainToExport"], "...")
+
+    #start_time = time.time()
 
     operationsLogs = sparkOps.RDF_transform_and_sample_by_domain(
         input_file=input_file,
@@ -62,11 +67,19 @@ if __name__ == '__main__':
     )
     end_time = time.time()
 
-    elapsed_time = end_time - start_time
-    print(f"===== Spark transformation done in {elapsed_time} sec =====\n")
-    print("Number of rows : ", operationsLogs["nbRowsInit"])
-    print("Number of duplicates : ", operationsLogs["nbDuplicates"])
-    print("Number of rows after transformation : ", operationsLogs["nbRowsFinal"])
-    print("Sampling : ")
-    print("Number of rows for the domain ", exportConfig["domainToExport"], " : ", operationsLogs["nbFiltered"])
-    print("Number of rows after sampling : ", operationsLogs["nbSampled"])
+    #elapsed_time = end_time - start_time
+    logger.log("===== Spark transformation done =====\n")
+    logger.stop_timer("processing")
+    logger.log("Number of rows : " + operationsLogs["nbRowsInit"])
+    logger.log("Number of duplicates : " + operationsLogs["nbDuplicates"])
+    logger.log("Number of rows after transformation : " + operationsLogs["nbRowsFinal"])
+    logger.log("Number of rows for the domain " + exportConfig["domainToExport"] + " : " + operationsLogs["nbFiltered"])
+    logger.log("Number of rows after sampling : " + operationsLogs["nbSampled"])
+
+    #print(f"===== Spark transformation done in {elapsed_time} sec =====\n")
+    #print("Number of rows : ", operationsLogs["nbRowsInit"])
+    #print("Number of duplicates : ", operationsLogs["nbDuplicates"])
+    #print("Number of rows after transformation : ", operationsLogs["nbRowsFinal"])
+    #print("Sampling : ")
+    #print("Number of rows for the domain ", exportConfig["domainToExport"], " : ", operationsLogs["nbFiltered"])
+    #print("Number of rows after sampling : ", operationsLogs["nbSampled"])
