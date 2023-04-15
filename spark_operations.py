@@ -5,7 +5,6 @@ from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col
 from pyspark.sql.types import StringType, StructType, StructField
 import glob
 import pandas as pd
-import time
 import os
 
 os.environ['PYSPARK_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'

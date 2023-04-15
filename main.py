@@ -1,7 +1,6 @@
 from spark_operations import SparkOperations
 from logs_management import Logger
-from spark_config import print_progress, get_spark_ui_url
-import threading
+from spark_config import get_spark_ui_url
 import time
 
 RDF_DATA_PATH = "D:/MEP/SANDBOX/data/"
