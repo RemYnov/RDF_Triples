@@ -53,10 +53,6 @@ if __name__ == '__main__':
     logger.log("Running Spark transformation and sampling domain", exportConfig["domainToExport"], "...")
     logger.log(f"Spark UI URL: {url}")
 
-    #print("Running Spark transformation and sampling domain", exportConfig["domainToExport"], "...")
-
-    #start_time = time.time()
-
     operationsLogs = sparkOps.RDF_transform_and_sample_by_domain(
         input_file=input_file,
         output_path=output_path,
@@ -64,21 +60,7 @@ if __name__ == '__main__':
         setLogToInfo=False,
         stopSession=False
     )
-    end_time = time.time()
 
-    #elapsed_time = end_time - start_time
-    logger.log("===== Spark transformation done =====\n")
+    logger.log("===== Spark transformation done =====")
     logger.stop_timer("processing")
-    logger.log("Number of rows : " + operationsLogs["nbRowsInit"])
-    logger.log("Number of duplicates : " + operationsLogs["nbDuplicates"])
-    logger.log("Number of rows after transformation : " + operationsLogs["nbRowsFinal"])
-    logger.log("Number of rows for the domain " + exportConfig["domainToExport"] + " : " + operationsLogs["nbFiltered"])
-    logger.log("Number of rows after sampling : " + operationsLogs["nbSampled"])
-
-    #print(f"===== Spark transformation done in {elapsed_time} sec =====\n")
-    #print("Number of rows : ", operationsLogs["nbRowsInit"])
-    #print("Number of duplicates : ", operationsLogs["nbDuplicates"])
-    #print("Number of rows after transformation : ", operationsLogs["nbRowsFinal"])
-    #print("Sampling : ")
-    #print("Number of rows for the domain ", exportConfig["domainToExport"], " : ", operationsLogs["nbFiltered"])
-    #print("Number of rows after sampling : ", operationsLogs["nbSampled"])
+    logger.log(operationsLogs)

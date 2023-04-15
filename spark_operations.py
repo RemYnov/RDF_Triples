@@ -1,5 +1,6 @@
 import re
 import json
+from logs_management import Logger
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col
 from pyspark.sql.types import StringType, StructType, StructField
@@ -11,6 +12,10 @@ os.environ['PYSPARK_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v
 os.environ['PYSPARK_DRIVER_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
 
 class SparkOperations:
+    """
+    Every spark operations will be managed and monitored
+    from this class.
+    """
     def __init__(self, app_name, RDF_DATA_PATH, PREDICATES_TEMPLATE_PATH):
         self.sparkSession = SparkSession.builder \
             .appName(app_name) \
@@ -18,6 +23,7 @@ class SparkOperations:
             .config("spark.executor.memory", "4g") \
             .getOrCreate()
 
+        self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="fancy")
         self.context = self.sparkSession.sparkContext
 
         self.RDF_DATA_PATH = RDF_DATA_PATH
@@ -125,17 +131,21 @@ class SparkOperations:
         }
 
         # Reading RDF-en-fr (230M)
+        self.sparkLoger.start_timer("reading")
         df = self.sparkSession.read \
             .option("delimiter", "\t") \
             .option("header", "false") \
             .option("inferSchema", "true") \
             .csv(input_file)
+        self.sparkLoger.stop_timer("reading")
 
+        self.sparkLoger.start_timer("transformation")
         # Apply the UDF to the Subject / Predicate columns + other columns transformations
         df = df.withColumn("_c0", self.transform_subject_udf(df["_c0"])) \
             .withColumn("_c1", self.transform_predicate_udf(df["_c1"])) \
             .withColumn("_c2", regexp_replace("_c2", r'^\\"(.*)\\"$', r'$1')) \
             .withColumn("_c2", regexp_extract("_c2", r'^(.*?)@', 1))
+        self.sparkLoger.stop_timer("transformation")
 
         # Getting rid of duplicates
         initial_count = df.count()
@@ -144,6 +154,8 @@ class SparkOperations:
         duplicates_count = initial_count - final_count
 
         if exportConfig["exportSampleEnabled"]:
+            timer = "Export ", exportConfig["domainToExport"], " samples"
+            self.sparkLoger.start_timer(timer)
             # Searching for samples based on the desired domain :
             desired_predicates = self.get_predicates_by_domain(desired_domain=exportConfig["domainToExport"])
 
@@ -162,19 +174,24 @@ class SparkOperations:
 
             logs["nbFiltered"] = filtered_count
             logs["nbSampled"] = sampled_count
+            self.sparkLoger.stop_timer(timer)
         else:
             logs["nbFiltered"] = 0
             logs["nbSampled"] = 0
 
+
         # Transformed file wrote to the output
+        self.sparkLoger.start_timer("Writting transformed file")
         df.write \
             .option("delimiter", "|") \
             .option("header", "false") \
             .mode("overwrite") \
             .csv(output_path)
+        self.sparkLoger.stop_timer("Writting transformed file")
 
         # Getting sorted unique predicates
         if exportConfig["exportUniquePredicates"]:
+            self.sparkLoger.start_timer("predicates export")
             unique_predicates_file = self.UNIQUE_PREDICATES_FILEPATH
             unique_predicates = df.select("_c1").distinct()
 
@@ -183,6 +200,7 @@ class SparkOperations:
                 .option("header", "false") \
                 .mode("overwrite") \
                 .csv(unique_predicates_file)
+            self.sparkLoger.stop_timer("predicates export")
 
         # Arrêtez la session Spark
         if stopSession: self.sparkSession.stop()
