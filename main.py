@@ -43,10 +43,11 @@ if __name__ == '__main__':
 
     exportConfig = {
         "exportFullData":False,
-        "exportSampleEnabled":True,
         "exportUniquePredicates":False,
-        "domainToExport":"finance",
-        "exportSize": 0.3,
+        "exportMatchingTriples": True,
+        "exportSampleEnabled":False,
+        "domainToExport":"common",
+        "exportSize": 0.5,
         "sample_output_folderpath":EXPORTS_FOLDER_PATH
     }
 

@@ -7,6 +7,7 @@ from pyspark.sql.types import StringType, StructType, StructField
 import glob
 import pandas as pd
 import os
+from urllib import parse
 
 os.environ['PYSPARK_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
 os.environ['PYSPARK_DRIVER_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
@@ -17,18 +18,34 @@ class SparkOperations:
     from this class.
     """
     def __init__(self, app_name, RDF_DATA_PATH, PREDICATES_TEMPLATE_PATH):
+        # Init loggers
+        self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="fancy")
+        self.sparkWarningLoger = Logger(prefix="- spark -", defaultCustomLogs="warning")
+        self.sparkErrorLogger = Logger(prefix="- spark error -", defaultCustomLogs="critical")
+
+        self.SPARK_LOCAL_DIR = parse.urljoin('file', parse.quote("sparkWorkspace"))
+        self.SPARK_LOGS_DIR = parse.urljoin(self.SPARK_LOCAL_DIR, parse.quote("eventLogs"))
+        msg1 = "Spark working on path : " + self.SPARK_LOCAL_DIR
+        msg2 = "Spark logs stored at : " + self.SPARK_LOGS_DIR
+        self.sparkWarningLoger.log(msg1)
+        self.sparkWarningLoger.log(msg2)
+
         self.sparkSession = SparkSession.builder \
             .appName(app_name) \
             .config("spark.driver.memory", "4g") \
             .config("spark.executor.memory", "4g") \
+            .config("spark.executor.memoryOverHead", "1g") \
+            .config("spark.local.dir", self.SPARK_LOCAL_DIR) \
+            .config("spark.eventLog.enabled", "true") \
+            .config("spark.eventLog.dir", self.SPARK_LOCAL_DIR + "/eventLogs") \
             .getOrCreate()
 
-        self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="fancy")
         self.context = self.sparkSession.sparkContext
 
         self.RDF_DATA_PATH = RDF_DATA_PATH
         self.PREDICATES_TEMPLATE_PATH = PREDICATES_TEMPLATE_PATH
         self.UNIQUE_PREDICATES_FILEPATH = self.RDF_DATA_PATH + "sparkedData/exploResults/unique_predicates"
+        self.MATCHING_TRIPLES_PATH = self.RDF_DATA_PATH + "sparkedData/exploResults/matchingTriples"
         ### Registering the UDF ###
         # Needed when specifc calculations (without native pySpark function) need to be applyied to the data
         self.transform_subject_udf = udf(self.transform_subject, StringType())
@@ -161,7 +178,7 @@ class SparkOperations:
             # Searching for samples based on the desired domain :
             desired_predicates = self.get_predicates_by_domain(desired_domain=exportConfig["domainToExport"])
 
-            filtered_df = df.filter(df["_c1"].isin(desired_predicates))
+            filtered_df = df_no_duplicates.filter(df["_c1"].isin(desired_predicates))
             sample_df = filtered_df.sample(withReplacement=False, fraction=exportConfig["exportSize"])
 
             filtered_count = filtered_df.count()
@@ -181,10 +198,29 @@ class SparkOperations:
             logs["nbFiltered"] = 0
             logs["nbSampled"] = 0
 
+        if exportConfig["exportMatchingTriples"] :
+            self.sparkLoger.start_timer("looking for matching triples")
+            subjects_df = df_no_duplicates.select("_c0").distinct()
+            objects_df = df_no_duplicates.select("_c2").distinct()
+            joined_df = subjects_df.crossJoin(objects_df)
+
+            filtered_df = joined_df.filter(col("_c2").contains(col("_c0")))
+
+            matchingTriples_df = df.join(filtered_df, on=["_c0", "_c2"], how="inner")
+            self.sparkLoger.stop_timer("looking for matching triples")
+
+            self.sparkLoger.start_timer("writting matching triples")
+            matchingTriples_df.write \
+                .option("delimiter", "|") \
+                .option("header", "false") \
+                .mode("overwrite") \
+                .csv(self.MATCHING_TRIPLES_PATH)
+            self.sparkLoger.stop_timer("writting matching triples")
+
         if exportConfig["exportFullData"]:
             # Transformed file wrote to the output
             self.sparkLoger.start_timer("Writting transformed file")
-            df.write \
+            df_no_duplicates.write \
                 .option("delimiter", "|") \
                 .option("header", "false") \
                 .mode("overwrite") \

@@ -20,14 +20,12 @@ class Logger:
         self.RED = Fore.RED
         self.RESET = Style.RESET_ALL
 
-
     def log(self, message, display=True, level="normal", counter=None):
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         log_entry = f"{timestamp} {self.prefix} {message}"
         self.logs.append(log_entry)
         if display:
             self.colored_display(log_entry, level=self.customLog)
-            #print(self.BLUE + log_entry + self.RESET)
         if counter:
             self.increment_counter(counter)
     def colored_display(self, msg, level):
