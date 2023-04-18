@@ -44,7 +44,7 @@ def test_regex_on_spark():
         {"predicates": "type.object.name"},
         {"predicates": "rdf-schema#label"},
         {"predicates": "common.topic.alias"},
-        {"predicates": "common.topic.description"}
+        {"predicates": "common.topic.description>"}
     ]
 
     df = testSession.createDataFrame(data)
