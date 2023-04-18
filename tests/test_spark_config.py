@@ -1,8 +1,10 @@
 import re
 from pyspark.sql import SparkSession
 import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
 
-sys.path.append('C:/Users/blremi/birdlink/MEP/sandbox/workspace')
+#sys.path.append('C:/Users/blremi/birdlink/MEP/sandbox/workspace')
 
 from spark_config import get_spark_ui_url
 def test_get_spark_ui_url():
