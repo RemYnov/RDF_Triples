@@ -3,7 +3,7 @@ from pyspark.sql import SparkSession
 import time
 
 # Contexte Spark
-@staticmethod
+
 def get_spark_context():
 
     conf = SparkConf().setAppName("Spark Version Check")

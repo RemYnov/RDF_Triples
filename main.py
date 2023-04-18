@@ -46,7 +46,7 @@ if __name__ == '__main__':
         "exportUniquePredicates":False,
         "exportMatchingTriples": True,
         "exportSampleEnabled":False,
-        "domainToExport":"common",
+        "domainToExport":"base",
         "exportSize": 0.5,
         "sample_output_folderpath":EXPORTS_FOLDER_PATH
     }
