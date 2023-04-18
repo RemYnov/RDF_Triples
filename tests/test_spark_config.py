@@ -20,3 +20,4 @@ def test_get_spark_context():
     sparkVersion, masterUrl = get_spark_info()
     assert sparkVersion == "3.3.2"
     assert len(masterUrl) >= 1
+
