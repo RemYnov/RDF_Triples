@@ -1,10 +1,7 @@
-import re
-from pyspark.sql import SparkSession
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 from spark_operations import SparkOperations
-
 def test_transform_predicate():
     raw_predicates = ["<http://rdf.freebase.com/ns/type.object.name>",
                       "<http://rdf.freebase.com/ns/common.notable_for.display_name>",
@@ -16,7 +13,6 @@ def test_transform_predicate():
     for i in range(0, len(raw_predicates)):
         transformed_predicte = SparkOperations.transform_predicate(raw_predicates[i])
         assert transformed_predicte == expected_predicates[i]
-
 def test_transform_subject():
     raw_subjects = ["<http://rdf.freebase.com/ns/american_football.football_player.footballdb_id>",
                     "<http://rdf.freebase.com/ns/astronomy.astronomical_observatory.discoveries>",

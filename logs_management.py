@@ -33,11 +33,12 @@ class Logger:
         if level == "fancy": print(self.BLUE + msg + self.RESET)
         elif level == "warning": print(self.YELLOW + msg + self.RESET)
         elif level == "critical": print(self.RED + msg + self.RESET)
-
     def increment_counter(self, counter, increment=1):
         if counter not in self.counters:
             self.counters[counter] = 0
         self.counters[counter] += increment
+    def get_counter(self, counter):
+        return self.counters[counter]
     def start_timer(self, timer_name):
         self.timestamps[timer_name] = time.time()
     def stop_timer(self, timer_name):
