@@ -3,6 +3,7 @@ from pyspark.sql import SparkSession
 import sys
 
 sys.path.append('C:/Users/blremi/birdlink/MEP/sandbox/workspace')
+
 from spark_config import get_spark_ui_url
 def test_get_spark_ui_url():
     url_pattern = r'^http://.*:\d{4}$'
