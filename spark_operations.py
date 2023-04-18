@@ -122,7 +122,7 @@ class SparkOperations:
         desired_predicates = extract_recursive(predicates_json[desired_domain], prefix=desired_domain)
 
         return desired_predicates
-    def RDF_transform_and_sample_by_domain(self, input_file, output_path, exportConfig, setLogToInfo=False, stopSession=True):
+    def RDF_transform_and_sample_by_domain(self, input_file, output_path, exportConfig, performCounts, setLogToInfo=False, stopSession=True):
         """
                 Perform the data transformation of the given rdf-triples.csv file.
                 This function only accept RDF formated data.
@@ -166,10 +166,13 @@ class SparkOperations:
 
         # Getting rid of duplicates
         self.sparkLoger.start_timer("processing duplicates")
-        initial_count = df.count()
         df_no_duplicates = df.dropDuplicates()
-        final_count = df_no_duplicates.count()
-        duplicates_count = initial_count - final_count
+
+        if performCounts:
+            initial_count = df.count()
+            final_count = df_no_duplicates.count()
+            duplicates_count = initial_count - final_count
+
         self.sparkLoger.stop_timer("processing duplicates")
 
         if exportConfig["exportSampleEnabled"]:
@@ -200,13 +203,18 @@ class SparkOperations:
 
         if exportConfig["exportMatchingTriples"] :
             self.sparkLoger.start_timer("looking for matching triples")
+            # Searching for samples based on the desired domain :
+            desired_predicates = self.get_predicates_by_domain(desired_domain=exportConfig["domainToExport"])
+            filtered_df_by_domain = df_no_duplicates.filter(df["_c1"].isin(desired_predicates))
+
+            # Df with only subject / object
             subjects_df = df_no_duplicates.select("_c0").distinct()
             objects_df = df_no_duplicates.select("_c2").distinct()
             joined_df = subjects_df.crossJoin(objects_df)
-
+            # Keeping only records where the subject exists in the object column
             filtered_df = joined_df.filter(col("_c2").contains(col("_c0")))
 
-            matchingTriples_df = df.join(filtered_df, on=["_c0", "_c2"], how="inner")
+            matchingTriples_df = filtered_df_by_domain.join(filtered_df, on=["_c0", "_c2"], how="inner")
             self.sparkLoger.stop_timer("looking for matching triples")
 
             self.sparkLoger.start_timer("writting matching triples")

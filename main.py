@@ -59,6 +59,7 @@ if __name__ == '__main__':
         input_file=input_file,
         output_path=output_path,
         exportConfig=exportConfig,
+        performCounts=False,
         setLogToInfo=False,
         stopSession=False
     )
