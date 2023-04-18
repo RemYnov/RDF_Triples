@@ -41,7 +41,7 @@ def test_regex_on_spark():
         {"predicates": "<http://rdf.freebase.com/ns/common.topic.description>"}
     ]
     transfomed_data = [
-        {"predicates": "type.object.name"},
+        {"predicates": "type.object-name"},
         {"predicates": "rdf-schema#label"},
         {"predicates": "common.topic.alias"},
         {"predicates": "common.topic.description>"}
