@@ -4,10 +4,10 @@ import time
 
 # Contexte Spark
 
-def get_spark_context():
-
+def get_spark_info():
     conf = SparkConf().setAppName("Spark Version Check")
     sc = SparkContext(conf=conf)
+    version = sc.version
     print("Spark version: ", sc.version)
 
     spark = SparkSession.builder \
@@ -18,6 +18,8 @@ def get_spark_context():
 
     sc.stop()
     spark.stop()
+
+    return version, spark_master_url
 
 def get_spark_ui_url(spark_session: SparkSession) -> str:
     # Récupération du nom d'hôte et du port du Spark UI
