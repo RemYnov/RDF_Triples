@@ -31,5 +31,5 @@ jobs:
 
       - name: Run pytests
         run: |
-          flake8 .\logs_management.py
+          flake8 logs_management.py
           pytest
