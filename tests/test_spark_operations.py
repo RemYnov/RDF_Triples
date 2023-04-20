@@ -4,6 +4,9 @@ from pyspark.sql.functions import regexp_replace
 from pyspark.sql import SparkSession, DataFrame
 sys.path.append(str(Path(__file__).parent.parent))
 from spark_operations import SparkOperations
+
+def test_get_predicates_by_domain():
+    assert True
 def test_transform_predicate():
     raw_predicates = ["<http://rdf.freebase.com/ns/type.object.name>",
                       "<http://rdf.freebase.com/ns/common.notable_for.display_name>",

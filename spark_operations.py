@@ -46,6 +46,7 @@ class SparkOperations:
         self.PREDICATES_TEMPLATE_PATH = PREDICATES_TEMPLATE_PATH
         self.UNIQUE_PREDICATES_FILEPATH = self.RDF_DATA_PATH + "sparkedData/exploResults/unique_predicates"
         self.MATCHING_TRIPLES_PATH = self.RDF_DATA_PATH + "sparkedData/exploResults/matchingTriples"
+
         ### Registering the UDF ###
         # Needed when specifc calculations (without native pySpark function) need to be applyied to the data
         self.transform_subject_udf = udf(self.transform_subject, StringType())
