@@ -20,7 +20,9 @@ jobs:
         env:
           cache-name: sparkWorkspaceWithPytest
         with:
-          path: ~/.cache/pip
+          path: | 
+            ~/.cache/pip
+            **/.pytest_cache
           key: ${{ runner.os }}-pip-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip- 
