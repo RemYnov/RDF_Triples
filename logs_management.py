@@ -1,7 +1,6 @@
 import time
 from colorama import Fore, Style
 
-
 class Logger:
     """
     This class allow to track logs activity and manage the way

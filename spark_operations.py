@@ -8,6 +8,7 @@ import glob
 import pandas as pd
 import os
 from urllib import parse
+from config import PREDICATES_TEMPLATE_PATH
 
 os.environ['PYSPARK_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
 os.environ['PYSPARK_DRIVER_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
@@ -18,7 +19,7 @@ class SparkOperations:
     Every spark operations will be managed and monitored
     from this class.
     """
-    def __init__(self, app_name, RDF_DATA_PATH, PREDICATES_TEMPLATE_PATH):
+    def __init__(self, app_name, RDF_DATA_PATH):
         # Init loggers
         self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="fancy")
         self.sparkWarningLoger = Logger(prefix="- spark -", defaultCustomLogs="warning")
@@ -44,7 +45,6 @@ class SparkOperations:
         self.context = self.sparkSession.sparkContext
 
         self.RDF_DATA_PATH = RDF_DATA_PATH
-        self.PREDICATES_TEMPLATE_PATH = PREDICATES_TEMPLATE_PATH
         self.UNIQUE_PREDICATES_FILEPATH = self.RDF_DATA_PATH + "sparkedData/exploResults/unique_predicates"
         self.MATCHING_TRIPLES_PATH = self.RDF_DATA_PATH + "sparkedData/exploResults/matchingTriples"
 
@@ -118,7 +118,7 @@ class SparkOperations:
             return predicates
 
         ### Loading the predicate structure ###
-        with open(self.PREDICATES_TEMPLATE_PATH, "r") as f:
+        with open(PREDICATES_TEMPLATE_PATH, "r") as f:
             predicates_json = json.load(f)
 
         desired_predicates = extract_recursive(predicates_json[desired_domain], prefix=desired_domain)

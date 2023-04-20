@@ -11,14 +11,35 @@ jobs:
 
       - name: Install Python with cache
         uses: actions/setup-python@v4
+        id: cache-libs
         with:
           python-version: '3.9'
           cache: 'pip'
       - name: Install dependencies
+        if: steps.cache-libs.outputs.cache-hit != 'true'
+        run: pip install -r requirements.txt
+
+  test-and-lint:
+    needs: install-dependencies
+    name: Run tests 🧪
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Python with cache
+        uses: actions/setup-python@v4
+        id: cache-libs
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+      - name: Install dependencies
+        if: steps.cache-libs.outputs.cache-hit != 'true'
         run: pip install -r requirements.txt
 
       - name: Run tests
-        run: |
-          which pytest || whereis pytest
-          flake8 logs_management.py
-          pytest
+        run: pytest
+
+      - name: Run linter
+        run: flake .\spark_operations.py
