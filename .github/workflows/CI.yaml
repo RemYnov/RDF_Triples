@@ -27,7 +27,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip- 
 
-      - if: steps.cache-deps.outputs.cache-hit != 'true'
+      - if: steps.cache-deps.outputs.cache-hit != 'false'
         name: Install dependencies (Cache enabled)
         run: pip install -r requirements.txt
 

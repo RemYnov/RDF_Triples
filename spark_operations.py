@@ -3,7 +3,7 @@ import json
 from logs_management import Logger
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col
-from pyspark.sql.types import StringType, StructType, StructField
+from pyspark.sql.types import StringType
 import glob
 import pandas as pd
 import os
@@ -11,6 +11,7 @@ from urllib import parse
 
 os.environ['PYSPARK_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
 os.environ['PYSPARK_DRIVER_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
+
 
 class SparkOperations:
     """
@@ -92,7 +93,7 @@ class SparkOperations:
 
         print(merged_df[0:10])
 
-        #sorted_df = merged_df.sort_values(by=merged_df.columns[0])
+        # sorted_df = merged_df.sort_values(by=merged_df.columns[0])
 
         merged_df.to_csv(folder + merged_filename, index=False, sep=delim)
     def get_predicates_by_domain(self, desired_domain):
@@ -123,7 +124,9 @@ class SparkOperations:
         desired_predicates = extract_recursive(predicates_json[desired_domain], prefix=desired_domain)
 
         return desired_predicates
-    def RDF_transform_and_sample_by_domain(self, input_file, output_path, exportConfig, performCounts, setLogToInfo=False, stopSession=True):
+    def RDF_transform_and_sample_by_domain(
+            self, input_file, output_path, exportConfig, performCounts, setLogToInfo=False, stopSession=True
+    ):
         """
                 Perform the data transformation of the given rdf-triples.csv file.
                 This function only accept RDF formated data.
@@ -250,10 +253,11 @@ class SparkOperations:
             self.sparkLoger.stop_timer("predicates export")
 
         # Arrêtez la session Spark
-        if stopSession: self.sparkSession.stop()
+        if stopSession:
+            self.sparkSession.stop()
 
-        logs["nbRowsInit"]= initial_count
-        logs["nbRowsFinal"]= final_count
-        logs["nbDuplicates"]= duplicates_count
+        logs["nbRowsInit"] = initial_count
+        logs["nbRowsFinal"] = final_count
+        logs["nbDuplicates"] = duplicates_count
 
         return logs
