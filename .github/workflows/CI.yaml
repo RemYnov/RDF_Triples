@@ -26,7 +26,9 @@ jobs:
             **/.pytest_cache
           key: ${{ runner.os }}-pip-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
-            ${{ runner.os }}-pip- 
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       - if: steps.cache-deps.outputs.cache-hit != 'true'
         name: Install dependencies (Cache disabled)
