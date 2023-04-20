@@ -1,0 +1,4758 @@
+{
+    "architecture": {
+        "light_attributes": {
+            "remarks": {}
+        }
+    },
+    "astronomy": {
+        "comet": {
+            "designation": {}
+        },
+        "meteoric_composition": {
+            "notes": {}
+        }
+    },
+    "automotive": {
+        "exterior_color": {
+            "color_code": {}
+        },
+        "warranty": {
+            "covers": {}
+        }
+    },
+    "aviation": {
+        "aircraft_status": {
+            "status": {}
+        },
+        "airline": {
+            "callsign": {},
+            "frequent_flyer_program": {}
+        },
+        "airline_airport_presence": {
+            "terminals": {}
+        },
+        "airliner_accident": {
+            "tail_number": {}
+        },
+        "airport_runway": {
+            "direction": {}
+        }
+    },
+    "award": {
+        "award_honor": {
+            "notes_description": {}
+        },
+        "award_judging_term": {
+            "note": {}
+        },
+        "award_nomination": {
+            "notes_description": {}
+        },
+        "hall_of_fame_induction": {
+            "note": {}
+        },
+        "long_list_nomination": {
+            "notes_description": {}
+        },
+        "ranking": {
+            "note": {}
+        }
+    },
+    "base": {
+        "aareas": {
+            "aat_mapping": {
+                "dbpedia_category": {},
+                "dbpedia_status": {}
+            },
+            "schema": {
+                "administrative_area": {
+                    "adjectival_form": {},
+                    "short_name": {}
+                },
+                "administrative_area_type": {
+                    "sovereignty_code": {},
+                    "stem_word": {}
+                }
+            }
+        },
+        "abcbirds": {
+            "conservation_project": {
+                "comments": {},
+                "goal_s": {},
+                "results_summary": {}
+            }
+        },
+        "academyawards": {
+            "oscar_winner_who_refused_award": {
+                "note": {}
+            }
+        },
+        "account": {
+            "obj_base": {
+                "title": {}
+            },
+            "obj_child": {
+                "title_child": {}
+            },
+            "obj_foreign": {
+                "hiddenfield": {},
+                "ttitle": {}
+            }
+        },
+        "accounts": {
+            "account": {
+                "pageagreement": {},
+                "pageforum": {},
+                "pagehol": {},
+                "pageregistration": {}
+            },
+            "bu": {
+                "flag": {},
+                "hol": {}
+            },
+            "dep": {
+                "hol": {},
+                "page": {}
+            }
+        },
+        "actsofparliament": {
+            "acts_of_parliament": {
+                "long_title": {}
+            }
+        },
+        "airtrafficcontrol": {
+            "air_traffic_dialogue": {
+                "quote": {}
+            }
+        },
+        "allsongs": {
+            "mytypename": {
+                "propname03": {},
+                "urlsong": {}
+            }
+        },
+        "americancivilwar": {
+            "battle_result": {
+                "notes": {}
+            }
+        },
+        "ancientegypt": {
+            "pyramid": {
+                "ancient_name": {}
+            }
+        },
+        "animalnames": {
+            "animal_specific_name_relationship": {
+                "notes": {}
+            }
+        },
+        "animemanga": {
+            "anime_manga_franchise": {
+                "japanese_name": {}
+            }
+        },
+        "aptamer": {
+            "aptamer": {
+                "application": {}
+            },
+            "binding_solution": {
+                "ionic_strength": {}
+            },
+            "dissociation_constant": {
+                "has_temporary_string_value": {},
+                "has_temporary_string_value_range": {},
+                "temporary_error_string": {}
+            },
+            "experiment": {
+                "digital_object_identifier": {}
+            },
+            "linear_polymer": {
+                "sequence_pattern": {}
+            },
+            "modified_nucleic_acid": {
+                "modification_details": {}
+            },
+            "predicted_secondary_structure": {
+                "dot_bracket_notation": {}
+            },
+            "selection_solution": {
+                "ionic_strength": {}
+            }
+        },
+        "architecture2": {
+            "architectural_structure_use_period": {
+                "structure_name_during_this_period": {}
+            },
+            "building_floor": {
+                "floor_name": {}
+            }
+        },
+        "arthist": {
+            "attribuciok": {
+                "szerep": {}
+            },
+            "helynevek": {
+                "helynev": {}
+            },
+            "int_zm_nyek": {
+                "intezmenynev": {}
+            },
+            "mutargyak": {
+                "datalas": {},
+                "megjegyzesek": {},
+                "megnevezes": {}
+            },
+            "muveszek": {
+                "nev": {}
+            },
+            "provenienciaadat": {
+                "kommentar": {},
+                "ltsz": {}
+            }
+        },
+        "artist_domain": {
+            "ua_artwork": {
+                "classification": {},
+                "href_drive": {},
+                "href_fb": {},
+                "status": {},
+                "x_type": {}
+            }
+        },
+        "athletics": {
+            "current_area_record": {
+                "mark": {}
+            },
+            "personal_best": {
+                "best": {}
+            }
+        },
+        "aubreymaturin": {
+            "character_mention": {
+                "description": {}
+            },
+            "historical_event_mention": {
+                "description": {}
+            },
+            "malady_mention": {
+                "description": {}
+            },
+            "place_mention": {
+                "description": {}
+            },
+            "ship_mention": {
+                "description": {}
+            },
+            "species_mention": {
+                "description": {}
+            },
+            "written_work_mention": {
+                "description": {}
+            }
+        },
+        "audiobase": {
+            "audio_equipment": {
+                "model": {},
+                "series": {}
+            }
+        },
+        "badpeople": {
+            "bad_people_who_make_music": {
+                "bad_because": {}
+            },
+            "bad_people_who_ran_countries": {
+                "bad_because": {}
+            }
+        },
+        "battlestargalactica": {
+            "pilot": {
+                "callsign": {}
+            }
+        },
+        "berlinrestaurants": {
+            "restaurant": {
+                "phone_number": {}
+            }
+        },
+        "biblioness": {
+            "bibs_location": {
+                "abbreviation": {},
+                "loc_type": {}
+            }
+        },
+        "bio2rdf": {
+            "bio2rdf": {
+                "comment": {},
+                "identifier": {},
+                "title": {}
+            },
+            "bm": {
+                "description": {},
+                "identifier_example": {},
+                "provider_homepage": {},
+                "reserved_namespace": {},
+                "url_pattern": {}
+            },
+            "bm_database_statistics": {
+                "version": {}
+            },
+            "dataset": {
+                "ns": {}
+            },
+            "rdfizer": {
+                "uri_example": {}
+            }
+        },
+        "bioventurist": {
+            "date_with_note": {
+                "note": {}
+            },
+            "indication": {
+                "notes": {}
+            },
+            "patent": {
+                "patent_number": {}
+            },
+            "product": {
+                "brand_name": {}
+            }
+        },
+        "birdinfo": {
+            "sampling_design": {
+                "notes": {}
+            }
+        },
+        "bluegate_it_co_za": {
+            "app_development": {
+                "mobile_applications": {}
+            }
+        },
+        "blurbhighlights": {
+            "highlight": {
+                "highlight_attribute": {}
+            }
+        },
+        "bookpf": {
+            "book_edition": {
+                "publisher": {}
+            }
+        },
+        "braziliangovt": {
+            "brazilian_political_party": {
+                "acronym": {}
+            }
+        },
+        "breakfast": {
+            "breakfast_cereal_brand": {
+                "slogan": {}
+            }
+        },
+        "brickbase": {
+            "lego_set": {
+                "set_number": {}
+            }
+        },
+        "brothels": {
+            "prostitute_employment_tenure": {
+                "prostitute_name": {}
+            }
+        },
+        "business_report": {
+            "authoritative_financial_reference": {
+                "authoritative_link": {},
+                "reference_identifier": {}
+            },
+            "financial_element": {
+                "concept_definition": {}
+            },
+            "financial_report": {
+                "report_identifier": {}
+            }
+        },
+        "butterflies": {
+            "butterfly": {
+                "latin_name": {}
+            }
+        },
+        "californiahistory": {
+            "landmark": {
+                "marker_location": {}
+            }
+        },
+        "canadianlaw": {
+            "case": {
+                "case_name": {}
+            }
+        },
+        "carrier_domain": {
+            "carriers": {
+                "hol": {},
+                "page_tracker": {}
+            }
+        },
+        "catalog": {
+            "cataloged_composition": {
+                "opus_number": {}
+            },
+            "music_catalog": {
+                "abbreviation": {}
+            },
+            "music_catalog_entry": {
+                "music_catalog_value": {}
+            }
+        },
+        "cdnpolitics": {
+            "member_of_parliament": {
+                "email_address": {}
+            },
+            "politician": {
+                "email_address": {}
+            }
+        },
+        "centreforeresearch": {
+            "client": {
+                "department": {}
+            },
+            "person": {
+                "email": {},
+                "position": {}
+            },
+            "project": {
+                "aim_requirement": {},
+                "status": {}
+            },
+            "service": {
+                "funccer": {}
+            },
+            "staff_project_involvement": {
+                "role": {}
+            }
+        },
+        "cgcollection": {
+            "computer_game_release": {
+                "id_number": {}
+            }
+        },
+        "change": {
+            "name_change": {
+                "thename": {}
+            }
+        },
+        "chinesefood": {
+            "noodles": {
+                "area": {}
+            }
+        },
+        "cimis": {
+            "procedure": {
+                "accuracy": {},
+                "azimuth": {},
+                "calculation": {},
+                "correction": {},
+                "delay_distance": {},
+                "gust_survival": {},
+                "height": {},
+                "linearity": {},
+                "maker": {},
+                "model": {},
+                "note": {},
+                "orifice": {},
+                "output": {},
+                "range": {},
+                "resolution": {},
+                "response_time": {},
+                "sensitivity": {},
+                "sensor": {},
+                "threshold": {}
+            }
+        },
+        "coinsdaily": {
+            "coin_series": {
+                "assayer_mark": {},
+                "date_on_coin": {},
+                "mintmark": {},
+                "variation": {}
+            }
+        },
+        "collegesportsteams": {
+            "college_football_team": {
+                "fight_song": {}
+            }
+        },
+        "comet": {
+            "observation_type": {
+                "observation_id": {},
+                "uom": {}
+            },
+            "observed_property": {
+                "description": {}
+            }
+        },
+        "commons": {
+            "web_annotation_service": {
+                "sticky_notes_price": {}
+            }
+        },
+        "communitypump": {
+            "pump_selected_apps": {
+                "description": {}
+            }
+        },
+        "configuration_objects": {
+            "file_on_disk": {
+                "file_name": {}
+            }
+        },
+        "conservationaction": {
+            "coordinated_program": {
+                "goal_s": {},
+                "objective_s": {}
+            },
+            "ornithology": {
+                "e_mail_contact": {}
+            }
+        },
+        "constructionmachinery": {
+            "operational": {
+                "tire_size": {}
+            }
+        },
+        "consumermedical": {
+            "medical_term": {
+                "consumer_name": {}
+            }
+        },
+        "crmbase": {
+            "owner": {
+                "contact_bank_names": {}
+            }
+        },
+        "cryptocurrency": {
+            "cryptocurrency": {
+                "hashing_function": {}
+            }
+        },
+        "csl_lives": {
+            "person": {
+                "gender": {}
+            }
+        },
+        "culturalevent": {
+            "event": {
+                "event_type": {}
+            }
+        },
+        "curricula": {
+            "inhoud": {
+                "tussendoel": {}
+            },
+            "learning_trajectory": {
+                "learning_trajectory_function": {}
+            },
+            "leergebied_vak": {
+                "sector": {},
+                "vakkern": {}
+            },
+            "tussendoel": {
+                "niveau": {}
+            },
+            "vakkern": {
+                "vaksubkern": {}
+            }
+        },
+        "database": {
+            "database": {
+                "license_notes": {}
+            }
+        },
+        "daylifetopics": {
+            "daylife_id": {
+                "daylife_topic_id": {},
+                "daylife_topic_name": {},
+                "daylife_url_token": {}
+            }
+        },
+        "digital_media_asset": {
+            "digital_media_asset": {
+                "expansion_direction": {},
+                "initial_dimensions_wxh_in_pixels": {}
+            }
+        },
+        "digitalformatpolicies": {
+            "file_characteristic": {
+                "note": {}
+            },
+            "file_format_policy": {
+                "policy_domain": {}
+            }
+        },
+        "dimenovels": {
+            "dime_novel_issue": {
+                "date_of_publication": {}
+            },
+            "dime_novel_series": {
+                "dates": {},
+                "description": {},
+                "format": {},
+                "illustrations": {},
+                "notes": {},
+                "number_of_issues": {},
+                "pages": {},
+                "price": {},
+                "schedule": {},
+                "size": {}
+            },
+            "dime_novel_story": {
+                "date": {}
+            },
+            "publisher_address": {
+                "city": {},
+                "state": {}
+            }
+        },
+        "drugdevelopment": {
+            "new_drug_application": {
+                "fda_application_number": {},
+                "nda_chemical_type": {},
+                "review_classification": {}
+            }
+        },
+        "edbase": {
+            "learning_objective": {
+                "ccid": {}
+            }
+        },
+        "electromagneticspectrum": {
+            "owner": {
+                "owner_name": {}
+            },
+            "regulatory_authority": {
+                "background_info": {},
+                "organization_name": {},
+                "organizational_acronym": {}
+            },
+            "regulatory_code": {
+                "regulatory_code_subpart": {}
+            },
+            "service": {
+                "service_acronym": {},
+                "service_description": {},
+                "service_name": {}
+            }
+        },
+        "engineering1": {
+            "rfid_iso_standarts_type": {
+                "rfid_iso_group": {},
+                "standart_description": {},
+                "standart_frequency": {},
+                "usage_area": {}
+            },
+            "rfid_reader_device": {
+                "operating_frequency": {},
+                "product_name": {}
+            },
+            "rfid_solutions": {
+                "description": {}
+            },
+            "rfid_standarts": {
+                "standarts": {}
+            },
+            "rfid_tag_device": {
+                "description": {},
+                "frequency": {},
+                "model": {}
+            },
+            "rfid_topic": {
+                "description": {},
+                "standards": {}
+            }
+        },
+        "entertainmentutilities": {
+            "nomination_metadata": {
+                "award_short_form_name": {}
+            },
+            "nomination_page_metadata": {
+                "page_name": {}
+            }
+        },
+        "epdpdatabase": {
+            "objetivo": {
+                "objetivo": {}
+            }
+        },
+        "evsbase": {
+            "battery_type": {
+                "capacity_ah": {}
+            }
+        },
+        "exercises": {
+            "exercise_type": {
+                "training_method": {}
+            }
+        },
+        "externalnews": {
+            "item": {
+                "content": {}
+            }
+        },
+        "facetedbrowsing": {
+            "faceted_browsing_feature_support": {
+                "applies_to_specific_facets_only": {},
+                "comment": {},
+                "version": {}
+            },
+            "faceted_browsing_result_view_support": {
+                "comment": {}
+            },
+            "faceted_browsing_widget_support": {
+                "comment": {}
+            }
+        },
+        "fantasyfootball": {
+            "fantasy_football_game": {
+                "game_link": {}
+            }
+        },
+        "fcintcommunity": {
+            "parameters": {
+                "defaultvalue": {}
+            },
+            "semanticparametermappings": {
+                "propertykey": {},
+                "propertyvalue": {}
+            },
+            "services": {
+                "author": {}
+            }
+        },
+        "fedoracommons": {
+            "software_component": {
+                "compatibility": {}
+            },
+            "software_project": {
+                "category": {},
+                "shortdesc": {}
+            }
+        },
+        "flightoftheconchords": {
+            "tv_program_location_name": {
+                "location_alias": {}
+            }
+        },
+        "foobase2": {
+            "foo_type": {
+                "property2": {}
+            }
+        },
+        "foodrecipes": {
+            "recipe_ingredient": {
+                "recipe_name": {}
+            }
+        },
+        "fraud": {
+            "oauth_token_authentication_event": {
+                "access_token": {}
+            },
+            "online_banking_identity": {
+                "user_name": {}
+            },
+            "saml_token_authentication_event": {
+                "saml_token": {}
+            },
+            "username_password_authentication_event": {
+                "password": {},
+                "username": {}
+            }
+        },
+        "freebooks": {
+            "versioned_content_license": {
+                "version": {}
+            }
+        },
+        "gamers": {
+            "online_gaming_id": {
+                "handle": {}
+            }
+        },
+        "geolocation": {
+            "geotagged_image": {
+                "author_name": {}
+            }
+        },
+        "ghtech": {
+            "gh_diagnostic_type": {
+                "assay": {},
+                "device": {},
+                "reagents": {}
+            },
+            "technologies": {
+                "power_source": {}
+            }
+        },
+        "givennames": {
+            "given_name": {
+                "meaning": {}
+            }
+        },
+        "graffiti": {
+            "graffiti_crew": {
+                "crew_acronym": {},
+                "crew_name": {}
+            }
+        },
+        "gratefuldead": {
+            "iconic_grateful_dead_art": {
+                "x1st_appearance": {}
+            }
+        },
+        "hathayoga": {
+            "yoga_posture": {
+                "english_name": {}
+            }
+        },
+        "health20accelerator": {
+            "member": {
+                "service_url": {}
+            },
+            "task": {
+                "display_name": {}
+            }
+        },
+        "horsefacts": {
+            "coat_locus": {
+                "code": {}
+            }
+        },
+        "horticulture": {
+            "cultured_plant": {
+                "cultivar_name": {}
+            }
+        },
+        "hospital": {
+            "patients": {
+                "fio": {},
+                "gender": {}
+            }
+        },
+        "hospitalinformationsystem1": {
+            "blood_bank": {
+                "group_of_the_blood": {}
+            },
+            "examination": {
+                "patient_name": {}
+            },
+            "hospitalization": {
+                "patient_name": {}
+            },
+            "operating_room": {
+                "p": {}
+            },
+            "patient_record": {
+                "patient_name": {}
+            }
+        },
+        "humanresources": {
+            "education": {
+                "education_type": {}
+            },
+            "employer": {
+                "x_name": {}
+            }
+        },
+        "iceandfire": {
+            "noble_house": {
+                "banner": {},
+                "title": {},
+                "words": {}
+            },
+            "person": {
+                "title": {}
+            },
+            "westeros_region": {
+                "illegitimate_surname": {}
+            }
+        },
+        "iconologia": {
+            "icone": {
+                "corean": {},
+                "english": {},
+                "francais": {}
+            }
+        },
+        "iniciador": {
+            "organizador_de_iniciador_local": {
+                "bio": {}
+            },
+            "ponente": {
+                "bio": {}
+            }
+        },
+        "internetmemes": {
+            "encyclopediadramatica_article": {
+                "encyclopediadramatica_name": {}
+            },
+            "internet_meme": {
+                "knowyourmeme_com_id": {}
+            }
+        },
+        "iraqimusicbase": {
+            "album": {
+                "album_name": {}
+            },
+            "band_member": {
+                "full_name": {}
+            },
+            "iraqi_person": {
+                "full_name": {},
+                "gender": {},
+                "place_of_birth": {}
+            },
+            "recording_company": {
+                "company_name": {}
+            }
+        },
+        "irishpoliticians": {
+            "irish_politician": {
+                "constituency": {}
+            }
+        },
+        "irmusictypes": {
+            "track_type": {
+                "new_name": {}
+            }
+        },
+        "irtestbase": {
+            "ir_test_type_a": {
+                "ir_a_type_2": {}
+            },
+            "ir_type_a": {
+                "property_1": {},
+                "property_2": {}
+            },
+            "ir_type_b": {
+                "property_3": {}
+            }
+        },
+        "jamesbond007": {
+            "villain_fate": {
+                "fate": {}
+            },
+            "villain_objective": {
+                "objective": {}
+            }
+        },
+        "java_programming_language": {
+            "generic_type": {
+                "type_parameter": {}
+            },
+            "identifier": {
+                "java_identifier": {}
+            },
+            "java_type": {
+                "bytecode_representation": {}
+            },
+            "reserved_word": {
+                "identifier": {}
+            },
+            "symbol": {
+                "fully_qualified_name": {},
+                "simple_name": {}
+            }
+        },
+        "kwebbase": {
+            "kwconnection": {
+                "comments": {}
+            },
+            "kwrelation": {
+                "pmheading": {},
+                "pmsub": {}
+            },
+            "kwsentence": {
+                "section": {}
+            },
+            "kwtopic": {
+                "assessment": {},
+                "category": {},
+                "disciplines": {},
+                "kwtype": {}
+            }
+        },
+        "lakebase": {
+            "lake": {
+                "ilec_id": {},
+                "lakenet_id": {}
+            }
+        },
+        "lastfm": {
+            "last_fm_band": {
+                "last_fm_username": {}
+            }
+        },
+        "learningresource": {
+            "e_book": {
+                "access_url": {},
+                "book_name": {}
+            }
+        },
+        "lego_base": {
+            "element": {
+                "element_id": {}
+            }
+        },
+        "lightweight": {
+            "beer_hop": {
+                "alpha_acid_range": {},
+                "aroma": {},
+                "purpose": {}
+            },
+            "profession": {
+                "important_quality": {},
+                "typical_education": {}
+            }
+        },
+        "lists": {
+            "list_entry": {
+                "comment": {}
+            }
+        },
+        "litcentral": {
+            "taxonomic_history": {
+                "reason_for_change": {}
+            }
+        },
+        "lontarlibrary": {
+            "lontar_collection": {
+                "lontar_collection": {}
+            }
+        },
+        "lostbase": {
+            "episode_character_relationship": {
+                "relationship_type": {}
+            }
+        },
+        "lsbase": {
+            "video": {
+                "title": {}
+            }
+        },
+        "magazinegravure": {
+            "magazine_photo_appearance": {
+                "note": {}
+            }
+        },
+        "mantiklibirsey1": {
+            "aaaabbbb": {
+                "satar": {}
+            },
+            "katar": {
+                "satar": {}
+            }
+        },
+        "mapcentral": {
+            "fgdc_description": {
+                "fgdc_abstract": {},
+                "fgdc_purpose": {}
+            },
+            "fgdc_identification": {
+                "access_constraint_s": {},
+                "use_constraint_s": {}
+            },
+            "fgdc_planar_encoding_and_units": {
+                "encoding_method": {}
+            },
+            "fgdc_process_step": {
+                "process_description": {}
+            },
+            "fgdc_time_period": {
+                "currentness_reference": {}
+            }
+        },
+        "materials": {
+            "hardness_spcification": {
+                "condition": {}
+            },
+            "impact_strength_specification": {
+                "condition": {}
+            },
+            "numeric_specification": {
+                "condition": {}
+            },
+            "percent_specification": {
+                "condition": {}
+            },
+            "resistivity_specification": {
+                "condition": {}
+            },
+            "strength_specification": {
+                "condition": {}
+            },
+            "temperature_specification": {
+                "condition": {}
+            },
+            "thermal_expansion_specification": {
+                "condition": {}
+            }
+        },
+        "melomania": {
+            "artiste": {
+                "nom": {}
+            }
+        },
+        "member": {
+            "bu": {
+                "flagcapabilities": {},
+                "htmlhol": {},
+                "htmlpage": {},
+                "title": {}
+            },
+            "offer": {
+                "forum": {},
+                "htmlhol": {},
+                "title": {}
+            }
+        },
+        "microdata": {
+            "google_address": {
+                "country_name": {},
+                "locality": {},
+                "postal_code": {},
+                "region": {},
+                "street_address": {}
+            },
+            "google_person": {
+                "nickname": {},
+                "role": {},
+                "title": {}
+            },
+            "google_product": {
+                "brand": {},
+                "description": {},
+                "price": {}
+            },
+            "vcard_adr": {
+                "region": {}
+            },
+            "vcard_adr_type": {
+                "description": {}
+            },
+            "vcard_email_type": {
+                "description": {}
+            },
+            "vcard_impp_type": {
+                "description": {}
+            },
+            "vcard_tel_type": {
+                "description": {}
+            }
+        },
+        "mlslist": {
+            "mlsservice": {
+                "abbreviation": {},
+                "region": {}
+            }
+        },
+        "modelingexamples": {
+            "example": {
+                "model_description": {}
+            }
+        },
+        "models": {
+            "order": {
+                "comment": {}
+            }
+        },
+        "monster": {
+            "monstrous_act_of_creation": {
+                "rationale_for_act_of_monstrous_creation": {}
+            }
+        },
+        "morstministryofresearchscienceandtechnology": {
+            "morst_author": {
+                "area_of_profession": {}
+            },
+            "morst_scan": {
+                "comments": {},
+                "source": {},
+                "title": {}
+            }
+        },
+        "motorcycle": {
+            "motorcycle_carburetor": {
+                "shim": {}
+            },
+            "motorcycle_gear_product": {
+                "short_description": {}
+            },
+            "motorcycle_part_number_manufacturer": {
+                "short_description": {}
+            }
+        },
+        "mqlerrors": {
+            "mql_error": {
+                "code": {},
+                "suggestions": {}
+            }
+        },
+        "mtgbase": {
+            "magic_printing": {
+                "types": {}
+            },
+            "magic_set": {
+                "code_name": {},
+                "product_code": {}
+            }
+        },
+        "musicmanager": {
+            "artists_managed": {
+                "managed_by": {}
+            }
+        },
+        "musiteca": {
+            "concert": {
+                "description": {}
+            },
+            "meter": {
+                "subdivision": {},
+                "tipo": {}
+            },
+            "tonality": {
+                "key_tonality": {},
+                "mode": {}
+            },
+            "video": {
+                "format": {}
+            }
+        },
+        "musteriiliskileri": {
+            "aday": {
+                "a_klama": {}
+            },
+            "f_rsat": {
+                "a_klama": {}
+            },
+            "irtibat": {
+                "ad": {},
+                "adres": {},
+                "cep_telefonu": {},
+                "e_posta_adresi": {},
+                "i_telefonu": {},
+                "x_nvan": {}
+            },
+            "m_teri": {
+                "a_klama": {},
+                "ad": {},
+                "adres": {},
+                "web_sayfas": {}
+            },
+            "m_teri_temsilcisi": {
+                "ad": {}
+            },
+            "sat_aktivitesi": {
+                "a_klama": {}
+            },
+            "x_irket": {
+                "ad": {},
+                "adresi": {}
+            }
+        },
+        "mwfreeciv": {
+            "player": {
+                "leader_name": {}
+            }
+        },
+        "myevents": {
+            "event": {
+                "title": {}
+            },
+            "meeting": {
+                "agenda": {}
+            },
+            "project_meeting": {
+                "agenda": {}
+            }
+        },
+        "myspace": {
+            "myspace_user": {
+                "username": {}
+            }
+        },
+        "natlang": {
+            "abbreviated_topic": {
+                "abbreviations": {},
+                "complete_name": {}
+            },
+            "gendered_topic": {
+                "female_name": {},
+                "male_name": {}
+            },
+            "plural_topic": {
+                "plural_name": {}
+            },
+            "property_alias": {
+                "alias": {}
+            },
+            "semantic_relation": {
+                "semantic_terms": {}
+            }
+        },
+        "newsevents": {
+            "news_report": {
+                "title": {}
+            },
+            "twittered_event": {
+                "hashtag": {}
+            }
+        },
+        "niivgbase": {
+            "nii": {
+                "memeber": {}
+            }
+        },
+        "nuclearregulatorycommission": {
+            "inspection_finding": {
+                "identifier": {},
+                "subject": {}
+            },
+            "inspection_report": {
+                "accession_number": {},
+                "subject": {}
+            }
+        },
+        "nutritioninfo": {
+            "retail_data": {
+                "item": {},
+                "retailer": {}
+            }
+        },
+        "observances": {
+            "observance": {
+                "theme": {}
+            }
+        },
+        "observatoriobpm": {
+            "ferramenta_bpms": {
+                "software_vendor": {},
+                "web_page": {}
+            }
+        },
+        "oceanography": {
+            "research_cruise": {
+                "cruise_id": {}
+            },
+            "submarine_dive": {
+                "dive_id": {}
+            }
+        },
+        "oldfbwiki": {
+            "freebase_commons_votes": {
+                "comment": {}
+            }
+        },
+        "ontologies": {
+            "ontology_namespace": {
+                "default_prefix": {}
+            }
+        },
+        "orchestralmusic": {
+            "orchestral_work": {
+                "orchestration": {}
+            }
+        },
+        "organization": {
+            "dell_feds": {
+                "description": {},
+                "title": {},
+                "x_link": {}
+            }
+        },
+        "patienthealthrecord": {
+            "profile": {
+                "first_name": {},
+                "last_name": {},
+                "patient_id": {}
+            }
+        },
+        "peleton": {
+            "cycling_team_professional": {
+                "uci_code": {}
+            },
+            "road_bicycling_race": {
+                "local_name": {}
+            }
+        },
+        "pencils": {
+            "fred": {
+                "size": {}
+            }
+        },
+        "permaculture": {
+            "permaculture_element": {
+                "behaviour": {},
+                "characteristics": {}
+            }
+        },
+        "philbsuniverse": {
+            "musical_album_detailed_view": {
+                "artist_s_or_band_s_sortname": {}
+            },
+            "musical_track_detailed_view": {
+                "disc_track": {}
+            },
+            "musician_s_conductor_s_and_arrangement_s": {
+                "arrangement_type": {}
+            },
+            "my_spectacle_universe": {
+                "artist_s_ot_band_s_sortname": {}
+            }
+        },
+        "phobias": {
+            "phobia": {
+                "fear_of": {}
+            }
+        },
+        "piercings": {
+            "topic": {
+                "alias": {}
+            }
+        },
+        "pinball": {
+            "pinball_machine": {
+                "slogan": {}
+            }
+        },
+        "playball": {
+            "naming_information": {
+                "name_of_ballpark": {}
+            }
+        },
+        "playtheweb": {
+            "snips_attribution": {
+                "attributioncopied": {}
+            }
+        },
+        "politeuri": {
+            "impolite_uri": {
+                "id_example": {},
+                "uri_example": {}
+            },
+            "namespace_1": {
+                "namespace_uri": {},
+                "synonym_namespace": {}
+            },
+            "polite_uri": {
+                "id_example": {},
+                "uri_example": {}
+            },
+            "sparql_endpoint": {
+                "sparql_endpoint": {},
+                "uri_example": {}
+            },
+            "sparql_technology": {
+                "version": {}
+            }
+        },
+        "popstra": {
+            "celebrity": {
+                "famous_for": {}
+            },
+            "rehab_stay": {
+                "reason": {}
+            }
+        },
+        "postgraduatethesis": {
+            "auction": {
+                "auctionname": {}
+            }
+        },
+        "professionalstarcraftinkorea": {
+            "player": {
+                "race": {},
+                "team": {}
+            }
+        },
+        "proofsareprograms": {
+            "key_application": {
+                "how_it_applied_the_concept": {}
+            },
+            "key_contribution": {
+                "why_this_is_interesting": {}
+            }
+        },
+        "propositions": {
+            "proposition": {
+                "description": {}
+            }
+        },
+        "qtips": {
+            "query_annotation": {
+                "message": {},
+                "path": {}
+            }
+        },
+        "quash": {
+            "animal": {
+                "mode_of_transportation": {}
+            }
+        },
+        "radiostations": {
+            "radio_station": {
+                "call_letters": {}
+            },
+            "radio_station_format": {
+                "talk_or_music": {}
+            }
+        },
+        "recipetest": {
+            "ingredient": {
+                "title": {}
+            },
+            "recipe": {
+                "title": {}
+            }
+        },
+        "refslink": {
+            "article": {
+                "author": {},
+                "journal": {},
+                "title": {}
+            },
+            "cited_in_article": {
+                "title": {}
+            }
+        },
+        "rejectedapps": {
+            "sdk_clause": {
+                "relating_to": {}
+            }
+        },
+        "researchinmacromolecularcrowding": {
+            "experimental_systems": {
+                "system": {}
+            }
+        },
+        "reviews": {
+            "review": {
+                "snippet": {}
+            }
+        },
+        "reviews2": {
+            "review": {
+                "private_snippet": {}
+            }
+        },
+        "rollerderby": {
+            "coach": {
+                "derby_name": {}
+            }
+        },
+        "runescape": {
+            "runescape_item": {
+                "examine": {}
+            }
+        },
+        "rvijbase": {
+            "java_script_libraries": {
+                "description": {}
+            },
+            "useful": {
+                "description": {}
+            }
+        },
+        "sa2base": {
+            "sa2_textual": {
+                "desc": {}
+            },
+            "sa2_view": {
+                "description": {}
+            }
+        },
+        "sa3base": {
+            "sa3_functional_requirement": {
+                "description": {}
+            },
+            "sa3_textual": {
+                "description": {}
+            },
+            "sa3_view2": {
+                "architecture_background": {}
+            }
+        },
+        "sabase": {
+            "sa_sad": {
+                "company": {},
+                "system_name": {}
+            }
+        },
+        "sails": {
+            "sailing_handicap_rating": {
+                "notes": {}
+            }
+        },
+        "saints": {
+            "relic": {
+                "relic": {}
+            },
+            "saint": {
+                "miracle": {},
+                "patronage": {},
+                "symbolism": {}
+            }
+        },
+        "sameas": {
+            "consuming_api": {
+                "api_description": {}
+            }
+        },
+        "satelites": {
+            "satellite_communication_band": {
+                "issue_s": {}
+            },
+            "sensor_status": {
+                "status": {}
+            }
+        },
+        "saturdaynightlive": {
+            "snl_episode": {
+                "episode_number": {}
+            }
+        },
+        "schemastaging": {
+            "context_name": {
+                "abbreviation": {},
+                "biology": {},
+                "common_name": {},
+                "culinary": {},
+                "disputed_name_preferred_form": {},
+                "former_name": {},
+                "medical": {},
+                "nickname": {},
+                "official_name": {},
+                "original_name": {},
+                "pseudonym": {},
+                "short_name": {},
+                "sports": {}
+            },
+            "drug_pregnancy_category_extra": {
+                "pregnancy_risk_summary": {}
+            },
+            "food_energy_information": {
+                "per_quantity_description": {}
+            },
+            "holiday_observance_rule": {
+                "disclaimer": {},
+                "schedule_in_prose": {}
+            },
+            "listed_serving_size": {
+                "quantity_description": {}
+            },
+            "non_profit_extra": {
+                "mission_statement": {}
+            },
+            "nutrition_information": {
+                "per_quantity_description": {}
+            },
+            "phone_sandbox": {
+                "description": {}
+            },
+            "plural_form": {
+                "few": {},
+                "many": {},
+                "one": {},
+                "other": {},
+                "two": {},
+                "zero": {}
+            },
+            "previous_name": {
+                "previous_name": {}
+            },
+            "pronunciation": {
+                "text": {}
+            },
+            "sports_projectile": {
+                "documented_velocity_source": {}
+            },
+            "variant_name": {
+                "variant_name": {}
+            }
+        },
+        "scholar": {
+            "event": {
+                "acronym": {}
+            },
+            "event_series": {
+                "acronym": {}
+            }
+        },
+        "scottishclans": {
+            "scottish_clan": {
+                "clan_motto": {}
+            },
+            "tartan": {
+                "scottish_tartans_society_number": {}
+            }
+        },
+        "scubadiving": {
+            "scuba_certification_agency": {
+                "abbreviation": {}
+            }
+        },
+        "seafood": {
+            "seafood": {
+                "market_names": {}
+            }
+        },
+        "semantics": {
+            "expression": {
+                "text": {}
+            }
+        },
+        "shelvedcancelledandunfinishedfilms": {
+            "cancelled_films": {
+                "production_began": {}
+            }
+        },
+        "signage": {
+            "sign_instance": {
+                "sign_text": {}
+            }
+        },
+        "skosbase": {
+            "skos_concept": {
+                "alt_label": {},
+                "pref_label": {},
+                "scope_note": {}
+            }
+        },
+        "sliderules": {
+            "slide_rule": {
+                "cursor_material": {},
+                "rule_material": {}
+            }
+        },
+        "socialsciencedata": {
+            "variable": {
+                "question_text": {},
+                "variable_name": {}
+            }
+        },
+        "softwareengineering": {
+            "principle": {
+                "example": {},
+                "principle_name": {}
+            }
+        },
+        "soundalike": {
+            "spoken_word": {
+                "meaning": {},
+                "pronounciation": {},
+                "written_as": {}
+            }
+        },
+        "sparql": {
+            "sparql_results_format": {
+                "format_name": {}
+            }
+        },
+        "sportbase": {
+            "club_owner": {
+                "profession": {}
+            },
+            "sport": {
+                "match_duration": {},
+                "venue": {}
+            }
+        },
+        "summarystatistics": {
+            "equal_code": {
+                "justification": {}
+            },
+            "overlapping_code": {
+                "justification": {}
+            }
+        },
+        "svocab": {
+            "address": {
+                "country": {},
+                "locality": {},
+                "postalcode": {},
+                "region": {},
+                "streetaddress": {}
+            },
+            "content": {
+                "about": {}
+            },
+            "hours": {
+                "days": {},
+                "status": {}
+            },
+            "image": {
+                "representativeofpage": {}
+            },
+            "localbusiness": {
+                "areaserviced": {},
+                "currencyaccepted": {},
+                "paymentaccepted": {}
+            },
+            "media": {
+                "duration": {},
+                "regionsallowed": {}
+            },
+            "organization": {
+                "email": {},
+                "tel": {}
+            },
+            "person": {
+                "birthplace": {},
+                "email": {},
+                "gender": {},
+                "nationality": {},
+                "tel": {},
+                "title": {}
+            }
+        },
+        "technologyofdoing": {
+            "high_performance_concern": {
+                "description": {}
+            },
+            "knowledge_worker_practice": {
+                "description": {}
+            },
+            "knowledge_worker_trait": {
+                "category": {}
+            },
+            "knowledge_worker_trait_class": {
+                "description": {}
+            }
+        },
+        "textiles": {
+            "textile": {
+                "print": {}
+            }
+        },
+        "thedomain": {
+            "thetypes": {
+                "theproperty": {}
+            }
+        },
+        "thjodfundur": {
+            "hugmyndir": {
+                "aldursbil": {},
+                "kyn": {}
+            }
+        },
+        "tinkerersencyclopedia": {
+            "individual_parts": {
+                "doner": {},
+                "part_name": {}
+            },
+            "part_sources": {
+                "doner_name": {},
+                "part": {}
+            }
+        },
+        "todolists": {
+            "data_upload_conversation_record": {
+                "content": {}
+            },
+            "freebase_database_upload_candidate": {
+                "related_jira_task": {}
+            },
+            "freebase_task": {
+                "related_jira_task": {}
+            }
+        },
+        "trails": {
+            "activity": {
+                "description": {}
+            },
+            "trail_type": {
+                "description": {}
+            }
+        },
+        "trialbase": {
+            "project": {
+                "aim_requirement": {}
+            },
+            "project_staff": {
+                "role": {}
+            }
+        },
+        "triggers": {
+            "trigger_occurence": {
+                "extent": {},
+                "where_when": {}
+            }
+        },
+        "truereligion": {
+            "jean_measurement": {
+                "size": {}
+            },
+            "jeans": {
+                "wash_instructions": {}
+            },
+            "style_measurement": {
+                "notes": {}
+            }
+        },
+        "ubico": {
+            "not_a_journalist": {
+                "is_not_a_journalist": {}
+            }
+        },
+        "umltools": {
+            "uml_tool": {
+                "edition": {}
+            }
+        },
+        "uncommon": {
+            "exception": {
+                "comments": {},
+                "explanation": {},
+                "process": {}
+            }
+        },
+        "usbdevices": {
+            "usb_device": {
+                "product": {},
+                "vendor": {}
+            }
+        },
+        "usnris": {
+            "nris_listing": {
+                "cultural_affiliation": {}
+            }
+        },
+        "vancouver": {
+            "city_street": {
+                "quadrant": {}
+            },
+            "public_art": {
+                "site_name": {}
+            }
+        },
+        "vertebratevisualsystem": {
+            "visualsystem": {
+                "visual_attribute": {},
+                "visual_value": {}
+            }
+        },
+        "virginiabroadband": {
+            "stimulus_request": {
+                "notes": {}
+            }
+        },
+        "virology": {
+            "genetic_sequence": {
+                "genbank_id": {}
+            }
+        },
+        "visleg": {
+            "collaboration": {
+                "subject_keywords": {}
+            },
+            "collaborative_participation": {
+                "role_description": {}
+            },
+            "collaborator": {
+                "interest_keywords": {}
+            },
+            "labeled": {
+                "subject": {}
+            }
+        },
+        "vwmtbase": {
+            "data_source": {
+                "prop_dstype": {},
+                "prop_url": {}
+            },
+            "vw_adapter": {
+                "prop_pageurl": {},
+                "prop_query": {},
+                "prop_querypage": {},
+                "prop_queryprefix": {}
+            },
+            "vw_data_representation": {
+                "prop_drtype": {}
+            },
+            "vw_transformation_agent": {
+                "prop_filterfield": {},
+                "prop_filterregex": {},
+                "prop_type": {}
+            },
+            "vw_view": {
+                "prop_initialsearch": {},
+                "prop_viewposition": {},
+                "prop_viewtype": {}
+            }
+        },
+        "wakfu": {
+            "item": {
+                "description": {},
+                "x_name": {}
+            },
+            "monster": {
+                "x_name": {}
+            }
+        },
+        "water": {
+            "x": {
+                "x": {}
+            }
+        },
+        "web_design": {
+            "web_design_company": {
+                "company_name": {}
+            }
+        },
+        "wikipedia_infobox": {
+            "cocktail": {
+                "ingredient": {},
+                "preparation": {},
+                "served": {}
+            },
+            "military_conflict": {
+                "result": {}
+            }
+        },
+        "wineawards": {
+            "wine_scores": {
+                "score": {}
+            }
+        },
+        "winterroot": {
+            "subinfo": {
+                "color": {}
+            }
+        },
+        "wordnet": {
+            "synset": {
+                "gloss": {}
+            }
+        },
+        "writing": {
+            "homonym": {
+                "words": {}
+            },
+            "word": {
+                "word": {}
+            }
+        },
+        "x2010fifaworldcupsouthafrica": {
+            "world_cup_spot_allocations": {
+                "number_of_places_allocated": {}
+            }
+        },
+        "x2right4": {
+            "anspruch_begehren": {
+                "title": {}
+            },
+            "entscheidung": {
+                "gericht": {},
+                "leitsatz": {}
+            },
+            "kommentar": {
+                "rechtsgebiet": {}
+            },
+            "rechtsfolge": {
+                "title": {}
+            },
+            "voraussetzung": {
+                "inhalt": {},
+                "titel": {}
+            }
+        },
+        "xfreebase128281394023696": {
+            "x": {
+                "xx": {},
+                "xxx": {}
+            }
+        },
+        "yalebase": {
+            "building": {
+                "abbreviation": {}
+            },
+            "residential_college": {
+                "college_abbreviation": {}
+            }
+        },
+        "yhachina": {
+            "x": {
+                "address": {},
+                "h_name": {}
+            }
+        },
+        "zabiyaka": {
+            "geo_hint": {
+                "description": {}
+            }
+        }
+    },
+    "biology": {
+        "amino_acid": {
+            "single_letter_abbreviation": {},
+            "three_letter_abbreviation": {}
+        },
+        "gene_ontology_group": {
+            "broader_term": {},
+            "description": {},
+            "narrower_term": {},
+            "related_term": {},
+            "synonym_term": {}
+        },
+        "organism_classification": {
+            "scientific_name": {},
+            "synonym_scientific_name": {}
+        },
+        "organism_classification_rank": {
+            "scientific_name": {}
+        }
+    },
+    "book": {
+        "book_edition": {
+            "ISBN": {},
+            "LCCN": {},
+            "dewey_decimal_number": {}
+        },
+        "contents": {
+            "page_number": {}
+        },
+        "journal_publication": {
+            "issue_date_extra": {}
+        },
+        "pagination": {
+            "front_matter": {}
+        },
+        "periodical_publication_date": {
+            "additional_date_info": {}
+        },
+        "scholarly_work": {
+            "keyword": {}
+        }
+    },
+    "broadcast": {
+        "cable_satellite_availability": {
+            "channel": {}
+        },
+        "callsign_duration": {
+            "callsign": {}
+        },
+        "content": {
+            "summary": {}
+        },
+        "radio_station": {
+            "branding": {},
+            "callsign_meaning": {},
+            "slogan": {}
+        },
+        "tv_station": {
+            "branding": {},
+            "callsign_meaning": {},
+            "slogan": {}
+        }
+    },
+    "business": {
+        "company_name_change": {
+            "new_name": {}
+        },
+        "stock_ticker_symbol": {
+            "ticker_symbol": {}
+        }
+    },
+    "common": {
+        "document": {
+            "text": {}
+        },
+        "image": {
+            "image_caption": {},
+            "rights_holder_text_attribution": {}
+        },
+        "license": {
+            "boilerplate_text": {},
+            "version": {}
+        },
+        "license_usage": {
+            "attribution_text": {}
+        },
+        "licensed_object": {
+            "attribution_text": {}
+        },
+        "notable_for": {
+            "display_name": {}
+        },
+        "phone_number": {
+            "note": {}
+        },
+        "topic": {
+            "alias": {},
+            "description": {}
+        },
+        "webpage": {
+            "description": {}
+        }
+    },
+    "computer": {
+        "operating_system": {
+            "version_number": {}
+        },
+        "os_compatibility": {
+            "dot_version_high": {},
+            "dot_version_low": {}
+        },
+        "software": {
+            "latest_version": {}
+        },
+        "software_compatibility": {
+            "os_version_end": {},
+            "os_version_start": {}
+        }
+    },
+    "cricket": {
+        "cricket_match": {
+            "result": {}
+        }
+    },
+    "cvg": {
+        "game_version": {
+            "version_specific_name": {}
+        }
+    },
+    "dataworld": {
+        "data_project": {
+            "project_description": {}
+        },
+        "data_task": {
+            "status_note": {}
+        },
+        "type_project_mediator": {
+            "detail": {}
+        }
+    },
+    "dining": {
+        "cuisine": {
+            "description": {}
+        }
+    },
+    "education": {
+        "educational_institution": {
+            "motto": {},
+            "nickname": {}
+        },
+        "fraternity_sorority": {
+            "mission_statement": {},
+            "symbol": {}
+        }
+    },
+    "fictional_universe": {
+        "fictional_object": {
+            "attributes_properties": {},
+            "destroyed_by": {}
+        }
+    },
+    "film": {
+        "film": {
+            "tagline": {}
+        },
+        "film_cut": {
+            "note": {}
+        },
+        "performance": {
+            "character_note": {}
+        }
+    },
+    "finance": {
+        "currency": {
+            "currency_code": {},
+            "prefix_symbol": {}
+        }
+    },
+    "food": {
+        "bottled_water": {
+            "water_type": {}
+        },
+        "cheese": {
+            "affineur": {},
+            "aging_time": {},
+            "cheesemaker": {},
+            "farm_company": {},
+            "pasteurized": {},
+            "rennet": {},
+            "rind": {}
+        },
+        "recipe_ingredient": {
+            "notes": {}
+        }
+    },
+    "freebase": {
+        "apps": {
+            "acre_handler": {
+                "plural_name": {},
+                "short_description": {}
+            },
+            "application": {
+                "description": {}
+            },
+            "config_param": {
+                "param_name": {},
+                "param_value": {}
+            },
+            "hosts": {
+                "z": {
+                    "appspot": {
+                        "acre": {
+                            "favobase": {
+                                "relation": {
+                                    "nickname": {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "documented_object": {
+            "tip": {}
+        },
+        "featured_application": {
+            "short_description": {}
+        },
+        "linguistic_hint": {
+            "adjectival_form": {},
+            "plural": {},
+            "subject_form": {}
+        },
+        "list": {
+            "comment": {}
+        },
+        "list_entry": {
+            "comment": {}
+        },
+        "metaweb_api_service": {
+            "accessible_via": {}
+        },
+        "metaweb_api_service_argument": {
+            "default_value": {}
+        },
+        "metaweb_application": {
+            "feature_requests": {}
+        },
+        "property_hints": {
+            "display_orientation": {},
+            "inverse_description": {}
+        },
+        "redirect": {
+            "redirect_relative_url": {}
+        },
+        "user_profile": {
+            "my_full_name": {},
+            "personal_quote": {}
+        },
+        "view_generator": {
+            "title_template": {}
+        }
+    },
+    "language": {
+        "language_writing_system": {
+            "ISO_15924_code": {}
+        }
+    },
+    "location": {
+        "geocode": {
+            "datum": {}
+        },
+        "location": {
+            "adjectival_form": {},
+            "usbg_name": {}
+        },
+        "mailing_address": {
+            "street_address": {},
+            "street_address_2": {},
+            "street_address_3": {},
+            "street_address_4": {}
+        }
+    },
+    "measurement_unit": {
+        "monetary_range": {
+            "note": {}
+        }
+    },
+    "media_common": {
+        "dedication": {
+            "notes": {}
+        }
+    },
+    "medicine": {
+        "drug": {
+            "pronunciation": {}
+        },
+        "drug_formulation": {
+            "brand_names": {}
+        },
+        "drug_label_section": {
+            "section_name": {},
+            "section_text": {}
+        },
+        "drug_pregnancy_category": {
+            "pregnancy_risk": {}
+        },
+        "drug_strength": {
+            "strength_units": {}
+        },
+        "medical_trial": {
+            "clinicaltrials_identifier": {},
+            "eligibility_exclusion_criteria": {},
+            "eligibility_inclusion_criteria": {},
+            "primary_outcomes": {},
+            "secondary_outcomes": {}
+        }
+    },
+    "meteorology": {
+        "beaufort_wind_force": {
+            "description": {}
+        },
+        "cloud": {
+            "abbreviation": {},
+            "appearance": {}
+        }
+    },
+    "music": {
+        "music_video_performance": {
+            "performance_note": {}
+        }
+    },
+    "organization": {
+        "email_contact": {
+            "email_address": {}
+        },
+        "leadership": {
+            "title": {}
+        },
+        "organization": {
+            "slogan": {}
+        },
+        "organization_board_membership": {
+            "title": {}
+        }
+    },
+    "pipeline": {
+        "review_flag": {
+            "reason": {}
+        },
+        "task_profile": {
+            "comments_subject": {},
+            "prompt": {}
+        }
+    },
+    "rail": {
+        "locomotive_class": {
+            "uic_classification": {}
+        }
+    },
+    "royalty": {
+        "chivalric_title": {
+            "postnominal_letters": {}
+        },
+        "order_of_chivalry": {
+            "motto": {}
+        }
+    },
+    "spaceflight": {
+        "rocket_engine": {
+            "government_designation": {}
+        },
+        "satellite": {
+            "cospar_id": {}
+        },
+        "satellite_orbit_synchronous": {
+            "e_w": {}
+        }
+    },
+    "sports": {
+        "sports_championship_event": {
+            "result": {}
+        },
+        "sports_league_draft_pick": {
+            "notes": {}
+        },
+        "sports_team": {
+            "abbreviation": {}
+        }
+    },
+    "symbols": {
+        "coat_of_arms": {
+            "motto": {}
+        }
+    },
+    "tennis": {
+        "tennis_match": {
+            "score": {}
+        }
+    },
+    "time": {
+        "event": {
+            "comment": {}
+        },
+        "time_zone": {
+            "time_zone_abbreviation_dst": {},
+            "time_zone_abbreviation_standard": {},
+            "time_zone_name_dst": {},
+            "time_zone_name_standard": {}
+        }
+    },
+    "tv": {
+        "the_colbert_report_episode": {
+            "intro": {},
+            "the_word": {}
+        },
+        "tv_character": {
+            "reason_for_final_tv_appearance": {}
+        },
+        "tv_network": {
+            "former_names": {}
+        }
+    },
+    "type": {
+        "object": {
+            "name": {}
+        }
+    },
+    "user": {
+        "abombss": {
+            "default_domain": {
+                "internetdomain": {
+                    "fullyqualifieddomain": {}
+                }
+            }
+        },
+        "ajain": {
+            "default_domain": {
+                "admission_requirements": {
+                    "additional_requirement": {},
+                    "gpa_requirement": {},
+                    "standardized_test_score": {}
+                },
+                "disease_extra": {
+                    "scientific_name": {}
+                }
+            }
+        },
+        "ajedi32": {
+            "default_domain": {
+                "virtual_community_user": {
+                    "username": {}
+                }
+            }
+        },
+        "akatenev": {
+            "weapons": {
+                "artillery": {
+                    "ammo_type": {},
+                    "primer": {}
+                },
+                "weapon": {
+                    "factory_name": {}
+                }
+            }
+        },
+        "alanl": {
+            "aviation": {
+                "aircraft": {
+                    "icao_type_designator": {}
+                }
+            }
+        },
+        "alassetter": {
+            "default_domain": {
+                "dallas_condo": {
+                    "area_of_town": {}
+                }
+            }
+        },
+        "alee": {
+            "default_domain": {
+                "bug_2402_1": {
+                    "text_type": {}
+                }
+            }
+        },
+        "aleph": {
+            "default_domain": {
+                "jobs": {
+                    "title": {}
+                }
+            }
+        },
+        "alexander": {
+            "default_domain": {
+                "ipa_word_pronunciation": {
+                    "ipa_pronunciation": {}
+                },
+                "wireless_hotspot": {
+                    "ssid": {}
+                }
+            },
+            "misc": {
+                "contextual_name": {
+                    "thing_name": {}
+                },
+                "dated_name": {
+                    "thing_name": {}
+                },
+                "review": {
+                    "snippet": {}
+                }
+            }
+        },
+        "alexbl": {
+            "congressional_voting_records": {
+                "bill": {
+                    "bill_number": {}
+                }
+            }
+        },
+        "allain": {
+            "default_domain": {
+                "food_label": {
+                    "serving_size": {}
+                }
+            }
+        },
+        "ameroamigo": {
+            "default_domain": {
+                "federal_reserve_bank": {
+                    "federal_reserve_region": {},
+                    "letter": {}
+                },
+                "numismatic_item": {
+                    "obverse": {},
+                    "reversetype": {}
+                }
+            }
+        },
+        "amitre": {
+            "default_domain": {
+                "stamps": {
+                    "estimated_value": {},
+                    "face_value": {}
+                }
+            }
+        },
+        "anandology": {
+            "default_domain": {
+                "railway_station": {
+                    "code": {}
+                },
+                "train": {
+                    "number": {}
+                }
+            }
+        },
+        "anjackson": {
+            "default_domain": {
+                "bitstream_encoding": {
+                    "pronom_identifier": {},
+                    "version": {}
+                }
+            }
+        },
+        "ankursa": {
+            "soccer": {
+                "indian_soccer_players": {
+                    "baichung_bhutia": {}
+                }
+            }
+        },
+        "anne8": {
+            "nursing": {
+                "nursing_process": {
+                    "diagnosis": {}
+                }
+            }
+        },
+        "asoka250": {
+            "default_domain": {
+                "javascript_framework": {
+                    "programming_language_used": {}
+                }
+            }
+        },
+        "atnmorrison": {
+            "default_domain": {
+                "hockey_card": {
+                    "brand": {}
+                },
+                "hockey_card_set": {
+                    "brand": {}
+                }
+            }
+        },
+        "avic": {
+            "assertion_modeling_kit": {
+                "complex_sentence_builder": {
+                    "type_of_inputs": {}
+                },
+                "freebase_proposition": {
+                    "ordinary_language_translation": {}
+                }
+            }
+        },
+        "azstu": {
+            "default_domain": {
+                "testtypesff": {
+                    "comments": {}
+                }
+            }
+        },
+        "azurelunatic": {
+            "default_domain": {
+                "safeword": {
+                    "word": {}
+                }
+            }
+        },
+        "basefree": {
+            "default_domain": {
+                "actors": {
+                    "note": {}
+                },
+                "basic_1": {
+                    "prop_22": {}
+                },
+                "place": {
+                    "how": {},
+                    "where": {},
+                    "who": {},
+                    "why": {}
+                }
+            }
+        },
+        "benvvalk": {
+            "default_domain": {
+                "moby_output_descriptor": {
+                    "uri": {}
+                }
+            }
+        },
+        "bio2rdf": {
+            "default_domain": {
+                "cpd": {
+                    "formula": {}
+                },
+                "pubchem": {
+                    "inchi": {},
+                    "iupac_name": {},
+                    "molecular_formula": {},
+                    "smiles": {}
+                },
+                "timeline_of_bio2rdf": {
+                    "web_page": {}
+                }
+            }
+        },
+        "brendan": {
+            "default_domain": {
+                "test1": {
+                    "text1": {}
+                }
+            },
+            "rated": {
+                "caterer_rating": {
+                    "comments": {}
+                }
+            }
+        },
+        "britcomtrucks": {
+            "default_domain": {
+                "services": {
+                    "services": {}
+                }
+            }
+        },
+        "broccoli": {
+            "default_domain": {
+                "cheesus": {
+                    "this_site_sucks": {}
+                },
+                "customer": {
+                    "first_name": {},
+                    "last_name": {}
+                },
+                "order": {
+                    "product_name": {}
+                }
+            }
+        },
+        "bryanlsalamone": {
+            "default_domain": {
+                "divorce_lawyer": {
+                    "bar_association": {},
+                    "practice_areas": {}
+                }
+            }
+        },
+        "carlo_velten": {
+            "default_domain": {
+                "herkunft": {
+                    "herkunft": {}
+                }
+            }
+        },
+        "cbeer": {
+            "default_domain": {
+                "media_carrier": {
+                    "dimensions": {},
+                    "identifying_features": {}
+                }
+            }
+        },
+        "ccasadevall": {
+            "default_domain": {
+                "elaborador": {
+                    "nom_elaborador": {}
+                }
+            }
+        },
+        "cesargon": {
+            "default_domain": {
+                "second_life_user": {
+                    "resident_first_name": {},
+                    "resident_last_name": {}
+                }
+            }
+        },
+        "chris_van_guard": {
+            "default_domain": {
+                "distributors": {
+                    "arbor": {},
+                    "loaded": {},
+                    "original_skateboards": {},
+                    "sector_9": {}
+                },
+                "setup": {
+                    "bearings": {},
+                    "deck": {},
+                    "trucks": {},
+                    "wheels": {}
+                }
+            }
+        },
+        "chriseppstein": {
+            "default_domain": {
+                "software_repository": {
+                    "connection_string": {}
+                }
+            }
+        },
+        "cidec": {
+            "default_domain": {
+                "intention": {
+                    "goal": {},
+                    "nutzen": {}
+                },
+                "prozess": {
+                    "nutzen": {},
+                    "ziel": {}
+                },
+                "software": {
+                    "eclass": {},
+                    "hersteller_name": {},
+                    "produkt_typbezeichnung": {}
+                }
+            }
+        },
+        "cip22": {
+            "default_domain": {
+                "recorded_track": {
+                    "track_attributes": {}
+                }
+            }
+        },
+        "cmunday": {
+            "default_domain": {
+                "contactplate": {
+                    "colour": {}
+                }
+            }
+        },
+        "collord": {
+            "bicycle_model": {
+                "model_name": {
+                    "colors_available": {}
+                }
+            },
+            "materials_science": {
+                "materials_property": {
+                    "comments": {}
+                }
+            }
+        },
+        "commonplace": {
+            "default_domain": {
+                "u_s_supreme_court": {
+                    "casename": {},
+                    "docketnumber": {}
+                }
+            }
+        },
+        "corallink": {
+            "default_domain": {
+                "reef_type": {
+                    "description": {}
+                }
+            }
+        },
+        "dabrutyn": {
+            "default_domain": {
+                "watch_model": {
+                    "model_number": {}
+                }
+            }
+        },
+        "daepark": {
+            "default_domain": {
+                "converse_shoes": {
+                    "available_colors": {}
+                },
+                "golf_club": {
+                    "model": {}
+                },
+                "golf_club_s_in_my_bag": {
+                    "flex": {}
+                },
+                "test_cvt": {
+                    "text": {}
+                },
+                "test_type": {
+                    "text": {},
+                    "text_unique": {}
+                }
+            }
+        },
+        "danboo": {
+            "default_domain": {
+                "bicycle_frame_bottom_bracket_shell_threading": {
+                    "drive_side_thread_direction": {}
+                },
+                "bicycle_model_frame": {
+                    "dropout_orientation": {}
+                }
+            }
+        },
+        "daniel_podgaichenko": {
+            "default_domain": {
+                "daniel_bio": {
+                    "description": {}
+                }
+            }
+        },
+        "danm": {
+            "default_domain": {
+                "test_type": {
+                    "disambiguating_property": {}
+                }
+            },
+            "fictional_settings_real_places": {
+                "place_relationship": {
+                    "scene_notes": {}
+                }
+            }
+        },
+        "datageek": {
+            "default_domain": {
+                "economic_statistic": {
+                    "importance": {}
+                }
+            }
+        },
+        "datang": {
+            "default_domain": {
+                "eventtzh": {
+                    "x_id": {}
+                }
+            }
+        },
+        "davidkl": {
+            "default_domain": {
+                "method": {
+                    "parameter": {}
+                }
+            }
+        },
+        "davidmacdonald": {
+            "default_domain": {
+                "baz": {
+                    "x1234": {}
+                }
+            }
+        },
+        "davidx": {
+            "default_domain": {
+                "metaweb_query": {
+                    "content": {}
+                },
+                "recommended_product": {
+                    "recommendation": {}
+                },
+                "timed_message": {
+                    "body": {},
+                    "subject": {}
+                }
+            }
+        },
+        "detroiter313": {
+            "default_domain": {
+                "digital_tv_channels": {
+                    "digital_subchannels": {},
+                    "former_analog_channels": {},
+                    "former_digital_subchannels": {}
+                }
+            }
+        },
+        "dfhuynh": {
+            "default_domain": {
+                "freebase_labs_project": {
+                    "project_id": {}
+                }
+            },
+            "parallax": {
+                "pivot_suggestion": {
+                    "path": {}
+                }
+            }
+        },
+        "digitalarchivist": {
+            "default_domain": {
+                "incunabulum": {
+                    "approximate_date": {},
+                    "istc_number": {},
+                    "short_title": {}
+                },
+                "topographical_map_id": {
+                    "topographical_map_id": {}
+                }
+            }
+        },
+        "dinesh": {
+            "default_domain": {
+                "census_data": {
+                    "near_town": {}
+                }
+            }
+        },
+        "djmixtape": {
+            "default_domain": {
+                "mixtape": {
+                    "genre": {}
+                }
+            }
+        },
+        "dmalcolm": {
+            "camcorders": {
+                "connecttions": {
+                    "connector_type": {}
+                }
+            }
+        },
+        "dminkley": {
+            "biology": {
+                "baltimore_lineage": {
+                    "group": {}
+                },
+                "biological_organism": {
+                    "common_name": {}
+                },
+                "genetic_sequence": {
+                    "a_t_composition": {},
+                    "g_c_composition": {},
+                    "genbank_id": {}
+                },
+                "ictv_lineage": {
+                    "family": {},
+                    "genus": {},
+                    "species": {}
+                },
+                "influenza_sample": {
+                    "h_n_subtype": {}
+                },
+                "organism": {
+                    "common_name": {}
+                },
+                "peer_reviewed_paper": {
+                    "article_title": {}
+                }
+            },
+            "virology": {
+                "influenza_a_sequence": {
+                    "amino_acid_sequence": {},
+                    "h_n_subtype": {},
+                    "host": {},
+                    "sample_location": {},
+                    "segment_protein": {},
+                    "sequence": {}
+                }
+            }
+        },
+        "doug": {
+            "default_domain": {
+                "example_type": {
+                    "a_string_property": {}
+                }
+            }
+        },
+        "druderman": {
+            "default_domain": {
+                "gene": {
+                    "alias": {},
+                    "chromosome": {},
+                    "symbol": {}
+                }
+            }
+        },
+        "dsoleil": {
+            "default_domain": {
+                "photographer": {
+                    "specialization": {}
+                }
+            }
+        },
+        "duck1123": {
+            "default_domain": {
+                "blue_s_clues_episode": {
+                    "first_clue": {},
+                    "second_clue": {},
+                    "third_clue": {}
+                },
+                "mtg_permanent_passive_ability": {
+                    "other": {}
+                }
+            }
+        },
+        "dylanrocks": {
+            "national_football_league": {
+                "nfl_stadium": {
+                    "end_zone_orientation": {},
+                    "nfl_stadium_top": {}
+                },
+                "nfl_teams_that_have_moved_cities": {
+                    "new_team_name": {},
+                    "old_team_name": {}
+                },
+                "suffered_nasty_nfl_injury": {
+                    "career_ending": {},
+                    "season_ending": {}
+                }
+            }
+        },
+        "ebel": {
+            "default_domain": {
+                "motorcycle_racer": {
+                    "race_number": {}
+                }
+            }
+        },
+        "elliott": {
+            "national_concrete_canoe_competition": {
+                "canoes": {
+                    "color": {},
+                    "reinforcement_description": {}
+                }
+            }
+        },
+        "enrico_speranza": {
+            "default_domain": {
+                "italian_city": {
+                    "cod_provincia": {}
+                }
+            }
+        },
+        "entragan": {
+            "default_domain": {
+                "name_value_pair": {
+                    "varname": {}
+                }
+            }
+        },
+        "euf": {
+            "default_domain": {
+                "test": {
+                    "first_name": {}
+                }
+            }
+        },
+        "fabricio": {
+            "default_domain": {
+                "line_of_code": {
+                    "comment": {}
+                }
+            }
+        },
+        "fastfinge": {
+            "default_domain": {
+                "xanth_character": {
+                    "description": {},
+                    "talent": {}
+                }
+            }
+        },
+        "fatmahassan": {
+            "default_domain": {
+                "distinguishing_features": {
+                    "dubai_pearl": {}
+                }
+            }
+        },
+        "fbelleau": {
+            "default_domain": {
+                "bio2rdf": {
+                    "identifier": {},
+                    "label": {},
+                    "lsid_id": {}
+                },
+                "pdb_structure": {
+                    "biological_source": {},
+                    "experimentalmethod": {},
+                    "moleculardescription": {}
+                }
+            }
+        },
+        "fbrunacci": {
+            "default_domain": {
+                "test2": {
+                    "dutext": {}
+                }
+            }
+        },
+        "flipmozart": {
+            "irri": {
+                "people": {
+                    "firstname": {},
+                    "gender": {},
+                    "lastname": {}
+                }
+            }
+        },
+        "florentin": {
+            "electronics": {
+                "televisions": {
+                    "model": {},
+                    "title": {}
+                }
+            }
+        },
+        "fmarier": {
+            "default_domain": {
+                "debian_developer": {
+                    "username": {}
+                }
+            }
+        },
+        "frm": {
+            "default_domain": {
+                "chinese_character": {
+                    "pinyin": {}
+                }
+            }
+        },
+        "g_null_device": {
+            "default_domain": {
+                "account_of_psychoanalysis": {
+                    "alias_of_psychanalysand": {}
+                }
+            }
+        },
+        "ghismodujapon": {
+            "default_domain": {
+                "jazz_fakebook": {
+                    "is_licensed": {}
+                }
+            }
+        },
+        "giladgoren": {
+            "default_domain": {
+                "supertopic": {
+                    "description": {}
+                },
+                "telecom_standard": {
+                    "name_part_i": {},
+                    "name_part_ii": {},
+                    "name_part_iii": {},
+                    "title": {}
+                }
+            }
+        },
+        "glsheldo": {
+            "default_domain": {
+                "mineral": {
+                    "cleavage": {},
+                    "crystal_system": {},
+                    "fracture": {},
+                    "luster": {}
+                }
+            }
+        },
+        "gottfried": {
+            "default_domain": {
+                "empfang": {
+                    "digitaler_antennenempfang": {},
+                    "direktempfang_via_satellit": {},
+                    "kabel": {}
+                }
+            }
+        },
+        "h_morita_esm": {
+            "default_domain": {
+                "note": {
+                    "hoge": {},
+                    "note_name": {}
+                }
+            }
+        },
+        "hailey2009": {
+            "default_domain": {
+                "chinese_zodiac": {
+                    "direction": {},
+                    "motto": {},
+                    "season": {},
+                    "stem": {}
+                },
+                "golden_books": {
+                    "part_of_franchise": {}
+                }
+            }
+        },
+        "hangy": {
+            "default_domain": {
+                "pronunciation": {
+                    "ipa": {}
+                }
+            }
+        },
+        "hbowden": {
+            "default_domain": {
+                "file_format_problems": {
+                    "action": {}
+                }
+            }
+        },
+        "hedgehog": {
+            "default_domain": {
+                "rocket_engine": {
+                    "goverment_designation": {}
+                }
+            }
+        },
+        "herrmann": {
+            "default_domain": {
+                "redditor": {
+                    "username": {}
+                }
+            }
+        },
+        "hockeypuck": {
+            "default_domain": {
+                "youth_hockey_league": {
+                    "geographic_area": {},
+                    "levels": {}
+                }
+            }
+        },
+        "ikeike": {
+            "default_domain": {
+                "zutat": {
+                    "farbe": {}
+                }
+            }
+        },
+        "ilkersemih58": {
+            "default_domain": {
+                "auction": {
+                    "lastprice": {},
+                    "startingprice": {}
+                },
+                "auctioninfo": {
+                    "amount": {},
+                    "maxprice": {}
+                },
+                "auctiontype": {
+                    "auctionname": {},
+                    "maxwaitingtimeforoffer": {}
+                },
+                "person": {
+                    "password": {},
+                    "username": {}
+                },
+                "receiveproduct": {
+                    "productname": {}
+                },
+                "sellproduct": {
+                    "amount": {},
+                    "productname": {}
+                }
+            }
+        },
+        "ivanwong_23": {
+            "x": {
+                "ivan": {
+                    "hello": {}
+                },
+                "tv": {
+                    "ivan": {}
+                }
+            }
+        },
+        "ivbeg": {
+            "default_domain": {
+                "russian_government_body": {
+                    "full_official_name": {}
+                }
+            }
+        },
+        "jack": {
+            "default_domain": {
+                "all_systems_types_test": {
+                    "text": {}
+                },
+                "all_types_test": {
+                    "text": {}
+                }
+            }
+        },
+        "jamespotter": {
+            "default_domain": {
+                "names": {
+                    "family_name": {},
+                    "given_name": {},
+                    "maiden_name": {},
+                    "middle_name": {}
+                }
+            }
+        },
+        "jami": {
+            "default_domain": {
+                "expression": {
+                    "expression": {}
+                }
+            }
+        },
+        "jamie": {
+            "military_awards": {
+                "circumstances_for_award": {
+                    "circumstances": {}
+                }
+            }
+        },
+        "jamslevy": {
+            "plopquiz": {
+                "multiple_choice": {
+                    "itemtext": {}
+                },
+                "true_or_false_key": {
+                    "statement": {}
+                }
+            }
+        },
+        "jasonmorrison": {
+            "pobol": {
+                "biobrick": {
+                    "author": {},
+                    "longdescription": {},
+                    "sequence": {},
+                    "shortdescription": {}
+                },
+                "biobrickformat": {
+                    "prefix": {},
+                    "selfscar": {},
+                    "shortname": {},
+                    "suffix": {}
+                }
+            }
+        },
+        "jctoledo": {
+            "default_domain": {
+                "testx": {
+                    "lkj": {}
+                }
+            }
+        },
+        "jdouglas": {
+            "base": {
+                "person": {
+                    "beard_color": {}
+                }
+            },
+            "config": {
+                "property_label": {
+                    "label": {}
+                },
+                "type_label": {
+                    "label": {}
+                }
+            },
+            "freebase": {
+                "site": {
+                    "administrator_display_name": {},
+                    "member_display_name": {},
+                    "tagline": {}
+                }
+            }
+        },
+        "jefft0": {
+            "default_domain": {
+                "claim_all_s_are_p": {
+                    "if_it_s_an_s": {},
+                    "then_it_s_a_p": {}
+                },
+                "claim_s_is_a_p": {
+                    "is_of_p": {},
+                    "the_individual_s": {}
+                },
+                "claim_s_is_not_a_p": {
+                    "is_not_of_p": {},
+                    "the_individual_s": {}
+                },
+                "virus_classification": {
+                    "scientific_name": {}
+                }
+            }
+        },
+        "jeremy": {
+            "default_domain": {
+                "mma_fighter": {
+                    "style": {},
+                    "weight_class": {}
+                }
+            }
+        },
+        "jg": {
+            "default_domain": {
+                "olympic_sport": {
+                    "kind": {}
+                },
+                "quotes": {
+                    "quote": {}
+                }
+            }
+        },
+        "jimrowson": {
+            "default_domain": {
+                "online_video": {
+                    "mainid": {}
+                },
+                "video_host": {
+                    "embedding_code": {}
+                }
+            }
+        },
+        "jjrscott": {
+            "default_domain": {
+                "hard_disc": {
+                    "model_number": {}
+                },
+                "hard_disc_transfer_rate": {
+                    "conditon": {}
+                },
+                "hard_disk_power_consumption": {
+                    "condition": {},
+                    "power_consumption": {}
+                }
+            }
+        },
+        "johannsg": {
+            "default_domain": {
+                "studentenverbindung": {
+                    "studentenverbindung_fencing": {},
+                    "waffenspruch": {},
+                    "wahlspruch": {}
+                },
+                "studentenverbindung_dachverband": {
+                    "studentenverbindung_abbr": {},
+                    "studentenverbindung_dachverband_name": {}
+                }
+            }
+        },
+        "johnbr": {
+            "default_domain": {
+                "ixtropian": {
+                    "leadership_fact": {}
+                },
+                "memberofcongress": {
+                    "political_fact": {}
+                }
+            }
+        },
+        "jra": {
+            "default_domain": {
+                "foo": {
+                    "favorite_beverage": {}
+                }
+            }
+        },
+        "jschell": {
+            "default_domain": {
+                "musical_event": {
+                    "attendance": {}
+                }
+            }
+        },
+        "jthebox": {
+            "default_domain": {
+                "view_generator": {
+                    "title_template": {}
+                }
+            }
+        },
+        "judell": {
+            "default_domain": {
+                "project": {
+                    "goal": {}
+                }
+            }
+        },
+        "juniorbonner": {
+            "default_domain": {
+                "hero": {
+                    "hero_status": {}
+                }
+            }
+        },
+        "jykang": {
+            "search_engine": {
+                "url": {
+                    "service_name": {}
+                }
+            }
+        },
+        "kaendfinger": {
+            "default_domain": {
+                "minecraft_forge_mod": {
+                    "author": {},
+                    "modid": {}
+                }
+            }
+        },
+        "kaushalam": {
+            "default_domain": {
+                "software_development_company": {
+                    "custom_software_development": {}
+                }
+            }
+        },
+        "kdr35": {
+            "default_domain": {
+                "readers": {
+                    "operating_frequency": {},
+                    "reading_range": {}
+                }
+            }
+        },
+        "kenny1234567": {
+            "organization_registration_classification_by_country": {
+                "country": {
+                    "country": {}
+                }
+            }
+        },
+        "kesava": {
+            "indian_railways_base": {
+                "indian_railways_train": {
+                    "train_name": {}
+                },
+                "railway_zone": {
+                    "abbreviation": {},
+                    "zone_name": {}
+                }
+            }
+        },
+        "kiranb": {
+            "default_domain": {
+                "product_review": {
+                    "bads": {}
+                }
+            }
+        },
+        "kjdominic": {
+            "default_domain": {
+                "style_icon": {
+                    "style_icon": {}
+                }
+            }
+        },
+        "kkhaw": {
+            "default_domain": {
+                "doodles": {
+                    "event": {},
+                    "url": {}
+                }
+            }
+        },
+        "klotzandi": {
+            "default_domain": {
+                "wallcalendar": {
+                    "spezialities": {}
+                }
+            }
+        },
+        "ksu": {
+            "default_domain": {
+                "software_architecture_style": {
+                    "style_name": {}
+                }
+            }
+        },
+        "kurt": {
+            "default_domain": {
+                "thoughtranker": {
+                    "blurb": {}
+                }
+            }
+        },
+        "lapax": {
+            "default_domain": {
+                "proverb": {
+                    "english_translation": {},
+                    "english_transliteration": {}
+                }
+            }
+        },
+        "lee": {
+            "default_domain": {
+                "rock_climbing_location": {
+                    "directions": {}
+                }
+            }
+        },
+        "librarianavenger": {
+            "default_domain": {
+                "avatar": {
+                    "avatar_name": {}
+                }
+            },
+            "second_life": {
+                "region": {
+                    "second_life_maturity": {}
+                },
+                "resident": {
+                    "avatar_type": {},
+                    "second_life_location": {}
+                }
+            }
+        },
+        "lindenb": {
+            "default_domain": {
+                "scientist": {
+                    "short_bio": {}
+                }
+            }
+        },
+        "lojinx": {
+            "default_domain": {
+                "lojinx_release": {
+                    "catalog_number": {},
+                    "release_label": {}
+                }
+            }
+        },
+        "lynndemarest": {
+            "default_domain": {
+                "voter_registrar": {
+                    "registrar_name": {},
+                    "supervisor_name": {}
+                }
+            }
+        },
+        "m_gopikrishnan": {
+            "default_domain": {
+                "tosell": {
+                    "wanttosell": {}
+                }
+            }
+        },
+        "macro1970": {
+            "default_domain": {
+                "tv_reference": {
+                    "by": {}
+                }
+            }
+        },
+        "mangala": {
+            "default_domain": {
+                "branch_of_government": {
+                    "powers": {},
+                    "responsibilities": {}
+                }
+            }
+        },
+        "manveru": {
+            "default_domain": {
+                "irc_channel": {
+                    "subject": {}
+                }
+            }
+        },
+        "margit": {
+            "default_domain": {
+                "research_project": {
+                    "title": {}
+                }
+            }
+        },
+        "markce": {
+            "default_domain": {
+                "feature": {
+                    "feature_value": {}
+                },
+                "opinion": {
+                    "opinion_text": {}
+                }
+            }
+        },
+        "martijnweghorst": {
+            "default_domain": {
+                "moviemotel_title": {
+                    "original_title": {}
+                }
+            }
+        },
+        "matrixhasneo": {
+            "default_domain": {
+                "person": {
+                    "p_name": {},
+                    "p_phone": {}
+                }
+            }
+        },
+        "maxim75": {
+            "default_domain": {
+                "transit_line_properties": {
+                    "color": {}
+                }
+            }
+        },
+        "mbmuhr": {
+            "default_domain": {
+                "non_profit_organization": {
+                    "motto": {},
+                    "services": {}
+                }
+            }
+        },
+        "mcarcel83": {
+            "default_domain": {
+                "communications_protocol": {
+                    "aplication": {}
+                }
+            }
+        },
+        "mdaconta": {
+            "human_resources": {
+                "employee": {
+                    "title": {}
+                }
+            }
+        },
+        "mflopez": {
+            "default_domain": {
+                "brands": {
+                    "brands_offered": {}
+                },
+                "company": {
+                    "fax": {},
+                    "nature_of_business": {},
+                    "phone": {}
+                },
+                "package_contents": {
+                    "enterprise_seo_package": {},
+                    "seo_company_fast_start_kit": {}
+                },
+                "products": {
+                    "optical_drives": {},
+                    "other_accessories": {},
+                    "other_items": {},
+                    "packages": {},
+                    "replacement_parts": {}
+                }
+            }
+        },
+        "micahsaul": {
+            "advertising": {
+                "ad_campaign": {
+                    "tagline": {}
+                }
+            }
+        },
+        "miguelrochefort": {
+            "default_domain": {
+                "electric_guitar_model": {
+                    "inlays": {}
+                }
+            }
+        },
+        "mindstream": {
+            "default_domain": {
+                "myarray": {
+                    "myarray": {}
+                }
+            }
+        },
+        "mitesser": {
+            "default_domain": {
+                "lhfact": {
+                    "facttype": {},
+                    "reference": {}
+                }
+            }
+        },
+        "moonhouse": {
+            "default_domain": {
+                "p_minuten_episode": {
+                    "prize": {}
+                }
+            }
+        },
+        "mortalkombat4": {
+            "nicknames": {
+                "indian": {
+                    "donor_id": {},
+                    "donor_name": {},
+                    "nickname": {},
+                    "receiver_id": {},
+                    "receiver_name": {}
+                }
+            }
+        },
+        "mr_kav": {
+            "default_domain": {
+                "program": {
+                    "program_name": {}
+                }
+            }
+        },
+        "mrmasterbastard": {
+            "default_domain": {
+                "electric_car": {
+                    "motor_type": {}
+                },
+                "photographer": {
+                    "tools_used": {},
+                    "type_of_photos": {}
+                },
+                "smith_wesson_revolver": {
+                    "hammer_type": {}
+                }
+            }
+        },
+        "msoffer": {
+            "default_domain": {
+                "nektra_employer": {
+                    "nombre": {}
+                }
+            }
+        },
+        "mt": {
+            "default_domain": {
+                "metabolite": {
+                    "iupac_name": {}
+                }
+            }
+        },
+        "mw122010731161034": {
+            "default_domain": {
+                "mw12201_concept_0_0731161034": {
+                    "mw12201_prop_0_0731161034": {}
+                }
+            }
+        },
+        "mw122050731161034": {
+            "default_domain": {
+                "mw12205_expectedtype": {
+                    "text_property": {}
+                }
+            }
+        },
+        "mw122060731161034": {
+            "default_domain": {
+                "mw12206_concept_0_0731161034": {
+                    "mw12206_prop_0_0731161034": {}
+                }
+            }
+        },
+        "mw122070731161034": {
+            "default_domain": {
+                "mw12207_expectedtype": {
+                    "text_property": {}
+                }
+            }
+        },
+        "mynameismonkey": {
+            "default_domain": {
+                "hospital_profile_us": {
+                    "access": {},
+                    "available_medical_services": {},
+                    "state_doh_identifier": {}
+                }
+            }
+        },
+        "mysqlguru": {
+            "default_domain": {
+                "job": {
+                    "list": {}
+                },
+                "main2": {
+                    "text_list": {}
+                },
+                "main3": {
+                    "txt": {}
+                }
+            }
+        },
+        "narphorium": {
+            "default_domain": {
+                "productedition": {
+                    "upc": {}
+                }
+            }
+        },
+        "ngerakines": {
+            "facebook_platform": {
+                "facebook_application": {
+                    "facebook_application_id": {}
+                }
+            },
+            "social_software": {
+                "friendfeed_user": {
+                    "username": {}
+                },
+                "github_user": {
+                    "username": {}
+                },
+                "twitter_user": {
+                    "twitter_username": {}
+                },
+                "yahoo_user": {
+                    "profile_id": {}
+                }
+            }
+        },
+        "nickpelling": {
+            "invisible_colleges": {
+                "letter": {
+                    "date_as_written": {}
+                }
+            }
+        },
+        "nigelkerr": {
+            "default_domain": {
+                "citation": {
+                    "author": {},
+                    "first_page": {},
+                    "journal_title": {},
+                    "record_key": {},
+                    "volume": {}
+                },
+                "knock_knock_joke_type": {
+                    "speaker_1_line_1": {},
+                    "speaker_1_line_2": {},
+                    "speaker_1_line_3": {},
+                    "speaker_2_line_1": {},
+                    "speaker_2_line_2": {}
+                }
+            }
+        },
+        "ninjascience": {
+            "default_domain": {
+                "mecha": {
+                    "model_number": {}
+                }
+            }
+        },
+        "nlatysh": {
+            "default_domain": {
+                "scientific_model": {
+                    "intent_of_model": {},
+                    "model_type": {},
+                    "provenance": {},
+                    "scale": {}
+                }
+            }
+        },
+        "nxtour": {
+            "knock_knock": {
+                "joke": {
+                    "punchline": {}
+                }
+            }
+        },
+        "nzakmok": {
+            "default_domain": {
+                "restaurants": {
+                    "e_mail": {},
+                    "phone": {}
+                }
+            }
+        },
+        "ogerard": {
+            "default_domain": {
+                "integer_sequence": {
+                    "first_terms": {},
+                    "oeisanumber": {}
+                },
+                "prime_number": {
+                    "binary_representation": {}
+                }
+            }
+        },
+        "olli": {
+            "default_domain": {
+                "mobile_phone": {
+                    "screen": {}
+                }
+            }
+        },
+        "oogun": {
+            "default_domain": {
+                "dj": {
+                    "gigs_played_residencies": {}
+                }
+            }
+        },
+        "ooh": {
+            "default_domain": {
+                "pilote_d_essai_sur_pc": {
+                    "experience": {}
+                }
+            }
+        },
+        "ordnungswidrig": {
+            "rted": {
+                "topic": {
+                    "expected": {}
+                }
+            }
+        },
+        "pajo": {
+            "default_domain": {
+                "bp01": {
+                    "source": {}
+                },
+                "hund": {
+                    "vikt": {}
+                },
+                "rgp_process_classification": {
+                    "processtype": {},
+                    "resourcetype": {}
+                }
+            }
+        },
+        "patrick": {
+            "default_domain": {
+                "military_conflict": {
+                    "result": {}
+                },
+                "military_side": {
+                    "strength": {}
+                },
+                "room": {
+                    "description": {}
+                }
+            }
+        },
+        "petrochenko_pavel_a": {
+            "default_domain": {
+                "software_developer": {
+                    "fullname": {}
+                }
+            }
+        },
+        "philg": {
+            "acre": {
+                "acre_api_argument": {
+                    "argument": {},
+                    "default_value": {},
+                    "description": {},
+                    "example": {}
+                },
+                "acre_api_method": {
+                    "description": {},
+                    "method_syntax": {},
+                    "notes": {}
+                },
+                "acre_api_response": {
+                    "argument_or_variable": {},
+                    "example": {},
+                    "response": {}
+                }
+            }
+        },
+        "piticu": {
+            "default_domain": {
+                "developing_agent": {
+                    "description": {}
+                }
+            }
+        },
+        "pmclaughlin": {
+            "default_domain": {
+                "drumline": {
+                    "instructors": {},
+                    "location": {}
+                },
+                "music_ensemble": {
+                    "affiliated_organizations": {},
+                    "genre": {},
+                    "instrumentation": {}
+                }
+            }
+        },
+        "pmika": {
+            "default_domain": {
+                "publication": {
+                    "title": {}
+                }
+            }
+        },
+        "propertyshark": {
+            "default_domain": {
+                "company": {
+                    "address": {},
+                    "email": {},
+                    "phone": {}
+                }
+            }
+        },
+        "ptomblin": {
+            "default_domain": {
+                "waypoint": {
+                    "aviationid": {}
+                }
+            }
+        },
+        "raulcaster": {
+            "default_domain": {
+                "favourite_films": {
+                    "film_title": {}
+                }
+            }
+        },
+        "rca": {
+            "default_domain": {
+                "us_court_decision": {
+                    "citation": {}
+                }
+            }
+        },
+        "rcheramy": {
+            "default_domain": {
+                "event": {
+                    "event_title": {}
+                },
+                "flickr_user": {
+                    "flickr_id": {}
+                },
+                "hockey_championship": {
+                    "series_result": {}
+                },
+                "hockey_championships": {
+                    "series_result": {}
+                },
+                "wikipedia_editor": {
+                    "wikipedia_profile_name": {}
+                }
+            }
+        },
+        "redpointed": {
+            "default_domain": {
+                "climbing_route": {
+                    "grade": {}
+                }
+            }
+        },
+        "renthemighty": {
+            "default_domain": {
+                "seo_vancouver": {
+                    "services": {}
+                }
+            }
+        },
+        "rictic": {
+            "default_domain": {
+                "twitter_user": {
+                    "twitter_username": {}
+                }
+            }
+        },
+        "rlucha": {
+            "default_domain": {
+                "receta": {
+                    "elaboraci_n": {},
+                    "ingredientes": {}
+                }
+            }
+        },
+        "robert": {
+            "default_domain": {
+                "browser_configuration": {
+                    "dot_version_eg_2_01": {}
+                },
+                "computer_configuration": {
+                    "os_version": {}
+                },
+                "film_review": {
+                    "comment": {}
+                },
+                "typewriter_blurb_highlight": {
+                    "negative_evidence_string": {},
+                    "positive_evidence_string": {}
+                },
+                "typewriter_highlight_string": {
+                    "explanation": {},
+                    "matching_string": {}
+                }
+            },
+            "earthquakes": {
+                "earthquake_magnitude": {
+                    "source": {}
+                }
+            },
+            "mobile_phones": {
+                "regional_submodel": {
+                    "submodel_name": {}
+                }
+            },
+            "tallest": {
+                "building": {
+                    "note": {}
+                }
+            },
+            "x2008_presidential_election": {
+                "campaign": {
+                    "slogan": {}
+                }
+            }
+        },
+        "robertm": {
+            "default_domain": {
+                "av1": {
+                    "attr": {},
+                    "val": {}
+                }
+            },
+            "environmental_modelling": {
+                "environmental_model": {
+                    "full_title": {},
+                    "primary_contact": {},
+                    "references": {}
+                },
+                "environmental_model_implementation": {
+                    "authors": {},
+                    "availability": {}
+                }
+            },
+            "snpbz_modelling": {
+                "snpbz_submodel": {
+                    "texty": {}
+                }
+            }
+        },
+        "rubylabs": {
+            "default_domain": {
+                "interesting_people": {
+                    "why_i_like_this": {}
+                }
+            }
+        },
+        "sai_rath": {
+            "default_domain": {
+                "freedom_fighter": {
+                    "notable_ideas": {}
+                }
+            }
+        },
+        "sandos": {
+            "computation": {
+                "ebook_format": {
+                    "published_formats": {}
+                }
+            },
+            "spatial": {
+                "dated_name": {
+                    "previous_name": {}
+                }
+            }
+        },
+        "sgillies": {
+            "default_domain": {
+                "ancient_name": {
+                    "name_attested": {},
+                    "name_transliterated": {}
+                },
+                "historical_period": {
+                    "years": {}
+                }
+            }
+        },
+        "shai_exploit_co_il": {
+            "default_domain": {
+                "aaa": {
+                    "ssdddfff": {}
+                }
+            }
+        },
+        "shoppers_network": {
+            "default_domain": {
+                "shopping_detail": {
+                    "feedback_reviews_quality": {},
+                    "items_bought_details": {},
+                    "service_paid_for_details": {},
+                    "shop_or_service_provider_details": {}
+                }
+            }
+        },
+        "sid": {
+            "default_domain": {
+                "a": {
+                    "a3": {}
+                }
+            }
+        },
+        "sm": {
+            "default_domain": {
+                "si_base_unit": {
+                    "base_quantity": {},
+                    "symbol": {}
+                },
+                "surf_break": {
+                    "best_tide": {},
+                    "bottom": {},
+                    "level": {},
+                    "locals": {}
+                }
+            }
+        },
+        "stu": {
+            "default_domain": {
+                "heavenly_bodies": {
+                    "discoveror": {}
+                },
+                "messier_object": {
+                    "messier_number": {}
+                },
+                "star": {
+                    "spectralclass": {}
+                }
+            }
+        },
+        "synedra": {
+            "default_domain": {
+                "donorschoose_project": {
+                    "funding_status": {},
+                    "primary_focus_area": {},
+                    "primary_focus_subject": {},
+                    "resource_type": {},
+                    "resource_usage": {}
+                }
+            },
+            "didwho": {
+                "connection": {
+                    "description": {}
+                },
+                "member_of_band": {
+                    "band_name": {}
+                }
+            }
+        },
+        "szaijan": {
+            "fantasy_football": {
+                "league": {
+                    "draft_type": {}
+                },
+                "position": {
+                    "abbreviation": {}
+                }
+            }
+        },
+        "techgnostic": {
+            "default_domain": {
+                "doctor_who_episode": {
+                    "book_novelization_isbn": {}
+                },
+                "tv_series_serial": {
+                    "production_code": {},
+                    "serial_number": {}
+                }
+            }
+        },
+        "test2000": {
+            "default_domain": {
+                "x": {
+                    "x": {}
+                }
+            }
+        },
+        "thadguidry": {
+            "default_domain": {
+                "musical_note": {
+                    "semitones_above_below_middle_c": {}
+                }
+            }
+        },
+        "thays": {
+            "default_domain": {
+                "address": {
+                    "country": {},
+                    "locality": {},
+                    "region": {},
+                    "street_address": {},
+                    "zip_code": {}
+                },
+                "medical_provider": {
+                    "credentials": {},
+                    "specialty": {}
+                }
+            }
+        },
+        "thomas_gourdin": {
+            "default_domain": {
+                "inline_speed_skater": {
+                    "category": {},
+                    "club_name": {},
+                    "licence_number": {}
+                }
+            }
+        },
+        "tjgillies": {
+            "default_domain": {
+                "internet_tv": {
+                    "show_name": {}
+                },
+                "tattoo_choice": {
+                    "tattoo_name": {}
+                }
+            }
+        },
+        "tktmm08": {
+            "default_domain": {
+                "antonym": {
+                    "antonym": {}
+                },
+                "hyphenation": {
+                    "hyphenation": {}
+                },
+                "number_of_syllables": {
+                    "number_of_syllables": {}
+                },
+                "pronunciation": {
+                    "pronunciation": {}
+                },
+                "synonym": {
+                    "synonym": {}
+                }
+            }
+        },
+        "tom000": {
+            "default_domain": {
+                "portable_media_player": {
+                    "line_in_out": {},
+                    "screen": {}
+                }
+            }
+        },
+        "tonyteknision": {
+            "finetune": {
+                "finetune_playlist": {
+                    "playlistid": {}
+                }
+            }
+        },
+        "tracypoff": {
+            "default_domain": {
+                "file": {
+                    "original_filename": {}
+                }
+            }
+        },
+        "trasyia": {
+            "default_domain": {
+                "c1c1": {
+                    "ccc": {}
+                }
+            }
+        },
+        "trufflemedia": {
+            "default_domain": {
+                "organization": {
+                    "organization_name": {}
+                }
+            }
+        },
+        "trumpi": {
+            "default_domain": {
+                "train_schedule": {
+                    "train_number": {}
+                }
+            }
+        },
+        "tsegaran": {
+            "language": {
+                "phrase": {
+                    "translation": {}
+                }
+            },
+            "mathematics": {
+                "number": {
+                    "approximate_value": {}
+                }
+            }
+        },
+        "unfoldingart": {
+            "unfoldingart": {
+                "ua_member": {
+                    "account": {},
+                    "city": {},
+                    "continent": {},
+                    "country": {},
+                    "state": {}
+                },
+                "units": {
+                    "hol": {},
+                    "page": {}
+                }
+            }
+        },
+        "unicornrainbowcheese": {
+            "default_domain": {
+                "discussion": {
+                    "message": {}
+                }
+            }
+        },
+        "uoa_it": {
+            "uoa_it": {
+                "uoa_application": {
+                    "version": {}
+                }
+            }
+        },
+        "vgbarbieri": {
+            "default_domain": {
+                "loucos_por_futebol": {
+                    "loucos": {}
+                }
+            }
+        },
+        "vicariousme": {
+            "default_domain": {
+                "streamingdata": {
+                    "sitename": {}
+                }
+            }
+        },
+        "werschinger": {
+            "default_domain": {
+                "titles": {
+                    "tournament_title": {}
+                }
+            }
+        },
+        "wf": {
+            "shape_note_singing": {
+                "singer": {
+                    "part": {}
+                },
+                "tunebook": {
+                    "shape_note_system": {}
+                },
+                "tunebook_tune": {
+                    "page_location": {}
+                }
+            }
+        },
+        "wikiblake": {
+            "default_domain": {
+                "toy_designer": {
+                    "toys": {}
+                }
+            }
+        },
+        "wiznia": {
+            "default_domain": {
+                "file_collection": {
+                    "description": {}
+                },
+                "file_collection_linker": {
+                    "description": {}
+                },
+                "p2p_download": {
+                    "download": {}
+                }
+            }
+        },
+        "wxt2005": {
+            "china": {
+                "beijing": {
+                    "mytest": {}
+                }
+            }
+        },
+        "xixiluo": {
+            "default_domain": {
+                "testcreatetype1": {
+                    "testaddproperty1": {}
+                }
+            }
+        },
+        "xleioo": {
+            "winning_night": {
+                "soccer": {
+                    "match_odds": {},
+                    "match_title": {}
+                }
+            }
+        },
+        "yqbd": {
+            "default_domain": {
+                "scientific_disagreement": {
+                    "disagrees_with": {}
+                }
+            }
+        },
+        "yuheerov": {
+            "blogging": {
+                "blog": {
+                    "title": {}
+                },
+                "blog_entry": {
+                    "body": {},
+                    "title": {}
+                }
+            },
+            "default_domain": {
+                "briefing": {
+                    "title": {},
+                    "xescription": {}
+                }
+            }
+        },
+        "yuriyg": {
+            "default_domain": {
+                "paper_shape": {
+                    "description": {}
+                }
+            }
+        },
+        "zenkat": {
+            "default_domain": {
+                "tarot_card": {
+                    "meaning": {},
+                    "playing_card_equivalent": {},
+                    "rank": {}
+                }
+            }
+        },
+        "zsi_editorial": {
+            "editorial": {
+                "comment": {
+                    "comments": {}
+                }
+            }
+        }
+    }
+}
