@@ -31,7 +31,8 @@ class Logger:
             self.increment_counter(counter)
 
     def colored_display(self, msg, level):
-        if level == "normal": print(msg)
+        if level == "normal":
+            print(msg)
         elif level == "fancy":
             print(self.BLUE + msg + self.RESET)
         elif level == "warning":
