@@ -33,8 +33,8 @@ class SparkOperations:
 
         self.sparkSession = SparkSession.builder \
             .appName(app_name) \
-            .config("spark.driver.memory", "8g") \
-            .config("spark.executor.memory", "8g") \
+            .config("spark.driver.memory", "6g") \
+            .config("spark.executor.memory", "6g") \
             .config("spark.executor.memoryOverHead", "1g") \
             .config("spark.local.dir", self.SPARK_LOCAL_DIR) \
             .config("spark.eventLog.enabled", "true") \

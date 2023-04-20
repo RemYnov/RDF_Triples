@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run pytests
+      - name: Run tests
         run: |
           which pytest || whereis pytest
           flake8 logs_management.py
