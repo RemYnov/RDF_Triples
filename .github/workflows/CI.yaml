@@ -34,5 +34,6 @@ jobs:
 
       - name: Run pytests
         run: |
+          which pytest || whereis pytest
           flake8 logs_management.py
           pytest
