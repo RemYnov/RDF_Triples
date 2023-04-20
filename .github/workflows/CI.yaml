@@ -18,7 +18,7 @@ jobs:
         id: cache-deps
         uses: actions/cache@v2
         env:
-          cache-name: sparkWorkspace
+          cache-name: sparkWorkspaceWithPytest
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}
