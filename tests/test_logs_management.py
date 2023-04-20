@@ -6,7 +6,7 @@ from logs_management import Logger
 
 def test_increment_and_get_counter():
     testLogger = Logger()
-    delta = 30
+    delta = 300
     for i in range(0,delta):
         testLogger.increment_counter(counter="count1", increment=1)
         testLogger.increment_counter("count2", -2)
