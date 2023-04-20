@@ -9,32 +9,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install Python
-        uses: actions/setup-python@v2
+      - name: Install Python with cache
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-
-      - name: Cache requirements
-        id: cache-deps
-        uses: actions/cache@v2
-        env:
-          cache-name: sparkWorkspaceWithPytest
-        with:
-          path: | 
-            ~/.cache/pip
-            **/v_env
-            **/.pytest_cache
-          key: ${{ runner.os }}-pip-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - name: inspect
-        run: |
-          pwd
-          ls -la
-      - if: steps.cache-deps.outputs.cache-hit != 'true'
-        name: Install dependencies (Cache disabled)
+          cache: 'pip'
+      - name: Install dependencies
         run: pip install -r requirements.txt
 
       - name: Run pytests
