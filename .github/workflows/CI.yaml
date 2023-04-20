@@ -29,7 +29,10 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-
+      - name: v_env activation
+        run: |
+          cd v_env/Scripts 
+          activate
       - if: steps.cache-deps.outputs.cache-hit != 'true'
         name: Install dependencies (Cache disabled)
         run: pip install -r requirements.txt
