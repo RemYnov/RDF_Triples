@@ -6,6 +6,7 @@ from config import RDF_DATA_PATH, RDF_EN_FR_TRANSFORMED_PATH, RDF_EN_FR_FILENAME
 
 def extract_en_fr(input_file, output_file):
     # Old en-fr extraction
+    # RDF_FILENAME = "freebase-rdf-latest.csv"
     # df = pd.read_csv(RDF_DATA_PATH + RDF_FILENAME)
     # extract_en_fr(input_file, output_file)
 
