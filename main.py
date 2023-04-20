@@ -44,10 +44,10 @@ if __name__ == '__main__':
     exportConfig = {
         "exportFullData":False,
         "exportUniquePredicates":False,
-        "exportMatchingTriples": True,
-        "exportSampleEnabled":False,
-        "domainToExport":"base",
-        "exportSize": 0.5,
+        "exportMatchingTriples": False,
+        "exportSampleEnabled":True,
+        "domainToExport":"computer",
+        "exportSize": 0.3,
         "sample_output_folderpath":EXPORTS_FOLDER_PATH
     }
 

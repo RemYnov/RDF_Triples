@@ -33,8 +33,8 @@ class SparkOperations:
 
         self.sparkSession = SparkSession.builder \
             .appName(app_name) \
-            .config("spark.driver.memory", "4g") \
-            .config("spark.executor.memory", "4g") \
+            .config("spark.driver.memory", "8g") \
+            .config("spark.executor.memory", "8g") \
             .config("spark.executor.memoryOverHead", "1g") \
             .config("spark.local.dir", self.SPARK_LOCAL_DIR) \
             .config("spark.eventLog.enabled", "true") \
@@ -169,6 +169,7 @@ class SparkOperations:
         self.sparkLoger.stop_timer("transformation")
 
         # Getting rid of duplicates
+        """
         self.sparkLoger.start_timer("processing duplicates")
         df_no_duplicates = df.dropDuplicates()
 
@@ -178,6 +179,7 @@ class SparkOperations:
             duplicates_count = initial_count - final_count
 
         self.sparkLoger.stop_timer("processing duplicates")
+        """
 
         if exportConfig["exportSampleEnabled"]:
             timer = "Export ", exportConfig["domainToExport"], " samples"
@@ -185,7 +187,7 @@ class SparkOperations:
             # Searching for samples based on the desired domain :
             desired_predicates = self.get_predicates_by_domain(desired_domain=exportConfig["domainToExport"])
 
-            filtered_df = df_no_duplicates.filter(df["_c1"].isin(desired_predicates))
+            filtered_df = df.filter(df["_c1"].isin(desired_predicates))
             sample_df = filtered_df.sample(withReplacement=False, fraction=exportConfig["exportSize"])
 
             filtered_count = filtered_df.count()
@@ -207,13 +209,14 @@ class SparkOperations:
 
         if exportConfig["exportMatchingTriples"] :
             self.sparkLoger.start_timer("looking for matching triples")
+
             # Searching for samples based on the desired domain :
             desired_predicates = self.get_predicates_by_domain(desired_domain=exportConfig["domainToExport"])
-            filtered_df_by_domain = df_no_duplicates.filter(df["_c1"].isin(desired_predicates))
+            filtered_df_by_domain = df.filter(df["_c1"].isin(desired_predicates))
 
             # Df with only subject / object
-            subjects_df = df_no_duplicates.select("_c0").distinct()
-            objects_df = df_no_duplicates.select("_c2").distinct()
+            subjects_df = df.select("_c0").distinct()
+            objects_df = df.select("_c2").distinct()
             joined_df = subjects_df.crossJoin(objects_df)
             # Keeping only records where the subject exists in the object column
             filtered_df = joined_df.filter(col("_c2").contains(col("_c0")))
@@ -222,7 +225,7 @@ class SparkOperations:
             self.sparkLoger.stop_timer("looking for matching triples")
 
             self.sparkLoger.start_timer("writting matching triples")
-            matchingTriples_df.write \
+            filtered_df_by_domain.write \
                 .option("delimiter", "|") \
                 .option("header", "false") \
                 .mode("overwrite") \
@@ -232,7 +235,7 @@ class SparkOperations:
         if exportConfig["exportFullData"]:
             # Transformed file wrote to the output
             self.sparkLoger.start_timer("Writting transformed file")
-            df_no_duplicates.write \
+            df.write \
                 .option("delimiter", "|") \
                 .option("header", "false") \
                 .mode("overwrite") \
@@ -256,8 +259,8 @@ class SparkOperations:
         if stopSession:
             self.sparkSession.stop()
 
-        logs["nbRowsInit"] = initial_count
-        logs["nbRowsFinal"] = final_count
-        logs["nbDuplicates"] = duplicates_count
+        logs["nbRowsInit"] = 0#initial_count
+        logs["nbRowsFinal"] = 0#final_count
+        logs["nbDuplicates"] = 0#duplicates_count
 
         return logs

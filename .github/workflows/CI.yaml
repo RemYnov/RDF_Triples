@@ -22,12 +22,13 @@ jobs:
         with:
           path: | 
             ~/.cache/pip
+            **/v_env
             **/.pytest_cache
           key: ${{ runner.os }}-pip-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip- 
 
-      - if: steps.cache-deps.outputs.cache-hit != 'false'
+      - if: steps.cache-deps.outputs.cache-hit != 'true'
         name: Install dependencies (Cache disabled)
         run: pip install -r requirements.txt
 
