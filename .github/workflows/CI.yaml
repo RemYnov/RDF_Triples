@@ -2,7 +2,7 @@ name: Spark Script Integrations
 on: [push]
 jobs:
   install-dependencies:
-    name: Install dependencies - 🧪 Run tests and lint
+    name: 🧪 Run tests and lint
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
