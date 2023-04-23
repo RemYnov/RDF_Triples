@@ -1,7 +1,7 @@
 from spark_operations import SparkOperations
 from logs_management import Logger
 from spark_config import get_spark_ui_url
-from config import RDF_DATA_PATH, RDF_EN_FR_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, PREDICATES_TEMPLATE_PATH, EXPORTS_FOLDER_PATH
+from config import RDF_DATA_PATH, RDF_EN_FR_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, EXPORTS_FOLDER_PATH
 
 
 if __name__ == '__main__':
@@ -45,7 +45,6 @@ if __name__ == '__main__':
     logger.log("===== Spark transformation done =====")
     logger.stop_timer("processing")
     logger.log(operationsLogs)
-
 
 
 def extract_en_fr(input_file, output_file):
