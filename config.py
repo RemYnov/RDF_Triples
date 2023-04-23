@@ -1,3 +1,4 @@
+LOCAL_PREDICATES_TEMPLATE_PATH = "C:/Users/blremi/birdlink/MEP/sandbox/workspace/predicates_template.json"
 
 
 RDF_DATA_PATH = "D:/MEP/SANDBOX/data/"

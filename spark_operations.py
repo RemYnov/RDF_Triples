@@ -34,12 +34,19 @@ class SparkOperations:
 
         self.sparkSession = SparkSession.builder \
             .appName(app_name) \
-            .config("spark.driver.memory", "6g") \
+            .config("spark.executorEnv.PYTHONHASHSEED", "0") \
+            .config("spark.python.worker.reuse", "true") \
+            .config("spark.python.worker.memory", "2g") \
+            .config("spark.driver.memory", "4g") \
+            .config("spark.driver.maxResultSize", "2g") \
             .config("spark.executor.memory", "6g") \
             .config("spark.executor.memoryOverHead", "1g") \
-            .config("spark.local.dir", self.SPARK_LOCAL_DIR) \
+            .config("spark.default.parallelism", "200") \
+            .config("spark.sql.shuffle.partitions", "200") \
+            .config("spark.sql.autoBroadcastJoinThreshold", "10485760") \
             .config("spark.eventLog.enabled", "true") \
             .config("spark.eventLog.dir", self.SPARK_LOCAL_DIR + "/eventLogs") \
+            .config("spark.local.dir", self.SPARK_LOCAL_DIR) \
             .getOrCreate()
 
         self.context = self.sparkSession.sparkContext
@@ -96,7 +103,8 @@ class SparkOperations:
         # sorted_df = merged_df.sort_values(by=merged_df.columns[0])
 
         merged_df.to_csv(folder + merged_filename, index=False, sep=delim)
-    def get_predicates_by_domain(self, desired_domain):
+    @staticmethod
+    def get_predicates_by_domain(desired_domain):
         """
                 Return every unique predicates that match the given
                 domain.
