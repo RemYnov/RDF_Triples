@@ -74,6 +74,7 @@ class SparkOperations:
         if s[-1] == '>':
             s = s[:-1]
         return s
+
     @staticmethod
     def transform_predicate(s):
         """
@@ -89,20 +90,7 @@ class SparkOperations:
         elif stripped_predicate == "rdf-syntax-ns#type":
             stripped_predicate = "type.object.type"
         return stripped_predicate
-    def merge_sparked_data(self, folder, merged_filename, delim):
-        # Récupérer la liste de tous les fichiers CSV dans le dossier
-        files = glob.glob(folder + "/*.csv")
 
-        print(folder + "/*.csv")
-        df_list = [pd.read_csv(file, sep=delim, header=None) for file in files]
-
-        merged_df = pd.concat(df_list, ignore_index=True)
-
-        print(merged_df[0:10])
-
-        # sorted_df = merged_df.sort_values(by=merged_df.columns[0])
-
-        merged_df.to_csv(folder + merged_filename, index=False, sep=delim)
     @staticmethod
     def get_predicates_by_domain(desired_domain):
         """
@@ -267,8 +255,22 @@ class SparkOperations:
         if stopSession:
             self.sparkSession.stop()
 
-        logs["nbRowsInit"] = 0#initial_count
-        logs["nbRowsFinal"] = 0#final_count
-        logs["nbDuplicates"] = 0#duplicates_count
+        logs["nbRowsInit"] = 0 #initial_count
+        logs["nbRowsFinal"] = 0 #final_count
+        logs["nbDuplicates"] = 0 #duplicates_count
 
         return logs
+    def merge_sparked_data(self, folder, merged_filename, delim):
+        # Récupérer la liste de tous les fichiers CSV dans le dossier
+        files = glob.glob(folder + "/*.csv")
+
+        print(folder + "/*.csv")
+        df_list = [pd.read_csv(file, sep=delim, header=None) for file in files]
+
+        merged_df = pd.concat(df_list, ignore_index=True)
+
+        print(merged_df[0:10])
+
+        # sorted_df = merged_df.sort_values(by=merged_df.columns[0])
+
+        merged_df.to_csv(folder + merged_filename, index=False, sep=delim)
