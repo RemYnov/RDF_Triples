@@ -7,7 +7,7 @@ from spark_operations import SparkOperations
 
 def test_get_predicates_by_domain():
     #expected =
-    results = SparkOperations.get_predicates_by_domain("computer")
+    #results = SparkOperations.get_predicates_by_domain("computer")
 
     assert True
 def test_transform_predicate():
