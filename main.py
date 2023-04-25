@@ -20,10 +20,11 @@ if __name__ == '__main__':
     output_path = RDF_DATA_PATH + RDF_EN_FR_TRANSFORMED_PATH
 
     exportConfig = {
-        "exportFullData": False,
         "exportUniquePredicates": False,
         "exportMatchingTriples": False,
-        "exportSampleEnabled": True,
+        "exportSampleEnabled": False,
+        "exportFullData": False,
+        "exportFullPath": output_path,
         "domainToExport": "computer",
         "exportSize": 0.3,
         "sample_output_folderpath": EXPORTS_FOLDER_PATH
@@ -35,7 +36,6 @@ if __name__ == '__main__':
 
     operationsLogs = sparkOps.RDF_transform_and_sample_by_domain(
         input_file=input_file,
-        output_path=output_path,
         exportConfig=exportConfig,
         performCounts=False,
         setLogToInfo=False,
