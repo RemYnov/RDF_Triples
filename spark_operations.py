@@ -3,7 +3,7 @@ import json
 from logs_management import Logger
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col, when, length
-from pyspark.sql.types import StringType, ArrayType
+from pyspark.sql.types import StringType, ArrayType, StructType, StructField
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import Tokenizer, StopWordsRemover, RegexTokenizer
 import glob
@@ -133,7 +133,7 @@ class SparkOperations:
         return desired_predicates
 
     def RDF_transform_and_sample_by_domain(
-            self, input_file, exportConfig, performCounts, setLogToInfo=False, stopSession=True
+            self, input_file, exportConfig, performCounts, setLogToInfo=False, stopSession=True, showSample=True
     ):
         """
                 Perform the data transformation of the given rdf-triples.csv file.
@@ -160,43 +160,63 @@ class SparkOperations:
             "nbSampled": 0
         }
 
+        triples_schema = StructType([
+            StructField("Subject", StringType(), nullable=False),
+            StructField("Predicate", StringType(), nullable=False),
+            StructField("Object", StringType(), nullable=False),
+            StructField("Blank", StringType(), nullable=False)
+        ])
         # Reading RDF-en-fr (230M)
+        # .option("inferSchema", "true") \ => Detect schema
         self.sparkLoger.start_timer("reading")
         df = self.sparkSession.read \
             .option("delimiter", "\t") \
             .option("header", "false") \
-            .option("inferSchema", "true") \
+            .schema(triples_schema) \
             .csv(input_file)
+        df = df.drop("Blank")
         self.sparkLoger.stop_timer("reading")
+
+        self.sparkLoger.start_timer("droping duplicates")
+        df_light = df.dropDuplicates()
+        self.sparkLoger.stop_timer("droping duplicates")
+
+        if showSample:
+            self.sparkWarningLoger.log("RAW DF :")
+            df_light.sample(0.1).show(25, truncate=False)
 
         # Getting rid of duplicates
         if performCounts:
-            self.sparkLoger.start_timer("processing duplicates")
-            df_no_duplicates = df.dropDuplicates()
+            self.sparkLoger.start_timer("perform counts")
             initial_count = df.count()
-            final_count = df_no_duplicates.count()
+            final_count = df_light.count()
             duplicates_count = initial_count - final_count
 
             logs["nbRowsInit"] = initial_count
             logs["nbRowsFinal"] = final_count
             logs["nbDuplicates"] = duplicates_count
-            self.sparkLoger.stop_timer("processing duplicates")
+            self.sparkLoger.stop_timer("perform counts")
         else:
             logs["nbRowsInit"] = 0
             logs["nbRowsFinal"] = 0
             logs["nbDuplicates"] = 0
 
+        df = df_light
         self.sparkLoger.start_timer("transformation")
         # Apply the UDF to the Subject / Predicate columns + other columns transformations
-        df = df.withColumn("_c0", self.transform_subject_udf(df["_c0"])) \
-            .withColumn("_c1", self.transform_predicate_udf(df["_c1"])) \
-            .withColumn("_c2", regexp_replace("_c2", r'^\\"(.*)\\"$', r'$1')) \
-            .withColumn("_c2", regexp_extract("_c2", r'^(.*?)@', 1))
+        df = df.withColumn("Subject", self.transform_subject_udf(df["Subject"])) \
+            .withColumn("Predicate", self.transform_predicate_udf(df["Predicate"])) \
+            .withColumn("Object", regexp_replace("Object", r'^\\"(.*)\\"$', r'$1')) \
+            .withColumn("Object", regexp_extract("Object", r'^(.*?)@', 1))
         self.sparkLoger.stop_timer("transformation")
 
+        if showSample:
+            self.sparkWarningLoger.log("1st TRANSFORMED DF")
+            df.sample(0.1).show(25, truncate=False)
+
         self.sparkLoger.start_timer("NLP Pipeline")
-        regex_tokenizer = RegexTokenizer(inputCol="_c2", outputCol="tokens", pattern="\\W")
-        stop_words_remover = StopWordsRemover(inputCol="tokens", outputCol="filtered_tokens")
+        regex_tokenizer = RegexTokenizer(inputCol="Object", outputCol="tokenizedObj", pattern="\\W")
+        stop_words_remover = StopWordsRemover(inputCol="tokenizedObj", outputCol="filtered_tokens")
 
         nlp_pipeline = Pipeline(stages=[regex_tokenizer, stop_words_remover])
 
@@ -207,12 +227,14 @@ class SparkOperations:
             "filtered_tokens",
             self.transform_object_udf(
                 col("filtered_tokens"),
-                col("_c2")
+                col("Object")
             )
         )
         self.sparkLoger.stop_timer("NLP Pipeline")
 
-        transformed_df.show(truncate=False)
+        if showSample:
+            self.sparkWarningLoger.log("2nd TRANSFORMED DF")
+            transformed_df.show(25, truncate=False)
 
         logs = self.extract_sample(exportConfig, transformed_df, extract_logs=logs)
 
