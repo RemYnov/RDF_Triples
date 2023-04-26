@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from spark_config import get_spark_ui_url, get_spark_info
+from processing.spark_config import get_spark_ui_url, get_spark_info
 def test_get_spark_ui_url():
     url_pattern = r'^http://.*:\d{4}$'
     sparkTestSession = SparkSession.builder \

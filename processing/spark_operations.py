@@ -160,6 +160,7 @@ class SparkOperations:
             "nbSampled": 0
         }
 
+
         triples_schema = StructType([
             StructField("Subject", StringType(), nullable=False),
             StructField("Predicate", StringType(), nullable=False),
@@ -183,7 +184,7 @@ class SparkOperations:
 
         if showSample:
             self.sparkWarningLoger.log("RAW DF :")
-            df_light.sample(0.1).show(25, truncate=False)
+            df_light.show(25, truncate=False)
 
         # Getting rid of duplicates
         if performCounts:
@@ -212,10 +213,11 @@ class SparkOperations:
 
         if showSample:
             self.sparkWarningLoger.log("1st TRANSFORMED DF")
-            df.sample(0.1).show(25, truncate=False)
+            df.show(25, truncate=False)
 
         self.sparkLoger.start_timer("NLP Pipeline")
-        regex_tokenizer = RegexTokenizer(inputCol="Object", outputCol="tokenizedObj", pattern="\\W")
+        pattern = "[^\\p{L}]+" # Take into account alphanumeric + accent (frenh sentences)
+        regex_tokenizer = RegexTokenizer(inputCol="Object", outputCol="tokenizedObj", pattern=pattern)
         stop_words_remover = StopWordsRemover(inputCol="tokenizedObj", outputCol="filtered_tokens")
 
         nlp_pipeline = Pipeline(stages=[regex_tokenizer, stop_words_remover])
@@ -234,7 +236,8 @@ class SparkOperations:
 
         if showSample:
             self.sparkWarningLoger.log("2nd TRANSFORMED DF")
-            transformed_df.show(25, truncate=False)
+            #transformed_df.filter(length(col("Object")) > 50).show(25, truncate=False)
+            transformed_df.show(50, truncate=False)
 
         logs = self.extract_sample(exportConfig, transformed_df, extract_logs=logs)
 

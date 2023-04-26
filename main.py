@@ -1,6 +1,6 @@
-from spark_operations import SparkOperations
+from processing.spark_operations import SparkOperations
 from logs_management import Logger
-from spark_config import get_spark_ui_url
+from processing.spark_config import get_spark_ui_url
 from config import RDF_DATA_PATH, RDF_EN_FR_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, EXPORTS_FOLDER_PATH
 
 
