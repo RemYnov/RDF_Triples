@@ -243,7 +243,7 @@ class SparkOperations:
             # Searching for samples based on the desired domain :
             desired_predicates = self.get_predicates_by_domain(desired_domain=exportConfig["domainToExport"])
 
-            filtered_df = df.filter(df["_c1"].isin(desired_predicates))
+            filtered_df = df.filter(df["Predicate"].isin(desired_predicates))
             sample_df = filtered_df.sample(withReplacement=False, fraction=exportConfig["exportSize"])
 
             filtered_count = filtered_df.count()
@@ -301,7 +301,7 @@ class SparkOperations:
         if exportConfig["exportUniquePredicates"]:
             self.sparkLoger.start_timer("predicates export")
             unique_predicates_file = self.UNIQUE_PREDICATES_FILEPATH
-            unique_predicates = df.select("_c1").distinct()
+            unique_predicates = df.select("Predicate").distinct()
 
             unique_predicates.write \
                 .option("delimiter", "|") \
