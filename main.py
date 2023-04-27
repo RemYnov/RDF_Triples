@@ -2,6 +2,7 @@ from processing.spark_operations import SparkOperations
 from logs_management import Logger
 from processing.spark_config import get_spark_ui_url
 from config import RDF_DATA_PATH, RDF_EN_FR_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, EXPORTS_FOLDER_PATH
+import json
 
 
 if __name__ == '__main__':
@@ -37,14 +38,15 @@ if __name__ == '__main__':
     operationsLogs = sparkOps.RDF_transform_and_sample_by_domain(
         input_file=input_file,
         exportConfig=exportConfig,
-        performCounts=False,
+        performCounts=True,
         setLogToInfo=False,
-        stopSession=False
+        stopSession=False,
+        showSample=False
     )
 
     logger.log("===== Spark transformation done =====")
     logger.stop_timer("processing")
-    logger.log(operationsLogs)
+    logger.log(json.dumps(operationsLogs, indent=4, sort_keys=False))
 
 
 def extract_en_fr(input_file, output_file):

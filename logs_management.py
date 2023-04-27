@@ -1,6 +1,7 @@
 import time
 from colorama import Fore, Style
 
+
 class Logger:
     """
     This class allow to track logs activity and manage the way
@@ -27,7 +28,7 @@ class Logger:
         if display:
             self.colored_display(log_entry, level=self.customLog)
         if counter:
-            self.increment_counter(counter)
+            self.custom_counter(counter)
 
     def colored_display(self, msg, level):
         if level == "normal":
@@ -39,7 +40,7 @@ class Logger:
         elif level == "critical":
             print(self.RED + msg + self.RESET)
 
-    def increment_counter(self, counter, increment=1):
+    def custom_counter(self, counter, increment=1):
         if counter not in self.counters:
             self.counters[counter] = 0
         self.counters[counter] += increment
@@ -60,6 +61,12 @@ class Logger:
     def get_log_dict(self):
         return {
             "logs": self.logs,
+            "counters": self.counters,
+            "timestamps": self.timestamps
+        }
+
+    def get_timer_counter(self):
+        return {
             "counters": self.counters,
             "timestamps": self.timestamps
         }

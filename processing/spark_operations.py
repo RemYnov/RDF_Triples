@@ -23,16 +23,18 @@ class SparkOperations:
     """
     def __init__(self, app_name, RDF_DATA_PATH):
         # Init loggers
-        self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="fancy")
-        self.sparkWarningLoger = Logger(prefix="- spark -", defaultCustomLogs="warning")
-        self.sparkErrorLogger = Logger(prefix="- spark error -", defaultCustomLogs="critical")
+        self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="normal")
+        #self.sparkWarningLoger = Logger(prefix="- spark -", defaultCustomLogs="warning")
+        #self.sparkErrorLogger = Logger(prefix="- spark error -", defaultCustomLogs="critical")
+        # Init counters
+        self.counter = Logger
 
         self.SPARK_LOCAL_DIR = parse.urljoin('file', parse.quote("sparkWorkspace"))
         self.SPARK_LOGS_DIR = parse.urljoin(self.SPARK_LOCAL_DIR, parse.quote("eventLogs"))
         msg1 = "Spark working on path : " + self.SPARK_LOCAL_DIR
         msg2 = "Spark logs stored at : " + self.SPARK_LOGS_DIR
-        self.sparkWarningLoger.log(msg1)
-        self.sparkWarningLoger.log(msg2)
+        self.sparkLoger.log(msg1)
+        self.sparkLoger.log(msg2)
 
         self.sparkSession = SparkSession.builder \
             .appName(app_name) \
@@ -133,7 +135,8 @@ class SparkOperations:
         return desired_predicates
 
     def RDF_transform_and_sample_by_domain(
-            self, input_file, exportConfig, performCounts, setLogToInfo=False, stopSession=True, showSample=True
+            self, input_file, exportConfig,
+            performCounts=False, setLogToInfo=False, stopSession=True, showSample=True
     ):
         """
                 Perform the data transformation of the given rdf-triples.csv file.
@@ -141,13 +144,10 @@ class SparkOperations:
                 After the transformation is performed, a sample from the given domain will
                 be wrotte to a csv file.
                 :param input_file: RDF formated .csv file on which we want to perform the transformation.
-                :param output_path: Path where the sliced data from Spark transformations will be dumped.
                 :param exportConfig: Dict that defines the sampling process (enable or not)
-                    :param domain: Domain of the predicates that we want to sample.
-                    :param sample_size: Size of the sample, between 0 and 1.
-                    :param sample_output_folderpath: Folder where the samples of tripples will be dumped
                 :param setLogToInfo: Set the Spark session's log level to "INFO". False by default.
                 :param stopSession: Automaticaly stoping the Spark session when the function is done.
+                :param showSample: Display some records to the console at each step of the transformation
         """
 
         if setLogToInfo: self.sparkSession.sparkContext.setLogLevel("INFO")
@@ -160,13 +160,13 @@ class SparkOperations:
             "nbSampled": 0
         }
 
-
         triples_schema = StructType([
             StructField("Subject", StringType(), nullable=False),
             StructField("Predicate", StringType(), nullable=False),
             StructField("Object", StringType(), nullable=False),
             StructField("Blank", StringType(), nullable=False)
         ])
+
         # Reading RDF-en-fr (230M)
         # .option("inferSchema", "true") \ => Detect schema
         self.sparkLoger.start_timer("reading")
@@ -183,7 +183,7 @@ class SparkOperations:
         self.sparkLoger.stop_timer("droping duplicates")
 
         if showSample:
-            self.sparkWarningLoger.log("RAW DF :")
+            self.sparkLoger.log("RAW DF :")
             df_light.show(25, truncate=False)
 
         # Getting rid of duplicates
@@ -193,40 +193,35 @@ class SparkOperations:
             final_count = df_light.count()
             duplicates_count = initial_count - final_count
 
-            logs["nbRowsInit"] = initial_count
-            logs["nbRowsFinal"] = final_count
-            logs["nbDuplicates"] = duplicates_count
+            self.sparkLoger.custom_counter("initCount", initial_count)
+            self.sparkLoger.custom_counter("finalCount", final_count)
+            self.sparkLoger.custom_counter("dupCount", duplicates_count.count())
             self.sparkLoger.stop_timer("perform counts")
-        else:
-            logs["nbRowsInit"] = 0
-            logs["nbRowsFinal"] = 0
-            logs["nbDuplicates"] = 0
 
-        df = df_light
         self.sparkLoger.start_timer("transformation")
         # Apply the UDF to the Subject / Predicate columns + other columns transformations
-        df = df.withColumn("Subject", self.transform_subject_udf(df["Subject"])) \
-            .withColumn("Predicate", self.transform_predicate_udf(df["Predicate"])) \
+        cleaned_df = df_light.withColumn("Subject", self.transform_subject_udf(df_light["Subject"])) \
+            .withColumn("Predicate", self.transform_predicate_udf(df_light["Predicate"])) \
             .withColumn("Object", regexp_replace("Object", r'^\\"(.*)\\"$', r'$1')) \
             .withColumn("Object", regexp_extract("Object", r'^(.*?)@', 1))
         self.sparkLoger.stop_timer("transformation")
 
         if showSample:
-            self.sparkWarningLoger.log("1st TRANSFORMED DF")
-            df.show(25, truncate=False)
+            self.sparkLoger.start_timer("PRINT CLEANED DF")
+            cleaned_df.show(25, truncate=False)
+            self.sparkLoger.stop_timer("PRINT CLEANED DF")
 
         self.sparkLoger.start_timer("NLP Pipeline")
         pattern = "[^\\p{L}]+" # Take into account alphanumeric + accent (frenh sentences)
+
         regex_tokenizer = RegexTokenizer(inputCol="Object", outputCol="tokenizedObj", pattern=pattern)
         stop_words_remover = StopWordsRemover(inputCol="tokenizedObj", outputCol="filtered_tokens")
 
         nlp_pipeline = Pipeline(stages=[regex_tokenizer, stop_words_remover])
+        nlp_model = nlp_pipeline.fit(cleaned_df)
+        tokenized_df = nlp_model.transform(cleaned_df)
 
-        nlp_model = nlp_pipeline.fit(df)
-        tokenized_df = nlp_model.transform(df)
-
-        transformed_df = tokenized_df.withColumn(
-            "filtered_tokens",
+        transformed_df = tokenized_df.withColumn("filtered_tokens",
             self.transform_object_udf(
                 col("filtered_tokens"),
                 col("Object")
@@ -235,17 +230,18 @@ class SparkOperations:
         self.sparkLoger.stop_timer("NLP Pipeline")
 
         if showSample:
-            self.sparkWarningLoger.log("2nd TRANSFORMED DF")
+            self.sparkLoger.start_timer("PRINT TRANSFORMED DF")
             #transformed_df.filter(length(col("Object")) > 50).show(25, truncate=False)
             transformed_df.show(50, truncate=False)
+            self.sparkLoger.stop_timer("PRINT TRANSFORMED DF")
 
-        logs = self.extract_sample(exportConfig, transformed_df, extract_logs=logs)
+        self.extract_sample(exportConfig, transformed_df, extract_logs=logs)
 
         # Arrêtez la session Spark
         if stopSession:
             self.sparkSession.stop()
 
-        return logs
+        return self.sparkLoger.get_timer_counter()
 
     def extract_sample(self, exportConfig, df, extract_logs):
 
@@ -271,10 +267,10 @@ class SparkOperations:
 
             extract_logs["nbFiltered"] = filtered_count
             extract_logs["nbSampled"] = sampled_count
+
+            self.sparkLoger.custom_counter("domainCount", filtered_count)
+            self.sparkLoger.custom_counter("sample", sampled_count)
             self.sparkLoger.stop_timer(timer)
-        else:
-            extract_logs["nbFiltered"] = 0
-            extract_logs["nbSampled"] = 0
 
         # Writting to csv the matching triples
         if exportConfig["exportMatchingTriples"] :
