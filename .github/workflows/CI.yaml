@@ -23,4 +23,7 @@ jobs:
         run: pytest
 
       - name: Run linter
-        run: flake8 main.py
+        run: |
+          flake8 main.py logs_management.py config.py
+          cd processing
+          flake8 spark_config.py
