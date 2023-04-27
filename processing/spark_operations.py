@@ -37,12 +37,12 @@ class SparkOperations:
         self.sparkSession = SparkSession.builder \
             .appName(app_name) \
             .config("spark.executorEnv.PYTHONHASHSEED", "0") \
-            .config("spark.python.worker.reuse", "true") \
+            .config("spark.executor.memory", "6g") \
+            .config("spark.executor.memoryOverHead", "1g") \
             .config("spark.python.worker.memory", "2g") \
             .config("spark.driver.memory", "4g") \
             .config("spark.driver.maxResultSize", "2g") \
-            .config("spark.executor.memory", "6g") \
-            .config("spark.executor.memoryOverHead", "1g") \
+            .config("spark.python.worker.reuse", "true") \
             .config("spark.default.parallelism", "200") \
             .config("spark.sql.shuffle.partitions", "200") \
             .config("spark.sql.autoBroadcastJoinThreshold", "10485760") \
