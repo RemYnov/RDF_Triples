@@ -2,10 +2,10 @@ import re
 import json
 from logs_management import Logger
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col, when, length
+from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col
 from pyspark.sql.types import StringType, ArrayType, StructType, StructField
 from pyspark.ml import Pipeline
-from pyspark.ml.feature import Tokenizer, StopWordsRemover, RegexTokenizer
+from pyspark.ml.feature import StopWordsRemover, RegexTokenizer
 import glob
 import pandas as pd
 import os
@@ -152,14 +152,6 @@ class SparkOperations:
 
         if setLogToInfo: self.sparkSession.sparkContext.setLogLevel("INFO")
 
-        logs = {
-            "nbRowsInit": 0,
-            "nbRowsFinal": 0,
-            "nbDuplicates": 0,
-            "nbFiltered": 0,
-            "nbSampled": 0
-        }
-
         triples_schema = StructType([
             StructField("Subject", StringType(), nullable=False),
             StructField("Predicate", StringType(), nullable=False),
@@ -191,11 +183,11 @@ class SparkOperations:
             self.sparkLoger.start_timer("perform counts")
             initial_count = df.count()
             final_count = df_light.count()
-            duplicates_count = initial_count - final_count
+            #duplicates_count = initial_count - final_count
 
             self.sparkLoger.custom_counter("initCount", initial_count)
             self.sparkLoger.custom_counter("finalCount", final_count)
-            self.sparkLoger.custom_counter("dupCount", duplicates_count.count())
+            #self.sparkLoger.custom_counter("dupCount", duplicates_count.count())
             self.sparkLoger.stop_timer("perform counts")
 
         self.sparkLoger.start_timer("transformation")
@@ -235,16 +227,15 @@ class SparkOperations:
             transformed_df.show(50, truncate=False)
             self.sparkLoger.stop_timer("PRINT TRANSFORMED DF")
 
-        self.extract_sample(exportConfig, transformed_df, extract_logs=logs)
+        # Will perform extract depending on the exportConfig param
+        self.extract_sample(exportConfig, transformed_df)
 
-        # Arrêtez la session Spark
         if stopSession:
             self.sparkSession.stop()
 
         return self.sparkLoger.get_timer_counter()
 
-    def extract_sample(self, exportConfig, df, extract_logs):
-
+    def extract_sample(self, exportConfig, df):
         # Writting to csv a sample of triples from the given domain
         if exportConfig["exportSampleEnabled"]:
             timer = "Export ", exportConfig["domainToExport"], " samples"
@@ -264,9 +255,6 @@ class SparkOperations:
                 .option("header", "false") \
                 .mode("overwrite") \
                 .csv(exportConfig["sample_output_folderpath"] + exportConfig["domainToExport"] + "_triples")
-
-            extract_logs["nbFiltered"] = filtered_count
-            extract_logs["nbSampled"] = sampled_count
 
             self.sparkLoger.custom_counter("domainCount", filtered_count)
             self.sparkLoger.custom_counter("sample", sampled_count)
@@ -291,7 +279,7 @@ class SparkOperations:
             self.sparkLoger.stop_timer("looking for matching triples")
 
             self.sparkLoger.start_timer("writting matching triples")
-            filtered_df_by_domain.write \
+            matchingTriples_df.write \
                 .option("delimiter", "|") \
                 .option("header", "false") \
                 .mode("overwrite") \
@@ -322,7 +310,6 @@ class SparkOperations:
                 .csv(unique_predicates_file)
             self.sparkLoger.stop_timer("predicates export")
 
-        return extract_logs
 
     def merge_sparked_data(self, folder, merged_filename, delim):
         # Récupérer la liste de tous les fichiers CSV dans le dossier
