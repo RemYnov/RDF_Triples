@@ -20,7 +20,7 @@ def test_get_spark_ui_url():
 def test_get_spark_context():
     sparkVersion, masterUrl = get_spark_info()
     assert sparkVersion == "3.3.2"
-    assert len(masterUrl) == "local[*]"
+    assert masterUrl == "local[*]"
 
 
 

@@ -3,6 +3,7 @@ from logs_management import Logger
 from processing.spark_config import get_spark_ui_url
 from config import RDF_DATA_PATH, RDF_EN_FR_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, EXPORTS_FOLDER_PATH
 import json
+from locale import *
 
 
 if __name__ == '__main__':
@@ -23,11 +24,11 @@ if __name__ == '__main__':
     exportConfig = {
         "exportUniquePredicates": False,
         "exportMatchingTriples": False,
-        "exportSampleEnabled": False,
+        "exportSampleEnabled": True,
         "exportFullData": False,
         "exportFullPath": output_path,
-        "domainToExport": "computer",
-        "exportSize": 0.3,
+        "domainToExport": "medicine",
+        "exportSize": 0.5,
         "sample_output_folderpath": EXPORTS_FOLDER_PATH
     }
 
@@ -44,9 +45,10 @@ if __name__ == '__main__':
         showSample=False
     )
 
+    print("\n")
     logger.log("===== Spark transformation done =====")
     logger.stop_timer("processing")
-    logger.log(json.dumps(operationsLogs, indent=4, sort_keys=False))
+    logger.log("\n", json.dumps(operationsLogs, indent=4, sort_keys=False, separators=(',', ': ')))
 
 
 def extract_en_fr(input_file, output_file):
