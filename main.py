@@ -27,7 +27,7 @@ if __name__ == '__main__':
         "exportSampleEnabled": True,
         "exportFullData": False,
         "exportFullPath": output_path,
-        "domainToExport": "medicine",
+        "domainToExport": "common",
         "exportSize": 0.5,
         "sample_output_folderpath": EXPORTS_FOLDER_PATH
     }
@@ -48,7 +48,7 @@ if __name__ == '__main__':
     print("\n")
     logger.log("===== Spark transformation done =====")
     logger.stop_timer("processing")
-    logger.log("\n", json.dumps(operationsLogs, indent=4, sort_keys=False, separators=(',', ': ')))
+    logger.log(json.dumps(operationsLogs, indent=4, sort_keys=False, separators=(',', ': ')))
 
 
 def extract_en_fr(input_file, output_file):

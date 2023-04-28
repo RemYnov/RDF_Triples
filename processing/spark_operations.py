@@ -228,7 +228,7 @@ class SparkOperations:
             self.sparkLoger.stop_timer("PRINT TRANSFORMED DF")
 
         # Will perform extract depending on the exportConfig param
-        self.extract_sample(exportConfig, transformed_df)
+        self.extract_sample(exportConfig, cleaned_df)
 
         if stopSession:
             self.sparkSession.stop()
@@ -238,7 +238,7 @@ class SparkOperations:
     def extract_sample(self, exportConfig, df):
         # Writting to csv a sample of triples from the given domain
         if exportConfig["exportSampleEnabled"]:
-            timer = "Export ", exportConfig["domainToExport"], " samples"
+            timer = "Export " + exportConfig["domainToExport"] + " samples"
             self.sparkLoger.start_timer(timer)
             # Searching for samples based on the desired domain :
             desired_predicates = self.get_predicates_by_domain(desired_domain=exportConfig["domainToExport"])
