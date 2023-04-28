@@ -49,16 +49,3 @@ if __name__ == '__main__':
     logger.log("===== Spark transformation done =====")
     logger.stop_timer("processing")
     logger.log(json.dumps(operationsLogs, indent=4, sort_keys=False, separators=(',', ': ')))
-
-
-def extract_en_fr(input_file, output_file):
-    # Old en-fr extraction
-    # RDF_FILENAME = "freebase-rdf-latest.csv"
-    # df = pd.read_csv(RDF_DATA_PATH + RDF_FILENAME)
-    # extract_en_fr(input_file, output_file)
-
-    with open(input_file, 'r', encoding='utf-8') as infile, open(output_file, 'w', encoding='utf-8') as outfile:
-        for line in infile:
-            if '@en' in line or '@fr' in line:
-                outfile.write(line)
-    print("[extract_en_fr] : Done.")
