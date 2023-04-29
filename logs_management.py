@@ -94,7 +94,6 @@ class TelegramLogger:
 
         if run_name != "":
             self.send_message_to_telegram("N E W  R U N : " + run_name, title=True)
-            #self.send_message_to_telegram(run_name, title=True)
 
     def markdown_v2(self, msg):
         escape_chars = r'\*_`\[\]()~>#\+\-=\|{}.!'
