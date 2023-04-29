@@ -23,7 +23,7 @@ class SparkOperations:
     """
     def __init__(self, app_name, RDF_DATA_PATH):
         # Init loggers
-        self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="normal")
+        self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="normal", botEnabled=True)
         #self.sparkWarningLoger = Logger(prefix="- spark -", defaultCustomLogs="warning")
         #self.sparkErrorLogger = Logger(prefix="- spark error -", defaultCustomLogs="critical")
         # Init counters
