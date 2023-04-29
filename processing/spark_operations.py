@@ -10,7 +10,7 @@ import glob
 import pandas as pd
 import os
 from urllib import parse
-from config import PREDICATES_TEMPLATE_PATH
+from config import PREDICATES_TEMPLATE_PATH, RDF_DATA_PATH
 
 os.environ['PYSPARK_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
 os.environ['PYSPARK_DRIVER_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
@@ -255,8 +255,20 @@ class SparkOperations:
         self.sparkLoger.start_timer("matching triples")
         matched_triples = exploded_subject_df.alias("a") \
             .join(main_df.alias("b"), array_contains(col("b.tokenizedObj"), col("a.exploded_object")), how="inner") \
-            .select("a.Subject", "b.Subject", "b.Predicate", "b.Object", "b.tokenizedObj", "b.filtered_tokens")
+            .select(
+                "a.Subject",
+                col("b.Subject").alias("matched_subject"),
+                "b.Predicate",
+                "b.Object")
         self.sparkLoger.stop_timer("matching triples")
+
+        self.sparkLoger.start_timer("exporting to csv")
+        matched_triples.write \
+            .option("delimiter", "|") \
+            .option("header", "false") \
+            .mode("overwrite") \
+            .csv(RDF_DATA_PATH + "sparkedData/exploResults/matchingTriples")
+        self.sparkLoger.stop_timer("exporting to csv")
 
         return matched_triples
 

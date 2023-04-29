@@ -53,5 +53,4 @@ if __name__ == '__main__':
     logger.log("===== Searching for related Triples =====")
     related_subjects = sparkOps.find_matching_triples(main_df=df_RDF)
 
-    related_subjects.show(25, truncate=True)
     logger.log(RUN_NAME + " END.", isTitle=True)
