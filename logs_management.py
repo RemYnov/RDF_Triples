@@ -93,15 +93,15 @@ class TelegramLogger:
         self.chat_id = chat_id
 
         if run_name != "":
-            self.send_message_to_telegram("N E W  R U N :")
-            self.send_message_to_telegram(run_name, title=True)
+            self.send_message_to_telegram("N E W  R U N : " + run_name, title=True)
+            #self.send_message_to_telegram(run_name, title=True)
 
     def markdown_v2(self, msg):
         escape_chars = r'\*_`\[\]()~>#\+\-=\|{}.!'
         escaped_msg = re.sub(r'([{}])'.format(re.escape(escape_chars)), r'\\\1', msg)
         return escaped_msg
 
-    def send_message_to_telegram(self, message, title):
+    def send_message_to_telegram(self, message, title=False):
         loop = asyncio.get_event_loop()  # To avoid error when sending multiple logs
         formated_msg = self.markdown_v2(message)
         if title:
