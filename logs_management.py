@@ -1,5 +1,9 @@
 import time
+from config import TELEGRAM_BOT_TOKEN, BOT_CHAT_ID
 from colorama import Fore, Style
+import os
+from telegram import Update, Bot
+import asyncio
 
 
 class Logger:
@@ -7,11 +11,14 @@ class Logger:
     This class allow to track logs activity and manage the way
     we display the information to the console
     """
-    def __init__(self, prefix="-", defaultCustomLogs="normal"):
+    def __init__(self, prefix="-", defaultCustomLogs="normal", botEnabled=False, runName=""):
         self.logs = []
         self.counters = {}
         self.timestamps = {}
         self.prefix = prefix
+
+        self.bot_logger = TelegramLogger(self, run_name=runName, telegram_bot_token=TELEGRAM_BOT_TOKEN, chat_id=BOT_CHAT_ID)
+        self.bot_enable = botEnabled
 
         self.customLog = defaultCustomLogs
         self.HEADER = Fore.MAGENTA
@@ -25,6 +32,10 @@ class Logger:
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         log_entry = f"{timestamp} {self.prefix} {message}"
         self.logs.append(log_entry)
+
+        if self.bot_enable:
+            # Send to Telegram Chat bot
+            self.bot_logger.send_message_to_telegram(message)
         if display:
             self.colored_display(log_entry, level=self.customLog)
         if counter:
@@ -70,3 +81,24 @@ class Logger:
             "counters": self.counters,
             "timestamps": self.timestamps
         }
+
+
+class TelegramLogger:
+    def __init__(self, logger, run_name, telegram_bot_token, chat_id):
+        self.logger = logger
+        self.bot = Bot(token=telegram_bot_token)
+        self.chat_id = chat_id
+
+        formated_msg = f"<b><big>{run_name}</big></b>"
+        self.send_message_to_telegram("")
+
+    def send_message_to_telegram(self, message):
+        loop = asyncio.get_event_loop() # To avoid error when sending multiple logs
+        if loop.is_running():
+            asyncio.create_task(self.async_send_message_to_telegram(message))
+        else:
+            loop.run_until_complete(self.async_send_message_to_telegram(message))
+
+    async def async_send_message_to_telegram(self, message):
+        await self.bot.send_message(chat_id=self.chat_id, text=message)
+

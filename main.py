@@ -8,7 +8,7 @@ from locale import *
 
 if __name__ == '__main__':
     # Initialisation of the logger object
-    logger = Logger(defaultCustomLogs="fancy")
+    logger = Logger(defaultCustomLogs="fancy", botEnabled=True, runName="SPARK TRANSFO")
     logger.log("===== Running Spark transformation =====")
 
     # Initialisation of the Class performing all the Spark operations

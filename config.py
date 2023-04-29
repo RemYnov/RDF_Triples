@@ -7,3 +7,6 @@ EXPORTS_FOLDER_PATH = RDF_DATA_PATH + "sparkedData/exploResults/sample_"
 RDF_EN_FR_TRANSFORMED_PATH = "sparkedData/rdf_small_transfo"
 
 RDF_EN_FR_FILENAME = "freebase-rdf-en-fr-latest.csv"
+
+TELEGRAM_BOT_TOKEN = "6096240193:AAGFXgGVjJCfkCwJP6cTVQ_1_3o_bP1RqI4"
+BOT_CHAT_ID = "6046386441"
