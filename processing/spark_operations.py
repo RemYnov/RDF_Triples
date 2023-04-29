@@ -237,7 +237,7 @@ class SparkOperations:
 
     @staticmethod
     def get_unique_subject_names(df):
-        subject_names = df.filter(col("Predicate").endswith("name")).select("Subject", "Predicate", "Object")
+        subject_names = df.filter(col("Predicate").endswith("name")).select("Subject", "Predicate", "Object", "tokenizedObj")
         return subject_names
     def find_matching_triples(self, main_df):
 
@@ -246,8 +246,7 @@ class SparkOperations:
         self.sparkLoger.stop_timer("get unique names")
 
         self.sparkLoger.start_timer("Explode objects")
-        exploded_subject_df = subject_names_df.select("Subject", explode(col("Object")).alias("exploded_object"))
-        exploded_subject_df.show(25, truncate=True)
+        exploded_subject_df = subject_names_df.select("Subject", explode(col("tokenizedObj")).alias("exploded_object"))
         self.sparkLoger.stop_timer("Explode objects")
 
         self.sparkLoger.start_timer("matching triples")

@@ -7,14 +7,15 @@ from locale import *
 
 
 if __name__ == '__main__':
+    # Initialisation of the logger object
+    logger = Logger(defaultCustomLogs="fancy")
+    logger.log("===== Running Spark transformation =====")
+
     # Initialisation of the Class performing all the Spark operations
     sparkOps = SparkOperations(
         app_name="TriplesRDF",
         RDF_DATA_PATH=RDF_DATA_PATH
     )
-
-    # Initialisation of the logger object
-    logger = Logger()
 
     url = get_spark_ui_url(sparkOps.sparkSession)
 
@@ -32,8 +33,8 @@ if __name__ == '__main__':
         "sample_output_folderpath": EXPORTS_FOLDER_PATH
     }
 
-    logger.start_timer("processing")
-    logger.log("Running Spark transformation and sampling domain", exportConfig["domainToExport"], "...")
+    logger.start_timer("Spark processing")
+    #logger.log("Running Spark transformation and sampling domain", exportConfig["domainToExport"], "...")
     logger.log(f"Spark UI URL: {url}")
 
     operationsLogs, df_RDF = sparkOps.RDF_transform_and_sample_by_domain(
@@ -45,13 +46,11 @@ if __name__ == '__main__':
         showSample=False
     )
 
-    print("\n")
-    logger.log("===== Spark transformation done =====")
-    logger.stop_timer("processing")
+    logger.log("===== Spark transformation over =====")
+    logger.stop_timer("Spark processing")
     logger.log(json.dumps(operationsLogs, indent=4, sort_keys=False, separators=(',', ': ')))
 
     logger.log("===== Searching for related Triples =====")
-    logger.start_timer("matching triples")
     related_subjects = sparkOps.find_matching_triples(main_df=df_RDF)
-    logger.stop_timer("matching triples")
-    related_subjects.show(100, truncate=True)
+
+    related_subjects.show(25, truncate=True)
