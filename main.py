@@ -34,7 +34,6 @@ if __name__ == '__main__':
     }
 
     logger.start_timer("Spark processing")
-    #logger.log("Running Spark transformation and sampling domain", exportConfig["domainToExport"], "...")
     logger.log(f"Spark UI URL: {url}")
 
     operationsLogs, df_RDF = sparkOps.RDF_transform_and_sample_by_domain(
