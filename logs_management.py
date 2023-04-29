@@ -17,8 +17,9 @@ class Logger:
         self.timestamps = {}
         self.prefix = prefix
 
-        self.bot_logger = TelegramLogger(self, run_name=runName, telegram_bot_token=TELEGRAM_BOT_TOKEN, chat_id=BOT_CHAT_ID)
-        self.bot_enable = botEnabled
+        if botEnabled:
+            self.bot_logger = TelegramLogger(self, run_name=runName, telegram_bot_token=TELEGRAM_BOT_TOKEN, chat_id=BOT_CHAT_ID)
+            self.bot_enable = botEnabled
 
         self.customLog = defaultCustomLogs
         self.HEADER = Fore.MAGENTA
@@ -89,11 +90,12 @@ class TelegramLogger:
         self.bot = Bot(token=telegram_bot_token)
         self.chat_id = chat_id
 
-        formated_msg = f"<b><big>{run_name}</big></b>"
-        self.send_message_to_telegram("")
+        if run_name != "":
+            run_title = f"<b><big>{run_name}</big></b>"
+            self.send_message_to_telegram(run_title)
 
     def send_message_to_telegram(self, message):
-        loop = asyncio.get_event_loop() # To avoid error when sending multiple logs
+        loop = asyncio.get_event_loop()  # To avoid error when sending multiple logs
         if loop.is_running():
             asyncio.create_task(self.async_send_message_to_telegram(message))
         else:
@@ -101,4 +103,3 @@ class TelegramLogger:
 
     async def async_send_message_to_telegram(self, message):
         await self.bot.send_message(chat_id=self.chat_id, text=message)
-
