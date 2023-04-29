@@ -39,6 +39,7 @@ class SparkOperations:
         self.sparkSession = SparkSession.builder \
             .appName(app_name) \
             .config("spark.executorEnv.PYTHONHASHSEED", "0") \
+            .config('spark.executor.heartbeatInterval', 10000) \
             .config("spark.executor.memory", "6g") \
             .config("spark.executor.memoryOverHead", "1g") \
             .config("spark.python.worker.memory", "2g") \
@@ -48,6 +49,8 @@ class SparkOperations:
             .config("spark.default.parallelism", "200") \
             .config("spark.sql.shuffle.partitions", "200") \
             .config("spark.sql.autoBroadcastJoinThreshold", "10485760") \
+            .config('spark.network.timeout', 10000) \
+            .config("spark.core.connection.ack.wait.timeout", "3600") \
             .config("spark.eventLog.enabled", "true") \
             .config("spark.eventLog.dir", self.SPARK_LOCAL_DIR + "/eventLogs") \
             .config("spark.local.dir", self.SPARK_LOCAL_DIR) \

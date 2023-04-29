@@ -31,15 +31,14 @@ class Logger:
         self.RED = Fore.RED
         self.RESET = Style.RESET_ALL
 
-    def log(self, message, display=True, level="normal", counter=None):
+    def log(self, message, display=True, level="normal", counter=None, isTitle=False):
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         log_entry = f"{timestamp} {self.prefix} {message}"
         self.logs.append(log_entry)
 
         if self.bot_enable:
             # Send to Telegram Chat bot
-
-            self.bot_logger.send_message_to_telegram(message)
+            self.bot_logger.send_message_to_telegram(message, isTitle)
         if display:
             self.colored_display(log_entry, level=self.customLog)
         if counter:
@@ -95,17 +94,19 @@ class TelegramLogger:
 
         if run_name != "":
             self.send_message_to_telegram("N E W  R U N :")
-            TITLE = f"*{self.markdown_v2(run_name)}*"
-            self.send_message_to_telegram(TITLE)
+            self.send_message_to_telegram(run_name, title=True)
 
     def markdown_v2(self, msg):
         escape_chars = r'\*_`\[\]()~>#\+\-=\|{}.!'
         escaped_msg = re.sub(r'([{}])'.format(re.escape(escape_chars)), r'\\\1', msg)
         return escaped_msg
 
-    def send_message_to_telegram(self, message):
+    def send_message_to_telegram(self, message, title):
         loop = asyncio.get_event_loop()  # To avoid error when sending multiple logs
         formated_msg = self.markdown_v2(message)
+        if title:
+            formated_msg = f"*{formated_msg}*"
+
         if loop.is_running():
             asyncio.create_task(self.async_send_message_to_telegram(formated_msg))
         else:

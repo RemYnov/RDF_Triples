@@ -7,8 +7,9 @@ from locale import *
 
 
 if __name__ == '__main__':
+    RUN_NAME = "SPARK TRANSFO"
     # Initialisation of the logger object
-    logger = Logger(defaultCustomLogs="fancy", botEnabled=True, runName="SPARK TRANSFO")
+    logger = Logger(defaultCustomLogs="fancy", botEnabled=True, runName=RUN_NAME)
     logger.log("===== Running Spark transformation =====")
 
     # Initialisation of the Class performing all the Spark operations
@@ -53,3 +54,4 @@ if __name__ == '__main__':
     related_subjects = sparkOps.find_matching_triples(main_df=df_RDF)
 
     related_subjects.show(25, truncate=True)
+    logger.log(RUN_NAME + " END.", isTitle=True)
