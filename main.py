@@ -24,7 +24,7 @@ if __name__ == '__main__':
     exportConfig = {
         "exportUniquePredicates": False,
         "exportMatchingTriples": False,
-        "exportSampleEnabled": True,
+        "exportSampleEnabled": False,
         "exportFullData": False,
         "exportFullPath": output_path,
         "domainToExport": "common",
@@ -36,10 +36,10 @@ if __name__ == '__main__':
     logger.log("Running Spark transformation and sampling domain", exportConfig["domainToExport"], "...")
     logger.log(f"Spark UI URL: {url}")
 
-    operationsLogs = sparkOps.RDF_transform_and_sample_by_domain(
+    operationsLogs, df_RDF = sparkOps.RDF_transform_and_sample_by_domain(
         input_file=input_file,
         exportConfig=exportConfig,
-        performCounts=True,
+        performCounts=False,
         setLogToInfo=False,
         stopSession=False,
         showSample=False
@@ -49,3 +49,9 @@ if __name__ == '__main__':
     logger.log("===== Spark transformation done =====")
     logger.stop_timer("processing")
     logger.log(json.dumps(operationsLogs, indent=4, sort_keys=False, separators=(',', ': ')))
+
+    logger.log("===== Searching for related Triples =====")
+    logger.start_timer("matching triples")
+    related_subjects = sparkOps.find_matching_triples(main_df=df_RDF)
+    logger.stop_timer("matching triples")
+    related_subjects.show(100, truncate=True)

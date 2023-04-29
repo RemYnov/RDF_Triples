@@ -2,7 +2,7 @@ import re
 import json
 from logs_management import Logger
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col
+from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col, explode, array_contains
 from pyspark.sql.types import StringType, ArrayType, StructType, StructField
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import StopWordsRemover, RegexTokenizer
@@ -233,7 +233,30 @@ class SparkOperations:
         if stopSession:
             self.sparkSession.stop()
 
-        return self.sparkLoger.get_timer_counter()
+        return self.sparkLoger.get_timer_counter(), transformed_df
+
+    @staticmethod
+    def get_unique_subject_names(df):
+        subject_names = df.filter(col("Predicate").endswith("name")).select("Subject", "Predicate", "Object")
+        return subject_names
+    def find_matching_triples(self, main_df):
+
+        self.sparkLoger.start_timer("get unique names")
+        subject_names_df = self.get_unique_subject_names(df=main_df)
+        self.sparkLoger.stop_timer("get unique names")
+
+        self.sparkLoger.start_timer("Explode objects")
+        exploded_subject_df = subject_names_df.select("Subject", explode(col("Object")).alias("exploded_object"))
+        exploded_subject_df.show(25, truncate=True)
+        self.sparkLoger.stop_timer("Explode objects")
+
+        self.sparkLoger.start_timer("matching triples")
+        matched_triples = exploded_subject_df.alias("a") \
+            .join(main_df.alias("b"), array_contains(col("b.tokenizedObj"), col("a.exploded_object")), how="inner") \
+            .select("a.Subject", "b.Subject", "b.Predicate", "b.Object", "b.tokenizedObj", "b.filtered_tokens")
+        self.sparkLoger.stop_timer("matching triples")
+
+        return matched_triples
 
     def extract_sample(self, exportConfig, df):
         # Writting to csv a sample of triples from the given domain
@@ -309,7 +332,6 @@ class SparkOperations:
                 .mode("overwrite") \
                 .csv(unique_predicates_file)
             self.sparkLoger.stop_timer("predicates export")
-
 
     def merge_sparked_data(self, folder, merged_filename, delim):
         # Récupérer la liste de tous les fichiers CSV dans le dossier
