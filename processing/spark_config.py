@@ -2,9 +2,9 @@ from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
 import time
 
-# Contexte Spark
 
 def get_spark_info():
+    # Contexte Spark
     conf = SparkConf().setAppName("Spark Version Check")
     sc = SparkContext(conf=conf)
     version = sc.version
@@ -13,6 +13,7 @@ def get_spark_info():
     spark = SparkSession.builder \
         .appName("MyApp") \
         .getOrCreate()
+
     spark_master_url =  spark.conf.get("spark.master")
     print("Spark master URL:", spark_master_url)
 
@@ -20,6 +21,7 @@ def get_spark_info():
     spark.stop()
 
     return version, spark_master_url
+
 
 def get_spark_ui_url(spark_session: SparkSession) -> str:
     # Récupération du nom d'hôte et du port du Spark UI
@@ -31,6 +33,7 @@ def get_spark_ui_url(spark_session: SparkSession) -> str:
         ui_web_url = f"{ui_web_url.rstrip('/')}/{base_path.lstrip('/')}"
 
     return ui_web_url
+
 
 def print_progress(sc, timeout):
     timeout_seconds = timeout * 60 * 60
@@ -58,4 +61,3 @@ def print_progress(sc, timeout):
                 print(f"Job {job_id}: {completed_stages}/{num_stages} stages completed")
 
         time.sleep(5)  # Mettre à jour la progression toutes les 5 secondes
-

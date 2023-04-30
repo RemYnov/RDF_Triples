@@ -4,7 +4,8 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from spark_config import get_spark_ui_url, get_spark_info
+
+from processing.spark_config import get_spark_ui_url, get_spark_info
 def test_get_spark_ui_url():
     url_pattern = r'^http://.*:\d{4}$'
     sparkTestSession = SparkSession.builder \
@@ -12,12 +13,14 @@ def test_get_spark_ui_url():
         .config("spark.driver.memory", "4g") \
         .config("spark.executor.memory", "4g") \
         .getOrCreate()
-
     url = get_spark_ui_url(sparkTestSession)
     sparkTestSession.stop()
+
     assert bool(re.match(url_pattern, url))
 def test_get_spark_context():
     sparkVersion, masterUrl = get_spark_info()
     assert sparkVersion == "3.3.2"
-    assert len(masterUrl) >= 1
+    assert masterUrl == "local[*]"
+
+
 

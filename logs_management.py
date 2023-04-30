@@ -1,16 +1,25 @@
 import time
+from config import TELEGRAM_BOT_TOKEN, BOT_CHAT_ID
 from colorama import Fore, Style
+from telegram import Update, Bot
+import asyncio
+import re
+
 
 class Logger:
     """
     This class allow to track logs activity and manage the way
     we display the information to the console
     """
-    def __init__(self, prefix="-", defaultCustomLogs="normal"):
+    def __init__(self, prefix="-", defaultCustomLogs="normal", botEnabled=False, runName=""):
         self.logs = []
         self.counters = {}
         self.timestamps = {}
         self.prefix = prefix
+
+        if botEnabled:
+            self.bot_logger = TelegramLogger(self, run_name=runName, telegram_bot_token=TELEGRAM_BOT_TOKEN, chat_id=BOT_CHAT_ID)
+        self.bot_enable = botEnabled
 
         self.customLog = defaultCustomLogs
         self.HEADER = Fore.MAGENTA
@@ -20,14 +29,18 @@ class Logger:
         self.RED = Fore.RED
         self.RESET = Style.RESET_ALL
 
-    def log(self, message, display=True, level="normal", counter=None):
+    def log(self, message, display=True, level="normal", counter=None, isTitle=False):
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         log_entry = f"{timestamp} {self.prefix} {message}"
         self.logs.append(log_entry)
+
+        if self.bot_enable:
+            # Send to Telegram Chat bot
+            self.bot_logger.send_message_to_telegram(message, isTitle)
         if display:
             self.colored_display(log_entry, level=self.customLog)
         if counter:
-            self.increment_counter(counter)
+            self.custom_counter(counter)
 
     def colored_display(self, msg, level):
         if level == "normal":
@@ -39,7 +52,7 @@ class Logger:
         elif level == "critical":
             print(self.RED + msg + self.RESET)
 
-    def increment_counter(self, counter, increment=1):
+    def custom_counter(self, counter, increment=1):
         if counter not in self.counters:
             self.counters[counter] = 0
         self.counters[counter] += increment
@@ -63,3 +76,54 @@ class Logger:
             "counters": self.counters,
             "timestamps": self.timestamps
         }
+
+    def get_timer_counter(self):
+        return {
+            "counters": self.counters,
+            "timestamps": self.timestamps
+        }
+
+
+class TelegramLogger:
+    def __init__(self, logger, run_name, telegram_bot_token, chat_id):
+        self.logger = logger
+        self.bot = Bot(token=telegram_bot_token)
+        self.chat_id = chat_id
+
+        if run_name != "":
+            self.print_new_run(run_name)
+
+    def markdown_v2(self, msg):
+        escape_chars = r'\*_`\[\]()~>#\+\-=\|{}.!'
+        escaped_msg = re.sub(r'([{}])'.format(re.escape(escape_chars)), r'\\\1', msg)
+        return escaped_msg
+
+    def send_message_to_telegram(self, message, title=False):
+        loop = asyncio.get_event_loop()  # To avoid error when sending multiple logs
+        formated_msg = self.markdown_v2(message)
+        if title:
+            formated_msg = f"*{formated_msg}*"
+
+        if loop.is_running():
+            asyncio.create_task(self.async_send_message_to_telegram(formated_msg))
+        else:
+            loop.run_until_complete(self.async_send_message_to_telegram(formated_msg))
+
+    async def async_send_message_to_telegram(self, message):
+        await self.bot.send_message(chat_id=self.chat_id, text=message, parse_mode="MarkdownV2")
+
+    def print_new_run(self, run_name):
+        for i in range(0, 8):
+            if i % 2:
+                self.send_message_to_telegram("-------------------")
+            if i == 3:
+                self.send_message_to_telegram("N E W  R U N : " + run_name, title=True)
+
+
+def global_exception_handler(logger, exception_type, exception_value, traceback):
+    logger.log("RUN FAILED", isTitle=True)
+    logger.log("Exception type : ")
+    logger.log(str(exception_type))
+    logger.log("Error : ")
+    logger.log(str(exception_value))
+    traceback.print_exception(exception_type, exception_value, traceback)

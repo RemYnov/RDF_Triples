@@ -2,13 +2,15 @@ import re
 import json
 from logs_management import Logger
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col
-from pyspark.sql.types import StringType
+from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col, explode
+from pyspark.sql.types import StringType, ArrayType, StructType, StructField
+from pyspark.ml import Pipeline
+from pyspark.ml.feature import StopWordsRemover, RegexTokenizer
 import glob
 import pandas as pd
 import os
 from urllib import parse
-from config import PREDICATES_TEMPLATE_PATH
+from config import PREDICATES_TEMPLATE_PATH, RDF_DATA_PATH
 
 os.environ['PYSPARK_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
 os.environ['PYSPARK_DRIVER_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
@@ -19,31 +21,28 @@ class SparkOperations:
     Every spark operations will be managed and monitored
     from this class.
     """
-    def __init__(self, app_name, RDF_DATA_PATH):
+    def __init__(self, app_name, RDF_DATA_PATH, botLoggerEnabled):
         # Init loggers
-        self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="fancy")
-        self.sparkWarningLoger = Logger(prefix="- spark -", defaultCustomLogs="warning")
-        self.sparkErrorLogger = Logger(prefix="- spark error -", defaultCustomLogs="critical")
+        self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="normal", botEnabled=botLoggerEnabled)
 
         self.SPARK_LOCAL_DIR = parse.urljoin('file', parse.quote("sparkWorkspace"))
         self.SPARK_LOGS_DIR = parse.urljoin(self.SPARK_LOCAL_DIR, parse.quote("eventLogs"))
-        msg1 = "Spark working on path : " + self.SPARK_LOCAL_DIR
-        msg2 = "Spark logs stored at : " + self.SPARK_LOGS_DIR
-        self.sparkWarningLoger.log(msg1)
-        self.sparkWarningLoger.log(msg2)
 
         self.sparkSession = SparkSession.builder \
             .appName(app_name) \
             .config("spark.executorEnv.PYTHONHASHSEED", "0") \
-            .config("spark.python.worker.reuse", "true") \
+            .config('spark.executor.heartbeatInterval', 10000) \
+            .config("spark.executor.memory", "6g") \
+            .config("spark.executor.memoryOverHead", "1g") \
             .config("spark.python.worker.memory", "2g") \
             .config("spark.driver.memory", "4g") \
             .config("spark.driver.maxResultSize", "2g") \
-            .config("spark.executor.memory", "6g") \
-            .config("spark.executor.memoryOverHead", "1g") \
+            .config("spark.python.worker.reuse", "true") \
             .config("spark.default.parallelism", "200") \
             .config("spark.sql.shuffle.partitions", "200") \
             .config("spark.sql.autoBroadcastJoinThreshold", "10485760") \
+            .config('spark.network.timeout', 10000) \
+            .config("spark.core.connection.ack.wait.timeout", "3600") \
             .config("spark.eventLog.enabled", "true") \
             .config("spark.eventLog.dir", self.SPARK_LOCAL_DIR + "/eventLogs") \
             .config("spark.local.dir", self.SPARK_LOCAL_DIR) \
@@ -59,6 +58,8 @@ class SparkOperations:
         # Needed when specifc calculations (without native pySpark function) need to be applyied to the data
         self.transform_subject_udf = udf(self.transform_subject, StringType())
         self.transform_predicate_udf = udf(self.transform_predicate, StringType())
+        self.transform_object_udf = udf(self.transform_object, ArrayType(StringType()))
+        self.min_len_sw = 50
 
     @staticmethod
     def transform_subject(s):
@@ -86,10 +87,16 @@ class SparkOperations:
         stripped_predicate = re.sub(r'^<.*\/(.*?)>$', r'\1', s)
         if stripped_predicate == "rdf-schema#label":
             stripped_predicate = "type.object.name"
-        # to test:
         elif stripped_predicate == "rdf-syntax-ns#type":
             stripped_predicate = "type.object.type"
         return stripped_predicate
+    @staticmethod
+    def transform_object(tokens, object_init):
+        min_len_sw = 50
+        if len(object_init) >= min_len_sw:
+            return [token for token in tokens if token not in StopWordsRemover().getStopWords()]
+        else:
+            return tokens
 
     @staticmethod
     def get_predicates_by_domain(desired_domain):
@@ -120,8 +127,10 @@ class SparkOperations:
         desired_predicates = extract_recursive(predicates_json[desired_domain], prefix=desired_domain)
 
         return desired_predicates
+
     def RDF_transform_and_sample_by_domain(
-            self, input_file, output_path, exportConfig, performCounts, setLogToInfo=False, stopSession=True
+            self, input_file, exportConfig,
+            performCounts=False, setLogToInfo=False, stopSession=True, showSample=True
     ):
         """
                 Perform the data transformation of the given rdf-triples.csv file.
@@ -129,61 +138,148 @@ class SparkOperations:
                 After the transformation is performed, a sample from the given domain will
                 be wrotte to a csv file.
                 :param input_file: RDF formated .csv file on which we want to perform the transformation.
-                :param output_path: Path where the sliced data from Spark transformations will be dumped.
                 :param exportConfig: Dict that defines the sampling process (enable or not)
-                    :param domain: Domain of the predicates that we want to sample.
-                    :param sample_size: Size of the sample, between 0 and 1.
-                    :param sample_output_folderpath: Folder where the samples of tripples will be dumped
                 :param setLogToInfo: Set the Spark session's log level to "INFO". False by default.
                 :param stopSession: Automaticaly stoping the Spark session when the function is done.
+                :param showSample: Display some records to the console at each step of the transformation
         """
+
         if setLogToInfo: self.sparkSession.sparkContext.setLogLevel("INFO")
 
-        logs = {
-            "nbRowsInit": 0,
-            "nbRowsFinal": 0,
-            "nbDuplicates": 0,
-            "nbFiltered": 0,
-            "nbSampled": 0
-        }
+        triples_schema = StructType([
+            StructField("Subject", StringType(), nullable=False),
+            StructField("Predicate", StringType(), nullable=False),
+            StructField("Object", StringType(), nullable=False),
+            StructField("Blank", StringType(), nullable=False)
+        ])
 
         # Reading RDF-en-fr (230M)
+        # .option("inferSchema", "true") \ => Detect schema
         self.sparkLoger.start_timer("reading")
         df = self.sparkSession.read \
             .option("delimiter", "\t") \
             .option("header", "false") \
-            .option("inferSchema", "true") \
+            .schema(triples_schema) \
             .csv(input_file)
+        df = (df.drop("Blank")).limit(1000000)
         self.sparkLoger.stop_timer("reading")
+
+        self.sparkLoger.start_timer("droping duplicates")
+        df_light = df.dropDuplicates()
+        self.sparkLoger.stop_timer("droping duplicates")
+
+        if showSample:
+            self.sparkLoger.log("RAW DF :")
+            df_light.show(25, truncate=False)
+
+        # Getting rid of duplicates
+        if performCounts:
+            self.sparkLoger.start_timer("perform counts")
+            initial_count = df.count()
+            final_count = df_light.count()
+            duplicates_count = initial_count - final_count
+
+            self.sparkLoger.custom_counter("initCount", initial_count)
+            self.sparkLoger.custom_counter("finalCount", final_count)
+            self.sparkLoger.custom_counter("duplicatesCount", duplicates_count)
+            self.sparkLoger.stop_timer("perform counts")
 
         self.sparkLoger.start_timer("transformation")
         # Apply the UDF to the Subject / Predicate columns + other columns transformations
-        df = df.withColumn("_c0", self.transform_subject_udf(df["_c0"])) \
-            .withColumn("_c1", self.transform_predicate_udf(df["_c1"])) \
-            .withColumn("_c2", regexp_replace("_c2", r'^\\"(.*)\\"$', r'$1')) \
-            .withColumn("_c2", regexp_extract("_c2", r'^(.*?)@', 1))
+        cleaned_df = df_light.withColumn("Subject", self.transform_subject_udf(df_light["Subject"])) \
+            .withColumn("Predicate", self.transform_predicate_udf(df_light["Predicate"])) \
+            .withColumn("Object", regexp_replace("Object", r'^\\"(.*)\\"$', r'$1')) \
+            .withColumn("Object", regexp_extract("Object", r'^(.*?)@', 1))
         self.sparkLoger.stop_timer("transformation")
 
-        # Getting rid of duplicates
+        if showSample:
+            self.sparkLoger.start_timer("PRINT CLEANED DF")
+            cleaned_df.show(25, truncate=False)
+            self.sparkLoger.stop_timer("PRINT CLEANED DF")
+
+        self.sparkLoger.start_timer("NLP Pipeline")
+        pattern = "[^\\p{L}]+" # Take into account alphanumeric + accent (frenh sentences)
+
+        regex_tokenizer = RegexTokenizer(inputCol="Object", outputCol="tokenizedObj", pattern=pattern)
+        stop_words_remover = StopWordsRemover(inputCol="tokenizedObj", outputCol="filtered_tokens")
+
+        nlp_pipeline = Pipeline(stages=[regex_tokenizer, stop_words_remover])
+        nlp_model = nlp_pipeline.fit(cleaned_df)
+        tokenized_df = nlp_model.transform(cleaned_df)
+
         """
-        self.sparkLoger.start_timer("processing duplicates")
-        df_no_duplicates = df.dropDuplicates()
-
-        if performCounts:
-            initial_count = df.count()
-            final_count = df_no_duplicates.count()
-            duplicates_count = initial_count - final_count
-
-        self.sparkLoger.stop_timer("processing duplicates")
+        transformed_df = tokenized_df.withColumn("filtered_tokens",
+            self.transform_object_udf(
+                col("filtered_tokens"),
+                col("Object")
+            )
+        )
         """
+        self.sparkLoger.stop_timer("NLP Pipeline")
 
+        if showSample:
+            self.sparkLoger.start_timer("PRINT TRANSFORMED DF")
+            #transformed_df.filter(length(col("Object")) > 50).show(25, truncate=False)
+            tokenized_df.show(50, truncate=False)
+            self.sparkLoger.stop_timer("PRINT TRANSFORMED DF")
+
+        # Will perform extract depending on the exportConfig param
+        self.extract_sample(exportConfig, cleaned_df)
+
+        if stopSession:
+            self.sparkSession.stop()
+
+        return self.sparkLoger.get_timer_counter(), tokenized_df
+
+    @staticmethod
+    def get_unique_subject_names(df):
+        subject_names = df.filter(col("Predicate").endswith("name")).select("Subject", "Predicate", "Object", "tokenizedObj")
+        return subject_names
+    def find_matching_triples(self, main_df):
+        """
+                Joining the exploded objects from 'exploded_subject_df', which represents
+                the name of each unique Triples Subject, with the 'exploded_main_df' which represents
+                the exploded objects of the entire dataframe.
+                :param main_df: the processed RDF triples dataframe, with cleaned data and tokenized object
+                :return: dataframe having, for each unique subject of our main df, the matching triples
+                based on the (tokenized) names of the unique subjects and the (tokenized) Objects of the main df
+        """
+        self.sparkLoger.start_timer("get unique names")
+        subject_names_df = self.get_unique_subject_names(df=main_df)
+        self.sparkLoger.stop_timer("get unique names")
+
+        self.sparkLoger.start_timer("Explode objects")
+        exploded_subject_df = subject_names_df.select("Subject", explode(col("tokenizedObj")).alias("exploded_object"))
+        exploded_main_df = main_df.select("Subject", "Predicate", "Object", "tokenizedObj", "filtered_tokens", explode(col("tokenizedObj")).alias("exploded_object"))
+        self.sparkLoger.stop_timer("Explode objects")
+
+        self.sparkLoger.start_timer("matching triples")
+
+        matched_triples = exploded_subject_df.alias("a")\
+            .join(exploded_main_df.alias("b"), col("a.exploded_object") == col("b.exploded_object"),
+                  how="inner") \
+            .select("a.Subject",
+                    col("b.Subject").alias("matched_Subject"),
+                    "b.Predicate",
+                    "b.Object")
+        self.sparkLoger.custom_counter("nbMatchs", matched_triples.count())
+        self.sparkLoger.stop_timer("matching triples")
+
+        self.sparkLoger.start_timer("exporting to csv")
+        matched_triples.write.parquet(RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples")
+        self.sparkLoger.stop_timer("exporting to csv")
+
+        return matched_triples
+
+    def extract_sample(self, exportConfig, df):
+        # Writting to csv a sample of triples from the given domain
         if exportConfig["exportSampleEnabled"]:
-            timer = "Export ", exportConfig["domainToExport"], " samples"
+            timer = "Export " + exportConfig["domainToExport"] + " samples"
             self.sparkLoger.start_timer(timer)
             # Searching for samples based on the desired domain :
             desired_predicates = self.get_predicates_by_domain(desired_domain=exportConfig["domainToExport"])
 
-            filtered_df = df.filter(df["_c1"].isin(desired_predicates))
+            filtered_df = df.filter(df["Predicate"].isin(desired_predicates))
             sample_df = filtered_df.sample(withReplacement=False, fraction=exportConfig["exportSize"])
 
             filtered_count = filtered_df.count()
@@ -196,13 +292,11 @@ class SparkOperations:
                 .mode("overwrite") \
                 .csv(exportConfig["sample_output_folderpath"] + exportConfig["domainToExport"] + "_triples")
 
-            logs["nbFiltered"] = filtered_count
-            logs["nbSampled"] = sampled_count
+            self.sparkLoger.custom_counter("domainCount", filtered_count)
+            self.sparkLoger.custom_counter("sample", sampled_count)
             self.sparkLoger.stop_timer(timer)
-        else:
-            logs["nbFiltered"] = 0
-            logs["nbSampled"] = 0
 
+        # Writting to csv the matching triples
         if exportConfig["exportMatchingTriples"] :
             self.sparkLoger.start_timer("looking for matching triples")
 
@@ -221,13 +315,14 @@ class SparkOperations:
             self.sparkLoger.stop_timer("looking for matching triples")
 
             self.sparkLoger.start_timer("writting matching triples")
-            filtered_df_by_domain.write \
+            matchingTriples_df.write \
                 .option("delimiter", "|") \
                 .option("header", "false") \
                 .mode("overwrite") \
                 .csv(self.MATCHING_TRIPLES_PATH)
             self.sparkLoger.stop_timer("writting matching triples")
 
+        # Writting to csv the entire dataset
         if exportConfig["exportFullData"]:
             # Transformed file wrote to the output
             self.sparkLoger.start_timer("Writting transformed file")
@@ -235,14 +330,14 @@ class SparkOperations:
                 .option("delimiter", "|") \
                 .option("header", "false") \
                 .mode("overwrite") \
-                .csv(output_path)
+                .csv(exportConfig["exportFullPath"])
             self.sparkLoger.stop_timer("Writting transformed file")
 
-        # Getting sorted unique predicates
+        # Wrtting to csv sorted unique predicates
         if exportConfig["exportUniquePredicates"]:
             self.sparkLoger.start_timer("predicates export")
             unique_predicates_file = self.UNIQUE_PREDICATES_FILEPATH
-            unique_predicates = df.select("_c1").distinct()
+            unique_predicates = df.select("Predicate").distinct()
 
             unique_predicates.write \
                 .option("delimiter", "|") \
@@ -251,15 +346,6 @@ class SparkOperations:
                 .csv(unique_predicates_file)
             self.sparkLoger.stop_timer("predicates export")
 
-        # Arrêtez la session Spark
-        if stopSession:
-            self.sparkSession.stop()
-
-        logs["nbRowsInit"] = 0 #initial_count
-        logs["nbRowsFinal"] = 0 #final_count
-        logs["nbDuplicates"] = 0 #duplicates_count
-
-        return logs
     def merge_sparked_data(self, folder, merged_filename, delim):
         # Récupérer la liste de tous les fichiers CSV dans le dossier
         files = glob.glob(folder + "/*.csv")
