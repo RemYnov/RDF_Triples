@@ -186,11 +186,11 @@ class SparkOperations:
             self.sparkLoger.start_timer("perform counts")
             initial_count = df.count()
             final_count = df_light.count()
-            #duplicates_count = initial_count - final_count
+            duplicates_count = initial_count - final_count
 
             self.sparkLoger.custom_counter("initCount", initial_count)
             self.sparkLoger.custom_counter("finalCount", final_count)
-            #self.sparkLoger.custom_counter("dupCount", duplicates_count.count())
+            self.sparkLoger.custom_counter("duplicatesCount", duplicates_count)
             self.sparkLoger.stop_timer("perform counts")
 
         self.sparkLoger.start_timer("transformation")
@@ -263,8 +263,7 @@ class SparkOperations:
             .select("a.Subject",
                     col("b.Subject").alias("matched_Subject"),
                     "b.Predicate",
-                    "b.Object",
-                    "b.tokenizedObj")
+                    "b.Object")
         self.sparkLoger.stop_timer("matching triples")
 
         self.sparkLoger.start_timer("exporting to csv")

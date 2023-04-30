@@ -40,7 +40,7 @@ if __name__ == '__main__':
     operationsLogs, df_RDF = sparkOps.RDF_transform_and_sample_by_domain(
         input_file=input_file,
         exportConfig=exportConfig,
-        performCounts=True,
+        performCounts=False,
         setLogToInfo=False,
         stopSession=False,
         showSample=False
