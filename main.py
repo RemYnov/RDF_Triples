@@ -1,16 +1,20 @@
 from processing.spark_operations import SparkOperations
-from logs_management import Logger
+from logs_management import Logger, global_exception_handler
 from processing.spark_config import get_spark_ui_url
 from config import RDF_DATA_PATH, RDF_FILENAME, RDF_EN_FR_TRANSFORMED_PATH, RDF_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, EXPORTS_FOLDER_PATH
 import json
-from locale import *
+import sys
+import traceback
+
 
 
 if __name__ == '__main__':
     RUN_NAME = "30 Go Spark Transformation and Export"
-    # Initialisation of the logger object
+    # Initialisation of the logger object and the exception handler
     logger = Logger(defaultCustomLogs="fancy", botEnabled=True, runName=RUN_NAME)
-    logger.log("===== Running Spark transformation =====")
+    sys.excepthook = lambda et, ev, tb: global_exception_handler(logger, et, ev, tb) # For unexpected error
+
+    logger.log("==Running Spark transformation==")
 
     # Initialisation of the Class performing all the Spark operations
     sparkOps = SparkOperations(
@@ -46,11 +50,12 @@ if __name__ == '__main__':
         showSample=False
     )
 
-    logger.log("===== Spark transformation over =====")
+    logger.log("==Spark transformation over==")
     logger.stop_timer("Spark processing")
     logger.log(json.dumps(operationsLogs, indent=4, sort_keys=False, separators=(',', ': ')))
 
-    logger.log("===== Searching for related Triples =====")
+    logger.log("==Searching for related Triples==")
     related_subjects = sparkOps.find_matching_triples(main_df=df_RDF)
 
     logger.log(RUN_NAME + " END.", isTitle=True)
+

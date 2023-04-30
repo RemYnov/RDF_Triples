@@ -93,7 +93,7 @@ class TelegramLogger:
         self.chat_id = chat_id
 
         if run_name != "":
-            self.send_message_to_telegram("N E W  R U N : " + run_name, title=True)
+            self.print_new_run(run_name)
 
     def markdown_v2(self, msg):
         escape_chars = r'\*_`\[\]()~>#\+\-=\|{}.!'
@@ -113,3 +113,18 @@ class TelegramLogger:
 
     async def async_send_message_to_telegram(self, message):
         await self.bot.send_message(chat_id=self.chat_id, text=message, parse_mode="MarkdownV2")
+
+    def print_new_run(self, run_name):
+        for i in range(0, 8):
+            if i % 2:
+                self.send_message_to_telegram("-------------------")
+            if i == 3 :
+                self.send_message_to_telegram("N E W  R U N : " + run_name, title=True)
+
+def global_exception_handler(logger, exception_type, exception_value, traceback):
+    logger.log("RUN FAILED", isTitle=True)
+    logger.log("Exception type : ")
+    logger.log(str(exception_type))
+    logger.log("Error : ")
+    logger.log(str(exception_value))
+    traceback.print_exception(exception_type, exception_value, traceback)
