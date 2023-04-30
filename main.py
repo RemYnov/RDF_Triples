@@ -1,13 +1,13 @@
 from processing.spark_operations import SparkOperations
 from logs_management import Logger
 from processing.spark_config import get_spark_ui_url
-from config import RDF_DATA_PATH, RDF_EN_FR_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, EXPORTS_FOLDER_PATH
+from config import RDF_DATA_PATH, RDF_FILENAME, RDF_EN_FR_TRANSFORMED_PATH, RDF_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, EXPORTS_FOLDER_PATH
 import json
 from locale import *
 
 
 if __name__ == '__main__':
-    RUN_NAME = "SPARK TRANSFO"
+    RUN_NAME = "30 Go Spark Transformation and Export"
     # Initialisation of the logger object
     logger = Logger(defaultCustomLogs="fancy", botEnabled=True, runName=RUN_NAME)
     logger.log("===== Running Spark transformation =====")
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     operationsLogs, df_RDF = sparkOps.RDF_transform_and_sample_by_domain(
         input_file=input_file,
         exportConfig=exportConfig,
-        performCounts=False,
+        performCounts=True,
         setLogToInfo=False,
         stopSession=False,
         showSample=False

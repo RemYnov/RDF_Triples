@@ -250,16 +250,21 @@ class SparkOperations:
 
         self.sparkLoger.start_timer("Explode objects")
         exploded_subject_df = subject_names_df.select("Subject", explode(col("tokenizedObj")).alias("exploded_object"))
+        exploded_main_df = main_df.select("Subject", "Predicate", "Object", "tokenizedObj", "filtered_tokens", explode(col("tokenizedObj")).alias("exploded_object"))
         self.sparkLoger.stop_timer("Explode objects")
 
         self.sparkLoger.start_timer("matching triples")
-        matched_triples = exploded_subject_df.alias("a") \
-            .join(main_df.alias("b"), array_contains(col("b.tokenizedObj"), col("a.exploded_object")), how="inner") \
-            .select(
-                "a.Subject",
-                col("b.Subject").alias("matched_subject"),
-                "b.Predicate",
-                "b.Object")
+        # Joining the exploded objects from 'exploded_subject_df', which represents
+        # the name of each unique Triples Subject, with the 'exploded_main_df' which represents
+        # the exploded objects of the entire dataframe.
+        matched_triples = exploded_subject_df.alias("a")\
+            .join(exploded_main_df.alias("b"), col("a.exploded_object") == col("b.exploded_object"),
+                  how="inner") \
+            .select("a.Subject",
+                    col("b.Subject").alias("matched_Subject"),
+                    "b.Predicate",
+                    "b.Object",
+                    "b.tokenizedObj")
         self.sparkLoger.stop_timer("matching triples")
 
         self.sparkLoger.start_timer("exporting to csv")
@@ -267,7 +272,7 @@ class SparkOperations:
             .option("delimiter", "|") \
             .option("header", "false") \
             .mode("overwrite") \
-            .csv(RDF_DATA_PATH + "sparkedData/exploResults/matchingTriples")
+            .csv(RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples")
         self.sparkLoger.stop_timer("exporting to csv")
 
         return matched_triples
