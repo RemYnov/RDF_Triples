@@ -1,20 +1,23 @@
 from processing.spark_operations import SparkOperations
-from logs_management import Logger
+from logs_management import Logger, global_exception_handler
 from processing.spark_config import get_spark_ui_url
-from config import RDF_DATA_PATH, RDF_EN_FR_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, EXPORTS_FOLDER_PATH
+from config import RDF_DATA_PATH, RDF_FILENAME, RDF_EN_FR_TRANSFORMED_PATH, RDF_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, EXPORTS_FOLDER_PATH, SPARK_UI_URL
 import json
-from locale import *
-
+import sys
 
 if __name__ == '__main__':
-    # Initialisation of the logger object
-    logger = Logger(defaultCustomLogs="fancy")
-    logger.log("===== Running Spark transformation =====")
+    RUN_NAME = "1M records testing without UDF"
+    # Initialisation of the logger object and the exception handler
+    logger = Logger(defaultCustomLogs="fancy", botEnabled=True, runName=RUN_NAME)
+    sys.excepthook = lambda et, ev, tb: global_exception_handler(logger, et, ev, tb)  # For unexpected error
+
+    logger.log("==Running Spark transformation==")
 
     # Initialisation of the Class performing all the Spark operations
     sparkOps = SparkOperations(
         app_name="TriplesRDF",
-        RDF_DATA_PATH=RDF_DATA_PATH
+        RDF_DATA_PATH=RDF_DATA_PATH,
+        botLoggerEnabled=True
     )
 
     url = get_spark_ui_url(sparkOps.sparkSession)
@@ -34,23 +37,22 @@ if __name__ == '__main__':
     }
 
     logger.start_timer("Spark processing")
-    #logger.log("Running Spark transformation and sampling domain", exportConfig["domainToExport"], "...")
-    logger.log(f"Spark UI URL: {url}")
+    logger.log(f"Spark UI URL: {url} or {SPARK_UI_URL}")
 
     operationsLogs, df_RDF = sparkOps.RDF_transform_and_sample_by_domain(
         input_file=input_file,
         exportConfig=exportConfig,
-        performCounts=False,
+        performCounts=True,
         setLogToInfo=False,
         stopSession=False,
         showSample=False
     )
 
-    logger.log("===== Spark transformation over =====")
+    logger.log("==Spark transformation over==")
     logger.stop_timer("Spark processing")
     logger.log(json.dumps(operationsLogs, indent=4, sort_keys=False, separators=(',', ': ')))
 
-    logger.log("===== Searching for related Triples =====")
+    logger.log("==Searching for related Triples==")
     related_subjects = sparkOps.find_matching_triples(main_df=df_RDF)
 
-    related_subjects.show(25, truncate=True)
+    logger.log(RUN_NAME + " END.", isTitle=True)

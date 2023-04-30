@@ -2,7 +2,7 @@ import re
 import json
 from logs_management import Logger
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col, explode, array_contains
+from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col, explode
 from pyspark.sql.types import StringType, ArrayType, StructType, StructField
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import StopWordsRemover, RegexTokenizer
@@ -10,7 +10,7 @@ import glob
 import pandas as pd
 import os
 from urllib import parse
-from config import PREDICATES_TEMPLATE_PATH
+from config import PREDICATES_TEMPLATE_PATH, RDF_DATA_PATH
 
 os.environ['PYSPARK_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
 os.environ['PYSPARK_DRIVER_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
@@ -21,24 +21,17 @@ class SparkOperations:
     Every spark operations will be managed and monitored
     from this class.
     """
-    def __init__(self, app_name, RDF_DATA_PATH):
+    def __init__(self, app_name, RDF_DATA_PATH, botLoggerEnabled):
         # Init loggers
-        self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="normal")
-        #self.sparkWarningLoger = Logger(prefix="- spark -", defaultCustomLogs="warning")
-        #self.sparkErrorLogger = Logger(prefix="- spark error -", defaultCustomLogs="critical")
-        # Init counters
-        self.counter = Logger
+        self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="normal", botEnabled=botLoggerEnabled)
 
         self.SPARK_LOCAL_DIR = parse.urljoin('file', parse.quote("sparkWorkspace"))
         self.SPARK_LOGS_DIR = parse.urljoin(self.SPARK_LOCAL_DIR, parse.quote("eventLogs"))
-        msg1 = "Spark working on path : " + self.SPARK_LOCAL_DIR
-        msg2 = "Spark logs stored at : " + self.SPARK_LOGS_DIR
-        self.sparkLoger.log(msg1)
-        self.sparkLoger.log(msg2)
 
         self.sparkSession = SparkSession.builder \
             .appName(app_name) \
             .config("spark.executorEnv.PYTHONHASHSEED", "0") \
+            .config('spark.executor.heartbeatInterval', 10000) \
             .config("spark.executor.memory", "6g") \
             .config("spark.executor.memoryOverHead", "1g") \
             .config("spark.python.worker.memory", "2g") \
@@ -48,6 +41,8 @@ class SparkOperations:
             .config("spark.default.parallelism", "200") \
             .config("spark.sql.shuffle.partitions", "200") \
             .config("spark.sql.autoBroadcastJoinThreshold", "10485760") \
+            .config('spark.network.timeout', 10000) \
+            .config("spark.core.connection.ack.wait.timeout", "3600") \
             .config("spark.eventLog.enabled", "true") \
             .config("spark.eventLog.dir", self.SPARK_LOCAL_DIR + "/eventLogs") \
             .config("spark.local.dir", self.SPARK_LOCAL_DIR) \
@@ -92,7 +87,6 @@ class SparkOperations:
         stripped_predicate = re.sub(r'^<.*\/(.*?)>$', r'\1', s)
         if stripped_predicate == "rdf-schema#label":
             stripped_predicate = "type.object.name"
-        # to test:
         elif stripped_predicate == "rdf-syntax-ns#type":
             stripped_predicate = "type.object.type"
         return stripped_predicate
@@ -167,7 +161,7 @@ class SparkOperations:
             .option("header", "false") \
             .schema(triples_schema) \
             .csv(input_file)
-        df = df.drop("Blank")
+        df = (df.drop("Blank")).limit(1000000)
         self.sparkLoger.stop_timer("reading")
 
         self.sparkLoger.start_timer("droping duplicates")
@@ -183,11 +177,11 @@ class SparkOperations:
             self.sparkLoger.start_timer("perform counts")
             initial_count = df.count()
             final_count = df_light.count()
-            #duplicates_count = initial_count - final_count
+            duplicates_count = initial_count - final_count
 
             self.sparkLoger.custom_counter("initCount", initial_count)
             self.sparkLoger.custom_counter("finalCount", final_count)
-            #self.sparkLoger.custom_counter("dupCount", duplicates_count.count())
+            self.sparkLoger.custom_counter("duplicatesCount", duplicates_count)
             self.sparkLoger.stop_timer("perform counts")
 
         self.sparkLoger.start_timer("transformation")
@@ -213,18 +207,20 @@ class SparkOperations:
         nlp_model = nlp_pipeline.fit(cleaned_df)
         tokenized_df = nlp_model.transform(cleaned_df)
 
+        """
         transformed_df = tokenized_df.withColumn("filtered_tokens",
             self.transform_object_udf(
                 col("filtered_tokens"),
                 col("Object")
             )
         )
+        """
         self.sparkLoger.stop_timer("NLP Pipeline")
 
         if showSample:
             self.sparkLoger.start_timer("PRINT TRANSFORMED DF")
             #transformed_df.filter(length(col("Object")) > 50).show(25, truncate=False)
-            transformed_df.show(50, truncate=False)
+            tokenized_df.show(50, truncate=False)
             self.sparkLoger.stop_timer("PRINT TRANSFORMED DF")
 
         # Will perform extract depending on the exportConfig param
@@ -233,27 +229,45 @@ class SparkOperations:
         if stopSession:
             self.sparkSession.stop()
 
-        return self.sparkLoger.get_timer_counter(), transformed_df
+        return self.sparkLoger.get_timer_counter(), tokenized_df
 
     @staticmethod
     def get_unique_subject_names(df):
         subject_names = df.filter(col("Predicate").endswith("name")).select("Subject", "Predicate", "Object", "tokenizedObj")
         return subject_names
     def find_matching_triples(self, main_df):
-
+        """
+                Joining the exploded objects from 'exploded_subject_df', which represents
+                the name of each unique Triples Subject, with the 'exploded_main_df' which represents
+                the exploded objects of the entire dataframe.
+                :param main_df: the processed RDF triples dataframe, with cleaned data and tokenized object
+                :return: dataframe having, for each unique subject of our main df, the matching triples
+                based on the (tokenized) names of the unique subjects and the (tokenized) Objects of the main df
+        """
         self.sparkLoger.start_timer("get unique names")
         subject_names_df = self.get_unique_subject_names(df=main_df)
         self.sparkLoger.stop_timer("get unique names")
 
         self.sparkLoger.start_timer("Explode objects")
         exploded_subject_df = subject_names_df.select("Subject", explode(col("tokenizedObj")).alias("exploded_object"))
+        exploded_main_df = main_df.select("Subject", "Predicate", "Object", "tokenizedObj", "filtered_tokens", explode(col("tokenizedObj")).alias("exploded_object"))
         self.sparkLoger.stop_timer("Explode objects")
 
         self.sparkLoger.start_timer("matching triples")
-        matched_triples = exploded_subject_df.alias("a") \
-            .join(main_df.alias("b"), array_contains(col("b.tokenizedObj"), col("a.exploded_object")), how="inner") \
-            .select("a.Subject", "b.Subject", "b.Predicate", "b.Object", "b.tokenizedObj", "b.filtered_tokens")
+
+        matched_triples = exploded_subject_df.alias("a")\
+            .join(exploded_main_df.alias("b"), col("a.exploded_object") == col("b.exploded_object"),
+                  how="inner") \
+            .select("a.Subject",
+                    col("b.Subject").alias("matched_Subject"),
+                    "b.Predicate",
+                    "b.Object")
+        self.sparkLoger.custom_counter("nbMatchs", matched_triples.count())
         self.sparkLoger.stop_timer("matching triples")
+
+        self.sparkLoger.start_timer("exporting to csv")
+        matched_triples.write.parquet(RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples")
+        self.sparkLoger.stop_timer("exporting to csv")
 
         return matched_triples
 
