@@ -2,7 +2,7 @@ import re
 import json
 from logs_management import Logger
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col, explode, array_contains
+from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col, explode
 from pyspark.sql.types import StringType, ArrayType, StructType, StructField
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import StopWordsRemover, RegexTokenizer
@@ -87,7 +87,6 @@ class SparkOperations:
         stripped_predicate = re.sub(r'^<.*\/(.*?)>$', r'\1', s)
         if stripped_predicate == "rdf-schema#label":
             stripped_predicate = "type.object.name"
-        # to test:
         elif stripped_predicate == "rdf-syntax-ns#type":
             stripped_predicate = "type.object.type"
         return stripped_predicate
@@ -237,7 +236,14 @@ class SparkOperations:
         subject_names = df.filter(col("Predicate").endswith("name")).select("Subject", "Predicate", "Object", "tokenizedObj")
         return subject_names
     def find_matching_triples(self, main_df):
-
+        """
+                Joining the exploded objects from 'exploded_subject_df', which represents
+                the name of each unique Triples Subject, with the 'exploded_main_df' which represents
+                the exploded objects of the entire dataframe.
+                :param main_df: the processed RDF triples dataframe, with cleaned data and tokenized object
+                :return: dataframe having, for each unique subject of our main df, the matching triples
+                based on the (tokenized) names of the unique subjects and the (tokenized) Objects of the main df
+        """
         self.sparkLoger.start_timer("get unique names")
         subject_names_df = self.get_unique_subject_names(df=main_df)
         self.sparkLoger.stop_timer("get unique names")
@@ -248,9 +254,7 @@ class SparkOperations:
         self.sparkLoger.stop_timer("Explode objects")
 
         self.sparkLoger.start_timer("matching triples")
-        # Joining the exploded objects from 'exploded_subject_df', which represents
-        # the name of each unique Triples Subject, with the 'exploded_main_df' which represents
-        # the exploded objects of the entire dataframe.
+
         matched_triples = exploded_subject_df.alias("a")\
             .join(exploded_main_df.alias("b"), col("a.exploded_object") == col("b.exploded_object"),
                   how="inner") \
@@ -258,6 +262,7 @@ class SparkOperations:
                     col("b.Subject").alias("matched_Subject"),
                     "b.Predicate",
                     "b.Object")
+        self.sparkLoger.custom_counter("nbMatchs", matched_triples.count())
         self.sparkLoger.stop_timer("matching triples")
 
         self.sparkLoger.start_timer("exporting to csv")
