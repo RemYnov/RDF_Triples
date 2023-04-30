@@ -1,24 +1,18 @@
-from processing.spark_operations import SparkOperations
-from logs_management import Logger, global_exception_handler
-from processing.spark_config import get_spark_ui_url
-from config import RDF_DATA_PATH, RDF_FILENAME, RDF_EN_FR_TRANSFORMED_PATH, RDF_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, EXPORTS_FOLDER_PATH, SPARK_UI_URL
-import json
-import sys
+from spark_operations import SparkOperations
+from logs_management import Logger
+from spark_config import get_spark_ui_url
+from config import RDF_DATA_PATH, RDF_EN_FR_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, PREDICATES_TEMPLATE_PATH, EXPORTS_FOLDER_PATH
+
 
 if __name__ == '__main__':
-    RUN_NAME = "1M records testing without UDF"
-    # Initialisation of the logger object and the exception handler
-    logger = Logger(defaultCustomLogs="fancy", botEnabled=True, runName=RUN_NAME)
-    sys.excepthook = lambda et, ev, tb: global_exception_handler(logger, et, ev, tb)  # For unexpected error
-
-    logger.log("==Running Spark transformation==")
-
     # Initialisation of the Class performing all the Spark operations
     sparkOps = SparkOperations(
         app_name="TriplesRDF",
-        RDF_DATA_PATH=RDF_DATA_PATH,
-        botLoggerEnabled=True
+        RDF_DATA_PATH=RDF_DATA_PATH
     )
+
+    # Initialisation of the logger object
+    logger = Logger()
 
     url = get_spark_ui_url(sparkOps.sparkSession)
 
@@ -26,33 +20,42 @@ if __name__ == '__main__':
     output_path = RDF_DATA_PATH + RDF_EN_FR_TRANSFORMED_PATH
 
     exportConfig = {
+        "exportFullData": False,
         "exportUniquePredicates": False,
         "exportMatchingTriples": False,
-        "exportSampleEnabled": False,
-        "exportFullData": False,
-        "exportFullPath": output_path,
-        "domainToExport": "common",
-        "exportSize": 0.5,
+        "exportSampleEnabled": True,
+        "domainToExport": "computer",
+        "exportSize": 0.3,
         "sample_output_folderpath": EXPORTS_FOLDER_PATH
     }
 
-    logger.start_timer("Spark processing")
-    logger.log(f"Spark UI URL: {url} or {SPARK_UI_URL}")
+    logger.start_timer("processing")
+    logger.log("Running Spark transformation and sampling domain", exportConfig["domainToExport"], "...")
+    logger.log(f"Spark UI URL: {url}")
 
-    operationsLogs, df_RDF = sparkOps.RDF_transform_and_sample_by_domain(
+    operationsLogs = sparkOps.RDF_transform_and_sample_by_domain(
         input_file=input_file,
+        output_path=output_path,
         exportConfig=exportConfig,
-        performCounts=True,
+        performCounts=False,
         setLogToInfo=False,
-        stopSession=False,
-        showSample=False
+        stopSession=False
     )
 
-    logger.log("==Spark transformation over==")
-    logger.stop_timer("Spark processing")
-    logger.log(json.dumps(operationsLogs, indent=4, sort_keys=False, separators=(',', ': ')))
+    logger.log("===== Spark transformation done =====")
+    logger.stop_timer("processing")
+    logger.log(operationsLogs)
 
-    logger.log("==Searching for related Triples==")
-    related_subjects = sparkOps.find_matching_triples(main_df=df_RDF)
 
-    logger.log(RUN_NAME + " END.", isTitle=True)
+
+def extract_en_fr(input_file, output_file):
+    # Old en-fr extraction
+    # RDF_FILENAME = "freebase-rdf-latest.csv"
+    # df = pd.read_csv(RDF_DATA_PATH + RDF_FILENAME)
+    # extract_en_fr(input_file, output_file)
+
+    with open(input_file, 'r', encoding='utf-8') as infile, open(output_file, 'w', encoding='utf-8') as outfile:
+        for line in infile:
+            if '@en' in line or '@fr' in line:
+                outfile.write(line)
+    print("[extract_en_fr] : Done.")

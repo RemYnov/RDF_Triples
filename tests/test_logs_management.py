@@ -8,9 +8,9 @@ def test_increment_and_get_counter():
     testLogger = Logger()
     delta = 300
     for i in range(0,delta):
-        testLogger.custom_counter(counter="count1", increment=1)
-        testLogger.custom_counter("count2", -2)
-        testLogger.custom_counter("count3", 10)
+        testLogger.increment_counter(counter="count1", increment=1)
+        testLogger.increment_counter("count2", -2)
+        testLogger.increment_counter("count3", 10)
 
     assert testLogger.get_counter("count1") == delta*1
     assert testLogger.get_counter("count2") == delta*(-2)

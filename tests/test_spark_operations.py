@@ -3,7 +3,7 @@ from pathlib import Path
 from pyspark.sql.functions import regexp_replace
 from pyspark.sql import SparkSession, DataFrame
 sys.path.append(str(Path(__file__).parent.parent))
-from processing.spark_operations import SparkOperations
+from spark_operations import SparkOperations
 
 def test_get_predicates_by_domain():
     #expected =
