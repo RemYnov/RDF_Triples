@@ -21,20 +21,12 @@ class SparkOperations:
     Every spark operations will be managed and monitored
     from this class.
     """
-    def __init__(self, app_name, RDF_DATA_PATH):
+    def __init__(self, app_name, RDF_DATA_PATH, botLoggerEnabled):
         # Init loggers
-        self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="normal", botEnabled=True)
-        #self.sparkWarningLoger = Logger(prefix="- spark -", defaultCustomLogs="warning")
-        #self.sparkErrorLogger = Logger(prefix="- spark error -", defaultCustomLogs="critical")
-        # Init counters
-        self.counter = Logger
+        self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="normal", botEnabled=botLoggerEnabled)
 
         self.SPARK_LOCAL_DIR = parse.urljoin('file', parse.quote("sparkWorkspace"))
         self.SPARK_LOGS_DIR = parse.urljoin(self.SPARK_LOCAL_DIR, parse.quote("eventLogs"))
-        msg1 = "Spark working on path : " + self.SPARK_LOCAL_DIR
-        msg2 = "Spark logs stored at : " + self.SPARK_LOGS_DIR
-        self.sparkLoger.log(msg1)
-        self.sparkLoger.log(msg2)
 
         self.sparkSession = SparkSession.builder \
             .appName(app_name) \
@@ -170,7 +162,7 @@ class SparkOperations:
             .option("header", "false") \
             .schema(triples_schema) \
             .csv(input_file)
-        df = df.drop("Blank")
+        df = (df.drop("Blank")).limit(1000000)
         self.sparkLoger.stop_timer("reading")
 
         self.sparkLoger.start_timer("droping duplicates")
@@ -216,18 +208,20 @@ class SparkOperations:
         nlp_model = nlp_pipeline.fit(cleaned_df)
         tokenized_df = nlp_model.transform(cleaned_df)
 
+        """
         transformed_df = tokenized_df.withColumn("filtered_tokens",
             self.transform_object_udf(
                 col("filtered_tokens"),
                 col("Object")
             )
         )
+        """
         self.sparkLoger.stop_timer("NLP Pipeline")
 
         if showSample:
             self.sparkLoger.start_timer("PRINT TRANSFORMED DF")
             #transformed_df.filter(length(col("Object")) > 50).show(25, truncate=False)
-            transformed_df.show(50, truncate=False)
+            tokenized_df.show(50, truncate=False)
             self.sparkLoger.stop_timer("PRINT TRANSFORMED DF")
 
         # Will perform extract depending on the exportConfig param
@@ -236,7 +230,7 @@ class SparkOperations:
         if stopSession:
             self.sparkSession.stop()
 
-        return self.sparkLoger.get_timer_counter(), transformed_df
+        return self.sparkLoger.get_timer_counter(), tokenized_df
 
     @staticmethod
     def get_unique_subject_names(df):
@@ -267,11 +261,7 @@ class SparkOperations:
         self.sparkLoger.stop_timer("matching triples")
 
         self.sparkLoger.start_timer("exporting to csv")
-        matched_triples.write \
-            .option("delimiter", "|") \
-            .option("header", "false") \
-            .mode("overwrite") \
-            .csv(RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples")
+        matched_triples.write.parquet(RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples")
         self.sparkLoger.stop_timer("exporting to csv")
 
         return matched_triples

@@ -1,11 +1,9 @@
 import time
 from config import TELEGRAM_BOT_TOKEN, BOT_CHAT_ID
 from colorama import Fore, Style
-import os
 from telegram import Update, Bot
 import asyncio
 import re
-import html
 
 
 class Logger:
@@ -118,8 +116,9 @@ class TelegramLogger:
         for i in range(0, 8):
             if i % 2:
                 self.send_message_to_telegram("-------------------")
-            if i == 3 :
+            if i == 3:
                 self.send_message_to_telegram("N E W  R U N : " + run_name, title=True)
+
 
 def global_exception_handler(logger, exception_type, exception_value, traceback):
     logger.log("RUN FAILED", isTitle=True)
