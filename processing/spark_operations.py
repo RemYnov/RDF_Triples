@@ -161,7 +161,7 @@ class SparkOperations:
             .option("header", "false") \
             .schema(triples_schema) \
             .csv(input_file)
-        df = (df.drop("Blank")).limit(1000000)
+        df = (df.drop("Blank")).limit(100000)
         self.sparkLoger.stop_timer("reading")
 
         self.sparkLoger.start_timer("droping duplicates")
@@ -269,7 +269,7 @@ class SparkOperations:
         matched_triples.write.parquet(RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples")
         self.sparkLoger.stop_timer("exporting to csv")
 
-        return matched_triples
+        return matched_triples, self.sparkLoger.get_counter("matching triples")
 
     def extract_sample(self, exportConfig, df):
         # Writting to csv a sample of triples from the given domain

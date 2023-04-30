@@ -42,7 +42,7 @@ if __name__ == '__main__':
     operationsLogs, df_RDF = sparkOps.RDF_transform_and_sample_by_domain(
         input_file=input_file,
         exportConfig=exportConfig,
-        performCounts=True,
+        performCounts=False,
         setLogToInfo=False,
         stopSession=False,
         showSample=False
@@ -53,6 +53,8 @@ if __name__ == '__main__':
     logger.log(json.dumps(operationsLogs, indent=4, sort_keys=False, separators=(',', ': ')))
 
     logger.log("==Searching for related Triples==")
-    related_subjects = sparkOps.find_matching_triples(main_df=df_RDF)
+    related_subjects, nb_related_subject = sparkOps.find_matching_triples(main_df=df_RDF)
 
     logger.log(RUN_NAME + " END.", isTitle=True)
+    logger.log("FINAAAAL RESULTS : ")
+    logger.log(nb_related_subject)
