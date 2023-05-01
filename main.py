@@ -62,7 +62,7 @@ if __name__ == '__main__':
     result_path = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples"
     csv_path = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples_csv"
 
-    sparkOps.parquet_reading(result_path, csv_file_path=csv_path)
+    sparkOps.parquet_reading(result_path, csv_file_path="")
 
     logger.log(RUN_NAME + " END.", isTitle=True)
 

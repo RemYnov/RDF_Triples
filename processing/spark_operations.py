@@ -6,8 +6,6 @@ from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col, expl
 from pyspark.sql.types import StringType, ArrayType, StructType, StructField
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import StopWordsRemover, RegexTokenizer
-import glob
-import pandas as pd
 import os
 from urllib import parse
 from config import PREDICATES_TEMPLATE_PATH, RDF_DATA_PATH
@@ -190,7 +188,7 @@ class SparkOperations:
             .option("header", "false") \
             .schema(triples_schema) \
             .csv(input_file)
-        df = (df.drop("Blank")).limit(75000)
+        df = (df.drop("Blank")).limit(7500)
         self.sparkLoger.stop_timer("reading")
 
         self.sparkLoger.start_timer("droping duplicates")

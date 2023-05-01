@@ -9,3 +9,5 @@ class RDF_Graph_Model:
 
     def __init__(self, model_name):
         self.logger = Logger(prefix="- graph modeling -")
+        self.nodes = []
+        self.edges = []

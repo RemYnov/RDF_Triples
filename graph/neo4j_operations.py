@@ -1,10 +1,15 @@
 import json
-from config import LOCAL_PREDICATES_TEMPLATE_PATH
-def convert_template():
-    with open(LOCAL_PREDICATES_TEMPLATE_PATH, "r") as f:
-        predicates_json = json.load(f)
+from logs_management import Logger
 
-    for key, value in predicates_json.items():
-        print(key, value)
 
-convert_template()
+class GraphOperations:
+    """
+    Every operation needed for the graph modelisations and / or
+    the data préparation / discovery will be managed by this class
+    """
+    def __init__(self):
+        self.logger = Logger(prefix="- graph -")
+
+    def filter_processed_data(self, depth=5):
+
+        return "Hey"
