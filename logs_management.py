@@ -99,18 +99,26 @@ class TelegramLogger:
         return escaped_msg
 
     def send_message_to_telegram(self, message, title=False):
+        response = 0
         loop = asyncio.get_event_loop()  # To avoid error when sending multiple logs
         formated_msg = self.markdown_v2(message)
         if title:
             formated_msg = f"*{formated_msg}*"
 
         if loop.is_running():
-            asyncio.create_task(self.async_send_message_to_telegram(formated_msg))
+            response = asyncio.create_task(self.async_send_message_to_telegram(formated_msg))
         else:
-            loop.run_until_complete(self.async_send_message_to_telegram(formated_msg))
+            response = loop.run_until_complete(self.async_send_message_to_telegram(formated_msg))
+        return response
 
     async def async_send_message_to_telegram(self, message):
-        await self.bot.send_message(chat_id=self.chat_id, text=message, parse_mode="MarkdownV2")
+        try:
+            response = await self.bot.send_message(chat_id=self.chat_id, text=message, parse_mode="MarkdownV2")
+            return True
+        except Exception as e:
+            print("BOT LOGGER ERROR : Failed to send message to the chat ", BOT_CHAT_ID)
+            print(e)
+            return False
 
     def print_new_run(self, run_name):
         for i in range(0, 8):
