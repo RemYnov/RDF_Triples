@@ -1,7 +1,7 @@
 import time
 from config import TELEGRAM_BOT_TOKEN, BOT_CHAT_ID
 from colorama import Fore, Style
-from telegram import Update, Bot
+from telegram import Bot
 import asyncio
 import re
 

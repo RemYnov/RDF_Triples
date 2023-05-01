@@ -2,6 +2,8 @@ import sys
 from pathlib import Path
 from pyspark.sql.functions import regexp_replace
 from pyspark.sql import SparkSession, DataFrame
+from pyspark.ml.feature import StopWordsRemover, RegexTokenizer
+from pyspark.ml import Pipeline
 sys.path.append(str(Path(__file__).parent.parent))
 from processing.spark_operations import SparkOperations
 
@@ -60,6 +62,44 @@ def test_regex_on_spark():
     df = df.withColumn('predicates', regexp_replace('predicates', r'^<.*\/(.*?)>$', r'$1'))
 
     assert are_dataframes_equal(df, expected_df)
+
+def test_stop_words_removal():
+    french_stopwords = StopWordsRemover.loadDefaultStopWords('french')
+    english_stopwords = StopWordsRemover.loadDefaultStopWords('english')
+
+    combined_stopwords = french_stopwords + english_stopwords
+
+    stop_words_remover = StopWordsRemover(inputCol="tokenizedObj", outputCol="filtered_tokens",
+                                          stopWords=combined_stopwords)
+    regex_tokenizer = RegexTokenizer(inputCol="Object", outputCol="tokenizedObj", pattern=r'\W')
+
+    nlp_pipeline = Pipeline(stages=[regex_tokenizer, stop_words_remover])
+
+    nlp_model = nlp_pipeline.fit(cleaned_df)
+    tokenized_df = nlp_model.transform(cleaned_df)
+
+
+    data = [("g.11bbql90n_", "common.notable_for.display_name", "Personnage de film"),
+            ("g.11b75s88wg", "common.notable_for.display_name", "Produit de grande consommation"),
+            ("g.1254y8qqv", "common.notable_for.display_name", "Édition de livre"),
+            ("g.11b5lw8t_m", "common.notable_for.display_name", "épisode de Série Télévisée")]
+
+    columns = ["id", "type", "Object"]
+
+    spark = SparkSession.builder \
+        .appName("StopWordsRemover Test") \
+        .getOrCreate()
+
+    df = spark.createDataFrame(data, columns)
+    pattern = r'\b(?:{})\b'.format('|'.join(StopWordsRemover.loadDefaultStopWords('french')))
+    regex_tokenizer = RegexTokenizer(inputCol="Object", outputCol="tokenizedObj", pattern=pattern)
+    stop_words_remover = StopWordsRemover(inputCol="tokenizedObj", outputCol="filtered_tokens")
+
+    nlp_pipeline = Pipeline(stages=[regex_tokenizer, stop_words_remover])
+    nlp_model = nlp_pipeline.fit(input_df)
+    tokenized_df = nlp_model.transform(input_df)
+
+    return tokenized_df
 def are_dataframes_equal(df1: DataFrame, df2: DataFrame) -> bool:
     # Vérifier si les schémas sont les mêmes
     if df1.schema != df2.schema:

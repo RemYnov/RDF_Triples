@@ -128,6 +128,11 @@ class SparkOperations:
 
         return desired_predicates
 
+    @staticmethod
+    def get_unique_subject_names(df):
+        subject_names = df.filter(col("Predicate").endswith("name")).select("Subject", "Predicate", "Object", "filtered_tokens")
+        return subject_names
+
     def RDF_transform_and_sample_by_domain(
             self, input_file, exportConfig,
             performCounts=False, setLogToInfo=False, stopSession=True, showSample=True
@@ -231,10 +236,7 @@ class SparkOperations:
 
         return self.sparkLoger.get_timer_counter(), tokenized_df
 
-    @staticmethod
-    def get_unique_subject_names(df):
-        subject_names = df.filter(col("Predicate").endswith("name")).select("Subject", "Predicate", "Object", "filtered_tokens")
-        return subject_names
+
     def find_matching_triples(self, main_df):
         """
                 Joining the exploded objects from 'exploded_subject_df', which represents
@@ -306,6 +308,7 @@ class SparkOperations:
             parquet_df.write.csv(csv_file_path, mode="overwrite", header=True)
 
         self.sparkLoger.stop_timer("parquet to csv")
+
 
     def extract_sample(self, exportConfig, df):
         # Writting to csv a sample of triples from the given domain
@@ -381,18 +384,3 @@ class SparkOperations:
                 .mode("overwrite") \
                 .csv(unique_predicates_file)
             self.sparkLoger.stop_timer("predicates export")
-
-    def merge_sparked_data(self, folder, merged_filename, delim):
-        # Récupérer la liste de tous les fichiers CSV dans le dossier
-        files = glob.glob(folder + "/*.csv")
-
-        print(folder + "/*.csv")
-        df_list = [pd.read_csv(file, sep=delim, header=None) for file in files]
-
-        merged_df = pd.concat(df_list, ignore_index=True)
-
-        print(merged_df[0:10])
-
-        # sorted_df = merged_df.sort_values(by=merged_df.columns[0])
-
-        merged_df.to_csv(folder + merged_filename, index=False, sep=delim)

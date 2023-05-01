@@ -1,7 +1,7 @@
 from processing.spark_operations import SparkOperations
 from logs_management import Logger, global_exception_handler
 from processing.spark_config import get_spark_ui_url
-from config import RDF_DATA_PATH, RDF_FILENAME, RDF_EN_FR_TRANSFORMED_PATH, RDF_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, EXPORTS_FOLDER_PATH, SPARK_UI_URL
+from config import RDF_DATA_PATH, RDF_EN_FR_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, EXPORTS_FOLDER_PATH, SPARK_UI_URL
 import json
 import sys
 
