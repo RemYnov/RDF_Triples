@@ -269,7 +269,19 @@ class SparkOperations:
         matched_triples.write.parquet(RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples")
         self.sparkLoger.stop_timer("exporting to csv")
 
-        return matched_triples, self.sparkLoger.get_counter("matching triples")
+        return matched_triples, self.sparkLoger.get_counter("nbMatchs")
+
+
+    def parquet_reading(self, parquet_dir, csv_file_path="null"):
+        self.sparkLoger.start_timer("parquet")
+        parquet_df = self.sparkSession.read.parquet(parquet_dir)
+        df = parquet_df.toPandas()
+
+        if csv_file_path != "null":
+            df.to_csv(csv_file_path, index=False)
+
+        df.head(25)
+        self.sparkLoger.stop_timer("parquet")
 
     def extract_sample(self, exportConfig, df):
         # Writting to csv a sample of triples from the given domain

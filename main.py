@@ -55,6 +55,11 @@ if __name__ == '__main__':
     logger.log("==Searching for related Triples==")
     related_subjects, nb_related_subject = sparkOps.find_matching_triples(main_df=df_RDF)
 
+    result_path = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples"
+    csv_path = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples_csv"
+
+    sparkOps.parquet_reading(result_path, csv_file_path=csv_path)
+
     logger.log(RUN_NAME + " END.", isTitle=True)
     logger.log("FINAAAAL RESULTS : ")
     logger.log(nb_related_subject)
