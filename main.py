@@ -6,7 +6,7 @@ import json
 import sys
 
 if __name__ == '__main__':
-    RUN_NAME = "1M records testing without UDF"
+    RUN_NAME = "50k records working with parquet + match based on tokenized objects without stopwords"
     # Initialisation of the logger object and the exception handler
     logger = Logger(defaultCustomLogs="fancy", botEnabled=True, runName=RUN_NAME)
     sys.excepthook = lambda et, ev, tb: global_exception_handler(logger, et, ev, tb)  # For unexpected error
@@ -53,7 +53,9 @@ if __name__ == '__main__':
     logger.log(json.dumps(operationsLogs, indent=4, sort_keys=False, separators=(',', ': ')))
 
     logger.log("==Searching for related Triples==")
-    related_subjects, nb_related_subject = sparkOps.find_matching_triples(main_df=df_RDF)
+    related_subjects, matchingLogs = sparkOps.find_matching_triples(main_df=df_RDF)
+    logger.log("==Matching Over==")
+    logger.log(json.dumps(matchingLogs, indent=4, sort_keys=False, separators=(',', ': ')))
 
     result_path = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples"
     csv_path = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples_csv"
@@ -61,5 +63,3 @@ if __name__ == '__main__':
     sparkOps.parquet_reading(result_path, csv_file_path=csv_path)
 
     logger.log(RUN_NAME + " END.", isTitle=True)
-    logger.log("FINAAAAL RESULTS : ")
-    logger.log(nb_related_subject)

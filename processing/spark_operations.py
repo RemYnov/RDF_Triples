@@ -36,7 +36,7 @@ class SparkOperations:
             .config("spark.executor.memoryOverHead", "1g") \
             .config("spark.python.worker.memory", "2g") \
             .config("spark.driver.memory", "4g") \
-            .config("spark.driver.maxResultSize", "2g") \
+            .config("spark.driver.maxResultSize", "3g") \
             .config("spark.python.worker.reuse", "true") \
             .config("spark.default.parallelism", "200") \
             .config("spark.sql.shuffle.partitions", "200") \
@@ -161,7 +161,7 @@ class SparkOperations:
             .option("header", "false") \
             .schema(triples_schema) \
             .csv(input_file)
-        df = (df.drop("Blank")).limit(100000)
+        df = (df.drop("Blank")).limit(50000)
         self.sparkLoger.stop_timer("reading")
 
         self.sparkLoger.start_timer("droping duplicates")
@@ -233,7 +233,7 @@ class SparkOperations:
 
     @staticmethod
     def get_unique_subject_names(df):
-        subject_names = df.filter(col("Predicate").endswith("name")).select("Subject", "Predicate", "Object", "tokenizedObj")
+        subject_names = df.filter(col("Predicate").endswith("name")).select("Subject", "Predicate", "Object", "filtered_tokens")
         return subject_names
     def find_matching_triples(self, main_df):
         """
@@ -244,44 +244,68 @@ class SparkOperations:
                 :return: dataframe having, for each unique subject of our main df, the matching triples
                 based on the (tokenized) names of the unique subjects and the (tokenized) Objects of the main df
         """
-        self.sparkLoger.start_timer("get unique names")
+        matchingLogger = Logger(prefix="- relations search -", defaultCustomLogs="warning", botEnabled=True)
+
+        matchingLogger.start_timer("Explode objects")
         subject_names_df = self.get_unique_subject_names(df=main_df)
-        self.sparkLoger.stop_timer("get unique names")
+        # Unique subjects with their exploded tokenized name (cf NLP pipeline)
+        # (== 1 row by token with the same subject key).
+        # We take the col where the stop_words were applied : we don't want any match based
+        # on stop_words.
+        exploded_subject_df = subject_names_df.select(
+            "Subject",
+            col("Object").alias("SubjectNameFromObject"),
+            explode(col("filtered_tokens")).alias("exploded_tokens")
+        )
+        # Entire Triples data with the exploded objects
+        # (only tokenized, stop words are still in those objects)
+        exploded_main_df = main_df.select(
+            "Subject",
+            "Predicate",
+            "Object",
+            "tokenizedObj",
+            explode(col("tokenizedObj")).alias("exploded_objects_tokens")
+        )
+        matchingLogger.stop_timer("Explode objects")
 
-        self.sparkLoger.start_timer("Explode objects")
-        exploded_subject_df = subject_names_df.select("Subject", explode(col("tokenizedObj")).alias("exploded_object"))
-        exploded_main_df = main_df.select("Subject", "Predicate", "Object", "tokenizedObj", "filtered_tokens", explode(col("tokenizedObj")).alias("exploded_object"))
-        self.sparkLoger.stop_timer("Explode objects")
-
-        self.sparkLoger.start_timer("matching triples")
-
+        matchingLogger.start_timer("matching triples")
         matched_triples = exploded_subject_df.alias("a")\
-            .join(exploded_main_df.alias("b"), col("a.exploded_object") == col("b.exploded_object"),
+            .join(exploded_main_df.alias("b"), col("a.exploded_tokens") == col("b.exploded_objects_tokens"),
                   how="inner") \
             .select("a.Subject",
-                    col("b.Subject").alias("matched_Subject"),
+                    col("a.SubjectNameFromObject").alias("SubjectName"),
+                    col("b.Subject").alias("MatchedSubject"),
                     "b.Predicate",
-                    "b.Object")
-        self.sparkLoger.custom_counter("nbMatchs", matched_triples.count())
-        self.sparkLoger.stop_timer("matching triples")
+                    "b.tokenizedObj",
+                    col("b.Object").alias("InitialObject")
+                    )
+        clean_matchs = matched_triples.dropDuplicates()
+        allMatchsCount = matched_triples.count()
+        uniqueMatchsCount = clean_matchs.count()
+        duplicatedMatchs = allMatchsCount - uniqueMatchsCount
 
-        self.sparkLoger.start_timer("exporting to csv")
-        matched_triples.write.parquet(RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples")
-        self.sparkLoger.stop_timer("exporting to csv")
+        matchingLogger.custom_counter("nbMatchs", allMatchsCount)
+        matchingLogger.custom_counter("nbUniqueMatchs", uniqueMatchsCount)
+        matchingLogger.custom_counter("nbDuplicatedMatchs", duplicatedMatchs)
+        matchingLogger.stop_timer("matching triples")
 
-        return matched_triples, self.sparkLoger.get_counter("nbMatchs")
+        matchingLogger.start_timer("exporting to parquet")
+        matchs_filepath = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples"
+        clean_matchs.write.mode("overwrite").parquet(matchs_filepath)
+        matchingLogger.stop_timer("exporting to parquet")
+
+        return matched_triples, matchingLogger.get_timer_counter()
 
 
     def parquet_reading(self, parquet_dir, csv_file_path="null"):
-        self.sparkLoger.start_timer("parquet")
+        self.sparkLoger.start_timer("parquet to csv")
         parquet_df = self.sparkSession.read.parquet(parquet_dir)
-        df = parquet_df.toPandas()
+        parquet_df.show(25, truncate=False)
 
         if csv_file_path != "null":
-            df.to_csv(csv_file_path, index=False)
+            parquet_df.write.csv(csv_file_path, mode="overwrite", header=True)
 
-        df.head(25)
-        self.sparkLoger.stop_timer("parquet")
+        self.sparkLoger.stop_timer("parquet to csv")
 
     def extract_sample(self, exportConfig, df):
         # Writting to csv a sample of triples from the given domain
