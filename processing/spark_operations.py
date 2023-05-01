@@ -99,6 +99,30 @@ class SparkOperations:
             return tokens
 
     @staticmethod
+    def apply_NLP_pipeline(df):
+        """
+        NLP pipeline improving match efficience.
+        Tokenisation + French and English stop words removal
+        :param df: expected a cleaned dataframe with ['Subject', 'Predicate', 'Object']
+        :return: a tokenized dataframe with ['Subject', 'Predicate', 'tokenizedObj', 'filtered_obj']
+        """
+        french_stopwords = StopWordsRemover.loadDefaultStopWords('french')
+        english_stopwords = StopWordsRemover.loadDefaultStopWords('english')
+
+        combined_stopwords = french_stopwords + english_stopwords
+
+        regex_tokenizer = RegexTokenizer(inputCol="Object", outputCol="tokenizedObj", pattern='[^\wÀ-ÖØ-öø-ÿ]+')
+        stop_words_remover = StopWordsRemover(inputCol="tokenizedObj", outputCol="filtered_tokens",
+                                              stopWords=combined_stopwords)
+
+        nlp_pipeline = Pipeline(stages=[regex_tokenizer, stop_words_remover])
+
+        nlp_model = nlp_pipeline.fit(df)
+        tokenized_df = nlp_model.transform(df)
+
+        return tokenized_df
+
+    @staticmethod
     def get_predicates_by_domain(desired_domain):
         """
                 Return every unique predicates that match the given
@@ -166,7 +190,7 @@ class SparkOperations:
             .option("header", "false") \
             .schema(triples_schema) \
             .csv(input_file)
-        df = (df.drop("Blank")).limit(50000)
+        df = (df.drop("Blank")).limit(75000)
         self.sparkLoger.stop_timer("reading")
 
         self.sparkLoger.start_timer("droping duplicates")
@@ -202,7 +226,13 @@ class SparkOperations:
             cleaned_df.show(25, truncate=False)
             self.sparkLoger.stop_timer("PRINT CLEANED DF")
 
+        # Will perform extract depending on the exportConfig param
+        self.extract_sample(exportConfig, cleaned_df)
+
         self.sparkLoger.start_timer("NLP Pipeline")
+        tokenized_df = self.apply_NLP_pipeline(cleaned_df)
+        self.sparkLoger.stop_timer("NLP Pipeline")
+        """
         pattern = "[^\\p{L}]+" # Take into account alphanumeric + accent (frenh sentences)
 
         regex_tokenizer = RegexTokenizer(inputCol="Object", outputCol="tokenizedObj", pattern=pattern)
@@ -211,8 +241,7 @@ class SparkOperations:
         nlp_pipeline = Pipeline(stages=[regex_tokenizer, stop_words_remover])
         nlp_model = nlp_pipeline.fit(cleaned_df)
         tokenized_df = nlp_model.transform(cleaned_df)
-
-        """
+      
         transformed_df = tokenized_df.withColumn("filtered_tokens",
             self.transform_object_udf(
                 col("filtered_tokens"),
@@ -220,16 +249,12 @@ class SparkOperations:
             )
         )
         """
-        self.sparkLoger.stop_timer("NLP Pipeline")
 
         if showSample:
             self.sparkLoger.start_timer("PRINT TRANSFORMED DF")
             #transformed_df.filter(length(col("Object")) > 50).show(25, truncate=False)
             tokenized_df.show(50, truncate=False)
             self.sparkLoger.stop_timer("PRINT TRANSFORMED DF")
-
-        # Will perform extract depending on the exportConfig param
-        self.extract_sample(exportConfig, cleaned_df)
 
         if stopSession:
             self.sparkSession.stop()
@@ -298,17 +323,15 @@ class SparkOperations:
 
         return matched_triples, matchingLogger.get_timer_counter()
 
-
     def parquet_reading(self, parquet_dir, csv_file_path="null"):
         self.sparkLoger.start_timer("parquet to csv")
         parquet_df = self.sparkSession.read.parquet(parquet_dir)
-        parquet_df.show(25, truncate=False)
+        parquet_df.show(40, truncate=False)
 
         if csv_file_path != "null":
             parquet_df.write.csv(csv_file_path, mode="overwrite", header=True)
 
         self.sparkLoger.stop_timer("parquet to csv")
-
 
     def extract_sample(self, exportConfig, df):
         # Writting to csv a sample of triples from the given domain
