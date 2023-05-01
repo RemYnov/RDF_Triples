@@ -113,7 +113,7 @@ class TelegramLogger:
 
     async def async_send_message_to_telegram(self, message):
         try:
-            response = await self.bot.send_message(chat_id=self.chat_id, text=message, parse_mode="MarkdownV2")
+            await self.bot.send_message(chat_id=self.chat_id, text=message, parse_mode="MarkdownV2")
             return True
         except Exception as e:
             print("BOT LOGGER ERROR : Failed to send message to the chat ", BOT_CHAT_ID)
