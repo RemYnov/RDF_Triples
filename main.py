@@ -1,5 +1,4 @@
 from processing.spark_operations import SparkOperations
-from pyspark.sql import SparkSession
 from logs_management import Logger, global_exception_handler
 from processing.spark_config import get_spark_ui_url
 from config import RDF_DATA_PATH, RDF_EN_FR_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, EXPORTS_FOLDER_PATH, SPARK_UI_URL
@@ -62,7 +61,7 @@ if __name__ == '__main__':
     result_path = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples"
     csv_path = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples_csv"
 
-    sparkOps.parquet_reading(result_path, csv_file_path="")
+    sparkOps.parquet_reading(result_path)
 
     logger.log(RUN_NAME + " END.", isTitle=True)
 
