@@ -188,7 +188,7 @@ class SparkOperations:
             .option("header", "false") \
             .schema(triples_schema) \
             .csv(input_file)
-        df = (df.drop("Blank")).limit(7500)
+        df = (df.drop("Blank")).limit(10000)
         self.sparkLoger.stop_timer("reading")
 
         self.sparkLoger.start_timer("droping duplicates")
@@ -230,27 +230,9 @@ class SparkOperations:
         self.sparkLoger.start_timer("NLP Pipeline")
         tokenized_df = self.apply_NLP_pipeline(cleaned_df)
         self.sparkLoger.stop_timer("NLP Pipeline")
-        """
-        pattern = "[^\\p{L}]+" # Take into account alphanumeric + accent (frenh sentences)
-
-        regex_tokenizer = RegexTokenizer(inputCol="Object", outputCol="tokenizedObj", pattern=pattern)
-        stop_words_remover = StopWordsRemover(inputCol="tokenizedObj", outputCol="filtered_tokens")
-
-        nlp_pipeline = Pipeline(stages=[regex_tokenizer, stop_words_remover])
-        nlp_model = nlp_pipeline.fit(cleaned_df)
-        tokenized_df = nlp_model.transform(cleaned_df)
-      
-        transformed_df = tokenized_df.withColumn("filtered_tokens",
-            self.transform_object_udf(
-                col("filtered_tokens"),
-                col("Object")
-            )
-        )
-        """
 
         if showSample:
             self.sparkLoger.start_timer("PRINT TRANSFORMED DF")
-            #transformed_df.filter(length(col("Object")) > 50).show(25, truncate=False)
             tokenized_df.show(50, truncate=False)
             self.sparkLoger.stop_timer("PRINT TRANSFORMED DF")
 
@@ -319,7 +301,7 @@ class SparkOperations:
         clean_matchs.write.mode("overwrite").parquet(matchs_filepath)
         matchingLogger.stop_timer("exporting to parquet")
 
-        return matched_triples, matchingLogger.get_timer_counter()
+        return clean_matchs, matchingLogger.get_timer_counter()
 
     def parquet_reading(self, parquet_dir, csv_file_path="null"):
         self.sparkLoger.start_timer("parquet to csv")

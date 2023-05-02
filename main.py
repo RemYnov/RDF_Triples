@@ -66,6 +66,7 @@ if __name__ == '__main__':
     logger.log(RUN_NAME + " END.", isTitle=True)
 
 
+"""
 def monTest():
     data = [("g.11bbql90n_", "common.notable_for.display_name", "Personnage de film"),
             ("g.11b75s88wg", "common.notable_for.display_name", "Produit de grande consommation"),
@@ -88,6 +89,4 @@ def monTest():
     token_df = token.toPandas()
 
 #monTest()
-
-
-
+"""
