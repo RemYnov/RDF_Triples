@@ -1,14 +1,16 @@
-import re
 import json
-from logs_management import Logger
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col, explode
-from pyspark.sql.types import StringType, ArrayType, StructType, StructField
+import os
+import re
+from urllib import parse
+
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import StopWordsRemover, RegexTokenizer
-import os
-from urllib import parse
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col, explode
+from pyspark.sql.types import StringType, FloatType, ArrayType, StructType, StructField
+
 from config import PREDICATES_TEMPLATE_PATH, RDF_DATA_PATH
+from logs_management import Logger
 
 os.environ['PYSPARK_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
 os.environ['PYSPARK_DRIVER_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
@@ -57,6 +59,7 @@ class SparkOperations:
         self.transform_subject_udf = udf(self.transform_subject, StringType())
         self.transform_predicate_udf = udf(self.transform_predicate, StringType())
         self.transform_object_udf = udf(self.transform_object, ArrayType(StringType()))
+        self.compute_similarity_udf = udf(self.compute_similarity_criteria, FloatType())
         self.min_len_sw = 50
 
     @staticmethod
@@ -88,6 +91,7 @@ class SparkOperations:
         elif stripped_predicate == "rdf-syntax-ns#type":
             stripped_predicate = "type.object.type"
         return stripped_predicate
+
     @staticmethod
     def transform_object(tokens, object_init):
         min_len_sw = 50
@@ -109,6 +113,7 @@ class SparkOperations:
 
         combined_stopwords = french_stopwords + english_stopwords
 
+        # Pattern taking into account French syntax
         regex_tokenizer = RegexTokenizer(inputCol="Object", outputCol="tokenizedObj", pattern='[^\wÀ-ÖØ-öø-ÿ]+')
         stop_words_remover = StopWordsRemover(inputCol="tokenizedObj", outputCol="filtered_tokens",
                                               stopWords=combined_stopwords)
@@ -119,6 +124,27 @@ class SparkOperations:
         tokenized_df = nlp_model.transform(df)
 
         return tokenized_df
+
+    @staticmethod
+    def compute_similarity_criteria(obj, matchedObj):
+        """
+        Compute a score between 0 and 1 using Jaccard's distance.
+        Accepted hreshold set with the RDF_Graph_Model() object, initiated in
+        main.py.
+        :param obj: (NLP processed) The name of the Subject who mathed the Subject having for object 'matchedObj'
+        :param matchedObj: (NLP processed) Object that match the name of the current Subject
+        :return:
+        """
+        setObj = set(obj)
+        setMatchedObj = set(matchedObj)
+
+        intersection_size = len(setObj.intersection(setMatchedObj))
+        union_size = len(setObj.union(setMatchedObj))
+
+        if union_size == 0:
+            return 0.0
+        else:
+            return float(intersection_size) / float(union_size)
 
     @staticmethod
     def get_predicates_by_domain(desired_domain):
@@ -188,7 +214,7 @@ class SparkOperations:
             .option("header", "false") \
             .schema(triples_schema) \
             .csv(input_file)
-        df = (df.drop("Blank")).limit(10000)
+        df = (df.drop("Blank")).limit(7500)
         self.sparkLoger.stop_timer("reading")
 
         self.sparkLoger.start_timer("droping duplicates")
@@ -242,7 +268,7 @@ class SparkOperations:
         return self.sparkLoger.get_timer_counter(), tokenized_df
 
 
-    def find_matching_triples(self, main_df):
+    def find_matching_triples(self, main_df, graph):
         """
                 Joining the exploded objects from 'exploded_subject_df', which represents
                 the name of each unique Triples Subject, with the 'exploded_main_df' which represents
@@ -262,6 +288,7 @@ class SparkOperations:
         exploded_subject_df = subject_names_df.select(
             "Subject",
             col("Object").alias("SubjectNameFromObject"),
+            col("filtered_tokens").alias("tokenizedSubName"),
             explode(col("filtered_tokens")).alias("exploded_tokens")
         )
         # Entire Triples data with the exploded objects
@@ -281,12 +308,16 @@ class SparkOperations:
                   how="inner") \
             .select("a.Subject",
                     col("a.SubjectNameFromObject").alias("SubjectName"),
+                    "a.tokenizedSubName",
                     col("b.Subject").alias("MatchedSubject"),
                     "b.Predicate",
-                    "b.tokenizedObj",
-                    col("b.Object").alias("InitialObject")
+                    col("b.tokenizedObj").alias("MatchedTokens"),
+                    col("b.Object").alias("InitialMatchedObject")
                     )
+
         clean_matchs = matched_triples.dropDuplicates()
+
+        """
         allMatchsCount = matched_triples.count()
         uniqueMatchsCount = clean_matchs.count()
         duplicatedMatchs = allMatchsCount - uniqueMatchsCount
@@ -295,18 +326,23 @@ class SparkOperations:
         matchingLogger.custom_counter("nbUniqueMatchs", uniqueMatchsCount)
         matchingLogger.custom_counter("nbDuplicatedMatchs", duplicatedMatchs)
         matchingLogger.stop_timer("matching triples")
+        """
 
-        matchingLogger.start_timer("exporting to parquet")
-        matchs_filepath = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples"
-        clean_matchs.write.mode("overwrite").parquet(matchs_filepath)
-        matchingLogger.stop_timer("exporting to parquet")
+        matchingLogger.start_timer("Keeping only similar match")
+        triples_to_modelise = clean_matchs.withColumn(
+            "similarity_rate",
+            self.compute_similarity_udf(col("tokenizedSubName"), col("MatchedTokens"))
+        )
+        triples_to_modelise = triples_to_modelise.filter(
+            col("similarity_rate") >= graph.similarity_rate & col("similarity_rate") <= 0.99)
+        matchingLogger.stop_timer("Keeping only similar match")
 
-        return clean_matchs, matchingLogger.get_timer_counter()
+        return triples_to_modelise, matchingLogger.get_timer_counter()
 
     def parquet_reading(self, parquet_dir, csv_file_path="null"):
         self.sparkLoger.start_timer("parquet to csv")
         parquet_df = self.sparkSession.read.parquet(parquet_dir)
-        parquet_df.show(40, truncate=False)
+        parquet_df.show(50, truncate=False)
 
         if csv_file_path != "null":
             parquet_df.write.csv(csv_file_path, mode="overwrite", header=True)

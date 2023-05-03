@@ -7,7 +7,9 @@ class RDF_Graph_Model:
     CypherGenerator class to build the query that will load data to Neo4j
     """
 
-    def __init__(self, model_name):
+    def __init__(self, model_name="RDF Graph"):
         self.logger = Logger(prefix="- graph modeling -")
+
+        self.similarity_rate = 0.51
         self.nodes = []
         self.edges = []

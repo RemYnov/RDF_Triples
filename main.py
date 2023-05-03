@@ -1,5 +1,6 @@
 from processing.spark_operations import SparkOperations
 from logs_management import Logger, global_exception_handler
+from graph.neo4j_models import RDF_Graph_Model
 from processing.spark_config import get_spark_ui_url
 from config import RDF_DATA_PATH, RDF_EN_FR_TRANSFORMED_PATH, RDF_EN_FR_FILENAME, EXPORTS_FOLDER_PATH, SPARK_UI_URL
 import json
@@ -53,17 +54,21 @@ if __name__ == '__main__':
     logger.stop_timer("Spark processing")
     logger.log(json.dumps(operationsLogs, indent=4, sort_keys=False, separators=(',', ': ')))
 
+    graph_model = RDF_Graph_Model()
     logger.log("==Searching for related Triples==")
-    related_subjects, matchingLogs = sparkOps.find_matching_triples(main_df=df_RDF)
+    related_subjects, matchingLogs = sparkOps.find_matching_triples(main_df=df_RDF, graph=graph_model)
     logger.log("==Matching Over==")
     logger.log(json.dumps(matchingLogs, indent=4, sort_keys=False, separators=(',', ': ')))
 
+    related_subjects.show(100, truncate=False)
+    """
     result_path = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples"
     csv_path = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples_csv"
 
     sparkOps.parquet_reading(result_path)
 
     logger.log(RUN_NAME + " END.", isTitle=True)
+    """
 
 
 """
