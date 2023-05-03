@@ -7,6 +7,7 @@ from pyspark.ml import Pipeline
 from pyspark.ml.feature import StopWordsRemover, RegexTokenizer
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col, explode
+import pyspark.sql.functions as F
 from pyspark.sql.types import StringType, FloatType, ArrayType, StructType, StructField
 
 from config import PREDICATES_TEMPLATE_PATH, RDF_DATA_PATH
@@ -179,7 +180,7 @@ class SparkOperations:
     @staticmethod
     def get_unique_subject_names(df):
         subject_names = df.filter(col("Predicate").endswith("name")).select("Subject", "Predicate", "Object", "filtered_tokens")
-        return subject_names
+        return subject_names.dropDuplicates()
 
     def RDF_transform_and_sample_by_domain(
             self, input_file, exportConfig,
@@ -214,7 +215,7 @@ class SparkOperations:
             .option("header", "false") \
             .schema(triples_schema) \
             .csv(input_file)
-        df = (df.drop("Blank")).limit(7500)
+        df = (df.drop("Blank")).limit(50000)
         self.sparkLoger.stop_timer("reading")
 
         self.sparkLoger.start_timer("droping duplicates")
@@ -317,25 +318,32 @@ class SparkOperations:
 
         clean_matchs = matched_triples.dropDuplicates()
 
-        """
-        allMatchsCount = matched_triples.count()
+        #allMatchsCount = matched_triples.count()
         uniqueMatchsCount = clean_matchs.count()
-        duplicatedMatchs = allMatchsCount - uniqueMatchsCount
+        #duplicatedMatchs = allMatchsCount - uniqueMatchsCount
 
-        matchingLogger.custom_counter("nbMatchs", allMatchsCount)
+        #matchingLogger.custom_counter("nbMatchs", allMatchsCount)
         matchingLogger.custom_counter("nbUniqueMatchs", uniqueMatchsCount)
-        matchingLogger.custom_counter("nbDuplicatedMatchs", duplicatedMatchs)
+        #matchingLogger.custom_counter("nbDuplicatedMatchs", duplicatedMatchs)
         matchingLogger.stop_timer("matching triples")
-        """
 
         matchingLogger.start_timer("Keeping only similar match")
         triples_to_modelise = clean_matchs.withColumn(
             "similarity_rate",
             self.compute_similarity_udf(col("tokenizedSubName"), col("MatchedTokens"))
         )
-        triples_to_modelise = triples_to_modelise.filter(
-            col("similarity_rate") >= graph.similarity_rate & col("similarity_rate") <= 0.99)
+
+        similar_match_df = triples_to_modelise.filter(
+            (col("similarity_rate") >= graph.min_similarity_rate) & (col("similarity_rate") <= graph.max_similarity_rate))
+        nbSimilarMatch = similar_match_df.count()
+        matchingLogger.custom_counter("nbSimilarMatch", nbSimilarMatch)
         matchingLogger.stop_timer("Keeping only similar match")
+
+        matchingLogger.start_timer("Shuffle / Sample")
+        similarMatch_shuffled = similar_match_df.withColumn('rand', F.rand()).orderBy('rand')
+        related_subjects_random = similarMatch_shuffled.limit(300)
+        related_subjects_random.show(truncate=False)
+        matchingLogger.stop_timer("Shuffle / Sample")
 
         return triples_to_modelise, matchingLogger.get_timer_counter()
 

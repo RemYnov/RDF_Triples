@@ -8,7 +8,7 @@ import sys
 
 
 if __name__ == '__main__':
-    RUN_NAME = "50k full NLP pipeline (with new pattern) externalized from RDF_transform()"
+    RUN_NAME = "50k Most Similar Triples - Count enabled"
     # Initialisation of the logger object and the exception handler
     logger = Logger(defaultCustomLogs="fancy", botEnabled=True, runName=RUN_NAME)
     sys.excepthook = lambda et, ev, tb: global_exception_handler(logger, et, ev, tb)  # For unexpected error
@@ -60,14 +60,15 @@ if __name__ == '__main__':
     logger.log("==Matching Over==")
     logger.log(json.dumps(matchingLogs, indent=4, sort_keys=False, separators=(',', ': ')))
 
-    related_subjects.show(100, truncate=False)
+
+    logger.log(RUN_NAME + " END.", isTitle=True)
+
     """
     result_path = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples"
     csv_path = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples_csv"
 
     sparkOps.parquet_reading(result_path)
 
-    logger.log(RUN_NAME + " END.", isTitle=True)
     """
 
 

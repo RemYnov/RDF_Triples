@@ -10,6 +10,7 @@ class RDF_Graph_Model:
     def __init__(self, model_name="RDF Graph"):
         self.logger = Logger(prefix="- graph modeling -")
 
-        self.similarity_rate = 0.51
+        self.min_similarity_rate = 0.51
+        self.max_similarity_rate = 0.99
         self.nodes = []
         self.edges = []
