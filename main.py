@@ -8,7 +8,7 @@ import sys
 
 
 if __name__ == '__main__':
-    RUN_NAME = "50k Most Similar Triples - Count enabled"
+    RUN_NAME = "100k : matching 'base' triples on Jaccard's distance [0.5 - 0.99]."
     # Initialisation of the logger object and the exception handler
     logger = Logger(defaultCustomLogs="fancy", botEnabled=True, runName=RUN_NAME)
     sys.excepthook = lambda et, ev, tb: global_exception_handler(logger, et, ev, tb)  # For unexpected error
@@ -29,7 +29,6 @@ if __name__ == '__main__':
 
     exportConfig = {
         "exportUniquePredicates": False,
-        "exportMatchingTriples": False,
         "exportSampleEnabled": False,
         "exportFullData": False,
         "exportFullPath": output_path,
@@ -59,7 +58,6 @@ if __name__ == '__main__':
     related_subjects, matchingLogs = sparkOps.find_matching_triples(main_df=df_RDF, graph=graph_model)
     logger.log("==Matching Over==")
     logger.log(json.dumps(matchingLogs, indent=4, sort_keys=False, separators=(',', ': ')))
-
 
     logger.log(RUN_NAME + " END.", isTitle=True)
 

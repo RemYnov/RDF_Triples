@@ -10,7 +10,7 @@ from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col, expl
 import pyspark.sql.functions as F
 from pyspark.sql.types import StringType, FloatType, ArrayType, StructType, StructField
 
-from config import PREDICATES_TEMPLATE_PATH, RDF_DATA_PATH
+from config import LOCAL_PREDICATES_TEMPLATE_PATH
 from logs_management import Logger
 
 os.environ['PYSPARK_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
@@ -170,17 +170,27 @@ class SparkOperations:
             return predicates
 
         ### Loading the predicate structure ###
-        with open(PREDICATES_TEMPLATE_PATH, "r") as f:
+        with open(LOCAL_PREDICATES_TEMPLATE_PATH, "r") as f:
             predicates_json = json.load(f)
 
         desired_predicates = extract_recursive(predicates_json[desired_domain], prefix=desired_domain)
 
         return desired_predicates
 
-    @staticmethod
-    def get_unique_subject_names(df):
+
+    def get_unique_subject_names(self, df, logger):
         subject_names = df.filter(col("Predicate").endswith("name")).select("Subject", "Predicate", "Object", "filtered_tokens")
-        return subject_names.dropDuplicates()
+        unique_subject_names = subject_names.dropDuplicates()
+
+        nbSub = subject_names.count()
+        nbUniqueSub = unique_subject_names.count()
+        nbDuplicates = nbSub-nbUniqueSub
+
+        logger.custom_counter("nbSubjectsWithName", nbSub)
+        logger.custom_counter("nbUniqueSubjectsName", nbUniqueSub)
+        logger.custom_counter("nbDuplicatedSubjects", nbDuplicates)
+
+        return unique_subject_names
 
     def RDF_transform_and_sample_by_domain(
             self, input_file, exportConfig,
@@ -215,11 +225,29 @@ class SparkOperations:
             .option("header", "false") \
             .schema(triples_schema) \
             .csv(input_file)
-        df = (df.drop("Blank")).limit(50000)
+        df = (df.drop("Blank"))#.limit(200000)
         self.sparkLoger.stop_timer("reading")
 
+        # Searching for samples based on the desired domain :
+        desired_predicates = self.get_predicates_by_domain("base")
+
+        self.sparkLoger.start_timer("Filtering on domain")
+        filtered_df = df.filter(df["Predicate"].isin(desired_predicates))
+        sample_df = filtered_df.limit(100000)
+
+        filtered_count = filtered_df.count()
+        sampled_count = sample_df.count()
+        self.sparkLoger.custom_counter("nbBaseTriples", filtered_count)
+        self.sparkLoger.custom_counter("sampledBaseTriples", sampled_count)
+        self.sparkLoger.start_timer("Filtering on domain")
+
+        self.sparkLoger.log("Nombre de triples base :")
+        self.sparkLoger.log(str(filtered_count))
+        self.sparkLoger.log("Nombre de sample base :")
+        self.sparkLoger.log(str(sampled_count))
+
         self.sparkLoger.start_timer("droping duplicates")
-        df_light = df.dropDuplicates()
+        df_light = sample_df.dropDuplicates()
         self.sparkLoger.stop_timer("droping duplicates")
 
         if showSample:
@@ -278,10 +306,10 @@ class SparkOperations:
                 :return: dataframe having, for each unique subject of our main df, the matching triples
                 based on the (tokenized) names of the unique subjects and the (tokenized) Objects of the main df
         """
-        matchingLogger = Logger(prefix="- relations search -", defaultCustomLogs="warning", botEnabled=True)
+        matchingLogger = Logger(prefix="- matching -", defaultCustomLogs="warning", botEnabled=True)
 
         matchingLogger.start_timer("Explode objects")
-        subject_names_df = self.get_unique_subject_names(df=main_df)
+        subject_names_df = self.get_unique_subject_names(df=main_df, logger=matchingLogger)
         # Unique subjects with their exploded tokenized name (cf NLP pipeline)
         # (== 1 row by token with the same subject key).
         # We take the col where the stop_words were applied : we don't want any match based
@@ -318,13 +346,8 @@ class SparkOperations:
 
         clean_matchs = matched_triples.dropDuplicates()
 
-        #allMatchsCount = matched_triples.count()
         uniqueMatchsCount = clean_matchs.count()
-        #duplicatedMatchs = allMatchsCount - uniqueMatchsCount
-
-        #matchingLogger.custom_counter("nbMatchs", allMatchsCount)
         matchingLogger.custom_counter("nbUniqueMatchs", uniqueMatchsCount)
-        #matchingLogger.custom_counter("nbDuplicatedMatchs", duplicatedMatchs)
         matchingLogger.stop_timer("matching triples")
 
         matchingLogger.start_timer("Keeping only similar match")
@@ -341,8 +364,8 @@ class SparkOperations:
 
         matchingLogger.start_timer("Shuffle / Sample")
         similarMatch_shuffled = similar_match_df.withColumn('rand', F.rand()).orderBy('rand')
-        related_subjects_random = similarMatch_shuffled.limit(300)
-        related_subjects_random.show(truncate=False)
+        related_subjects_random = similarMatch_shuffled.limit(500)
+        related_subjects_random.show(500, truncate=False)
         matchingLogger.stop_timer("Shuffle / Sample")
 
         return triples_to_modelise, matchingLogger.get_timer_counter()
@@ -381,32 +404,6 @@ class SparkOperations:
             self.sparkLoger.custom_counter("domainCount", filtered_count)
             self.sparkLoger.custom_counter("sample", sampled_count)
             self.sparkLoger.stop_timer(timer)
-
-        # Writting to csv the matching triples
-        if exportConfig["exportMatchingTriples"] :
-            self.sparkLoger.start_timer("looking for matching triples")
-
-            # Searching for samples based on the desired domain :
-            desired_predicates = self.get_predicates_by_domain(desired_domain=exportConfig["domainToExport"])
-            filtered_df_by_domain = df.filter(df["_c1"].isin(desired_predicates))
-
-            # Df with only subject / object
-            subjects_df = df.select("_c0").distinct()
-            objects_df = df.select("_c2").distinct()
-            joined_df = subjects_df.crossJoin(objects_df)
-            # Keeping only records where the subject exists in the object column
-            filtered_df = joined_df.filter(col("_c2").contains(col("_c0")))
-
-            matchingTriples_df = filtered_df_by_domain.join(filtered_df, on=["_c0", "_c2"], how="inner")
-            self.sparkLoger.stop_timer("looking for matching triples")
-
-            self.sparkLoger.start_timer("writting matching triples")
-            matchingTriples_df.write \
-                .option("delimiter", "|") \
-                .option("header", "false") \
-                .mode("overwrite") \
-                .csv(self.MATCHING_TRIPLES_PATH)
-            self.sparkLoger.stop_timer("writting matching triples")
 
         # Writting to csv the entire dataset
         if exportConfig["exportFullData"]:
