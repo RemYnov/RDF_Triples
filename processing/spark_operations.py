@@ -6,11 +6,11 @@ from urllib import parse
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import StopWordsRemover, RegexTokenizer
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf, regexp_replace, regexp_extract, col, explode
+from pyspark.sql.functions import udf, rand, col, explode
 import pyspark.sql.functions as F
 from pyspark.sql.types import StringType, FloatType, ArrayType, StructType, StructField
 
-from config import LOCAL_PREDICATES_TEMPLATE_PATH
+from config import RDF_DATA_PATH, LOCAL_PREDICATES_TEMPLATE_PATH
 from logs_management import Logger
 
 os.environ['PYSPARK_PYTHON'] = 'C:/Users/blremi/birdlink/MEP/sandbox/workspace/v_env/Scripts/python.exe'
@@ -22,7 +22,7 @@ class SparkOperations:
     Every spark operations will be managed and monitored
     from this class.
     """
-    def __init__(self, app_name, RDF_DATA_PATH, botLoggerEnabled):
+    def __init__(self, app_name, botLoggerEnabled):
         # Init loggers
         self.sparkLoger = Logger(prefix="- spark -", defaultCustomLogs="normal", botEnabled=botLoggerEnabled)
 
@@ -51,9 +51,10 @@ class SparkOperations:
 
         self.context = self.sparkSession.sparkContext
 
+
+        self.UNIQUE_PREDICATES_FILEPATH = RDF_DATA_PATH + "sparkedData/exploResults/unique_predicates"
+        self.MATCHING_TRIPLES_PATH = RDF_DATA_PATH + "sparkedData/exploResults/matchingTriples"
         self.RDF_DATA_PATH = RDF_DATA_PATH
-        self.UNIQUE_PREDICATES_FILEPATH = self.RDF_DATA_PATH + "sparkedData/exploResults/unique_predicates"
-        self.MATCHING_TRIPLES_PATH = self.RDF_DATA_PATH + "sparkedData/exploResults/matchingTriples"
 
         ### Registering the UDF ###
         # Needed when specifc calculations (without native pySpark function) need to be applyied to the data
@@ -147,33 +148,48 @@ class SparkOperations:
         else:
             return float(intersection_size) / float(union_size)
 
-    @staticmethod
-    def get_predicates_by_domain(desired_domain):
+    def sample_distrib_by_predicates(self, df, N):
+        with open(LOCAL_PREDICATES_TEMPLATE_PATH, "r") as f:
+            predicates_json = json.load(f)
+
+        predicates = self.extract_recursive(predicates_json)
+
+        print(json.dumps(predicates, indent=4, sort_keys=False))
+
+        res_df = self.sparkSession.createDataFrame([], df.schema)
+        for pred in predicates[0:10]:
+            sample_df = df.filter(df["Predicate"].isin(pred)).orderBy(rand()).limit(N)
+            res_df = res_df.union(sample_df)
+
+        return res_df
+
+    # Retrieve each unique predicates based on the given predicates template
+    def extract_recursive(self, json_dict, prefix='', predicates=None):
+        if predicates is None:
+            predicates = []
+
+        for key, value in json_dict.items():
+            current_prefix = f'{prefix}.{key}' if prefix else key
+            if value:
+                self.extract_recursive(value, current_prefix, predicates)
+            else:
+                predicates.append(current_prefix)
+
+        return predicates
+
+    def get_predicates_by_domain(self, desired_domain):
         """
                 Return every unique predicates that match the given
                 domain.
                 Used when we want to get tripples data on a specific domains
                 :param desired_domain: name of the domain we want to sample
         """
-        # Retrieve each unique predicates based on the given predicates template
-        def extract_recursive(json_dict, prefix='', predicates=None):
-            if predicates is None:
-                predicates = []
-
-            for key, value in json_dict.items():
-                current_prefix = f'{prefix}.{key}' if prefix else key
-                if value:
-                    extract_recursive(value, current_prefix, predicates)
-                else:
-                    predicates.append(current_prefix)
-
-            return predicates
 
         ### Loading the predicate structure ###
         with open(LOCAL_PREDICATES_TEMPLATE_PATH, "r") as f:
             predicates_json = json.load(f)
 
-        desired_predicates = extract_recursive(predicates_json[desired_domain], prefix=desired_domain)
+        desired_predicates = self.extract_recursive(predicates_json[desired_domain], prefix=desired_domain)
 
         return desired_predicates
 
@@ -226,6 +242,16 @@ class SparkOperations:
             .schema(triples_schema) \
             .csv(input_file)
         df = (df.drop("Blank"))#.limit(200000)
+
+        shuffled_df = self.sample_distrib_by_predicates(df, 10)
+
+        shuffled_df.write \
+            .option("delimiter", "|") \
+            .option("header", "false") \
+            .mode("overwrite") \
+            .csv(exportConfig["sample_output_folderpath"] + "shuffled_rand10_triples")
+
+        """
         self.sparkLoger.stop_timer("reading")
 
         # Searching for samples based on the desired domain :
@@ -293,8 +319,9 @@ class SparkOperations:
 
         if stopSession:
             self.sparkSession.stop()
-
         return self.sparkLoger.get_timer_counter(), tokenized_df
+        """
+        return self.sparkLoger.get_timer_counter(), shuffled_df
 
 
     def find_matching_triples(self, main_df, graph):

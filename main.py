@@ -18,7 +18,6 @@ if __name__ == '__main__':
     # Initialisation of the Class performing all the Spark operations
     sparkOps = SparkOperations(
         app_name="TriplesRDF",
-        RDF_DATA_PATH=RDF_DATA_PATH,
         botLoggerEnabled=True
     )
 
@@ -40,6 +39,7 @@ if __name__ == '__main__':
     logger.start_timer("Spark processing")
     logger.log(f"Spark UI URL: {url} or {SPARK_UI_URL}")
 
+
     operationsLogs, df_RDF = sparkOps.RDF_transform_and_sample_by_domain(
         input_file=input_file,
         exportConfig=exportConfig,
@@ -55,11 +55,11 @@ if __name__ == '__main__':
 
     graph_model = RDF_Graph_Model()
     logger.log("==Searching for related Triples==")
-    related_subjects, matchingLogs = sparkOps.find_matching_triples(main_df=df_RDF, graph=graph_model)
-    logger.log("==Matching Over==")
-    logger.log(json.dumps(matchingLogs, indent=4, sort_keys=False, separators=(',', ': ')))
+    #related_subjects, matchingLogs = sparkOps.find_matching_triples(main_df=df_RDF, graph=graph_model)
+    #logger.log("==Matching Over==")
+    #logger.log(json.dumps(matchingLogs, indent=4, sort_keys=False, separators=(',', ': ')))
 
-    logger.log(RUN_NAME + " END.", isTitle=True)
+    #logger.log(RUN_NAME + " END.", isTitle=True)
 
     """
     result_path = RDF_DATA_PATH + "sparkedData/fullExploResults/matchingTriples"
